@@ -95,6 +95,10 @@
 </tr>
 </table>
 
+### NEW: Perform AI duels
+![11673](https://github.com/user-attachments/assets/b2dfc3e1-4dde-405e-b853-f2c5e87526bd)
+
+
 ### Why Compare AI Models?
 
 Understanding the differences between leading AI models is crucial for:
