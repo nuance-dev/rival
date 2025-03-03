@@ -374,6 +374,19 @@ export default function Home() {
                     </span>
                   </motion.button>
                   
+                  <motion.a
+                    href="/challenges"
+                    whileTap={{ scale: 0.98 }}
+                    className="h-10 px-5 flex items-center rounded-md bg-card border border-border hover:border-primary/40 hover:bg-primary/5 transition-all"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                  >
+                    <span className="flex items-center gap-2 text-sm">
+                      Try AI Challenges
+                    </span>
+                  </motion.a>
+                  
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}

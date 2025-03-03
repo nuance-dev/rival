@@ -261,11 +261,52 @@ export function formatModelName(modelId: string): string {
     'mistral-large': 'Mistral Large',
     'mistral-medium': 'Mistral Medium',
     'mistral-small': 'Mistral Small',
+    // Additional edge cases
+    'deepseek-r1': 'DeepSeek R1',
+    // Gemini model special cases - ensure all variants are handled
+    'gemini-2-0-pro': 'Gemini 2.0 Pro'
   };
   
   // First, check for exact matches in our special cases
   if (specialCases[normalizedId]) {
     return specialCases[normalizedId];
+  }
+  
+  // Special handling for Gemini models to ensure correct versioning
+  if (normalizedId.includes('gemini')) {
+    // Extract version numbers properly
+    const geminiMatch = normalizedId.match(/gemini-?(\d+)(?:-?(\d+))?-?([a-z-]+)?/i);
+    if (geminiMatch) {
+      const majorVersion = geminiMatch[1] || '';
+      const minorVersion = geminiMatch[2] || '';
+      let variant = geminiMatch[3] || '';
+      
+      // Format the variant part (pro, flash, etc.)
+      if (variant) {
+        variant = variant
+          .split('-')
+          .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(' ');
+      }
+      
+      // Construct the full model name with proper version formatting
+      let formattedName = 'Gemini';
+      
+      // Special case for Gemini 2.0
+      if (majorVersion === '2' || majorVersion === '20') {
+        formattedName += ' 2.0';
+      } else if (majorVersion && minorVersion) {
+        formattedName += ` ${majorVersion}.${minorVersion}`;
+      } else if (majorVersion) {
+        formattedName += ` ${majorVersion}`;
+      }
+      
+      if (variant) {
+        formattedName += ` ${variant}`;
+      }
+      
+      return formattedName;
+    }
   }
   
   // If no exact match, check for partial matches using normalized ID
@@ -303,6 +344,16 @@ export function formatModelName(modelId: string): string {
       // Handle decimal numbers intact (like 3.5)
       if (/^\d+\.\d+$/.test(part)) {
         return part;
+      }
+      
+      // Special handling for version numbers with periods (like 2.0)
+      if (/^\d+$/.test(part) && part.length === 1 && modelId.includes("-" + part + "-")) {
+        // This is likely a version number - check if the next part is also a number
+        const parts = modelId.split('-');
+        const partIndex = parts.indexOf(part);
+        if (partIndex >= 0 && partIndex < parts.length - 1 && /^\d+$/.test(parts[partIndex + 1])) {
+          return part + "." + parts[partIndex + 1];
+        }
       }
       
       // Handle parts with version numbers

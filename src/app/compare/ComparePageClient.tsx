@@ -40,6 +40,7 @@ export default function ComparePageClient() {
   const [suggestedModelPairs, setSuggestedModelPairs] = useState<string[][]>([]);
   const [isLoadingChallenges, setIsLoadingChallenges] = useState(false);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
+  const [loadedChallenges, setLoadedChallenges] = useState<string[]>([]);
 
   // Group models by provider for better organization
   const modelsByProvider = useMemo(() => {
@@ -332,6 +333,9 @@ export default function ComparePageClient() {
     // Save the current state of showAllChallenges to determine the next action
     const willShowAllChallenges = !showAllChallenges;
     
+    // Reset loaded challenges when toggling the view
+    setLoadedChallenges([]);
+    
     // Update state in a consistent order
     setShowAllChallenges(willShowAllChallenges);
     setShowChallengeSelection(!willShowAllChallenges);
@@ -339,15 +343,45 @@ export default function ComparePageClient() {
     // If showing all challenges, make sure we're not also showing a single challenge
     if (willShowAllChallenges) {
       setSelectedChallenge(null);
-    }
-    
-    // Use setTimeout to allow state updates to settle before removing loading state
-    setTimeout(() => {
-      setIsLoading(false);
       
-      // Scroll to top on transition
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 600);
+      // Start showing the view immediately with a loading state
+      setTimeout(() => {
+        setIsLoading(false);
+        
+        // Load challenges progressively
+        const chunkSize = 3; // Load 3 challenges at a time
+        const totalChallenges = availableChallenges.length;
+        let loadedCount = 0;
+        
+        function loadNextChunk() {
+          if (loadedCount < totalChallenges) {
+            const endIndex = Math.min(loadedCount + chunkSize, totalChallenges);
+            const newChunk = availableChallenges.slice(loadedCount, endIndex).map(c => c.id);
+            
+            setLoadedChallenges(prev => [...prev, ...newChunk]);
+            loadedCount = endIndex;
+            
+            // Load the next chunk after a short delay
+            if (loadedCount < totalChallenges) {
+              setTimeout(loadNextChunk, 300);
+            }
+          }
+        }
+        
+        // Start loading the first chunk
+        loadNextChunk();
+        
+        // Scroll to top on transition
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 300);
+    } else {
+      // When returning to single challenge view
+      setTimeout(() => {
+        setIsLoading(false);
+        // Scroll to top on transition
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 600);
+    }
   };
 
   // Get model details by ID
@@ -493,88 +527,126 @@ export default function ComparePageClient() {
                   </div>
                   
                   <ExpansionProvider>
-                    {availableChallenges.map((challenge) => {
-                      const responses = allChallengesResponses[challenge.id] || [];
-                      if (responses.length !== 2) return null;
-                      
-                      return (
-                        <div key={challenge.id} className="mb-16 pb-8 border-b last:border-b-0 last:pb-0">
-                          <div className="mb-6">
-                            <h3 className="font-display font-bold text-xl mb-1">{challenge.title}</h3>
-                            <div className="flex items-center gap-2 mb-4">
-                              <div className={`
-                                text-xs font-medium py-0.5 px-2 rounded-full
-                                ${challenge.difficulty === 'easy' ? 'bg-green-500/10 text-green-500' : 
-                                challenge.difficulty === 'medium' ? 'bg-amber-500/10 text-amber-500' : 
-                                'bg-red-500/10 text-red-500'}
-                              `}>
-                                {challenge.difficulty.charAt(0).toUpperCase() + challenge.difficulty.slice(1)}
+                    {availableChallenges.length === 0 ? (
+                      <div className="h-96 flex items-center justify-center">
+                        <div className="text-center">
+                          <p className="text-muted-foreground mb-2">No challenges found for these models</p>
+                          <button
+                            onClick={resetSelection}
+                            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm bg-primary/10 text-primary hover:bg-primary/15 rounded-full transition-colors"
+                          >
+                            Select Different Models
+                          </button>
+                        </div>
+                      </div>
+                    ) : loadedChallenges.length === 0 ? (
+                      <div className="h-96 flex items-center justify-center">
+                        <div className="flex flex-col items-center gap-4">
+                          <div className="relative h-10 w-10">
+                            <motion.div 
+                              className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent"
+                              animate={{ rotate: 360 }}
+                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                            />
+                          </div>
+                          <p className="text-sm text-muted-foreground">Loading challenges...</p>
+                        </div>
+                      </div>
+                    ) : (
+                      availableChallenges.map((challenge) => {
+                        const responses = allChallengesResponses[challenge.id] || [];
+                        if (responses.length !== 2) return null;
+                        
+                        // Only render challenges that have been loaded
+                        if (!loadedChallenges.includes(challenge.id)) {
+                          return null;
+                        }
+                        
+                        return (
+                          <motion.div 
+                            key={challenge.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5 }}
+                            className="mb-16 pb-8 border-b last:border-b-0 last:pb-0"
+                          >
+                            <div className="mb-6">
+                              <h3 className="font-display font-bold text-xl mb-1">{challenge.title}</h3>
+                              <div className="flex items-center gap-2 mb-4">
+                                <div className={`
+                                  text-xs font-medium py-0.5 px-2 rounded-full
+                                  ${challenge.difficulty === 'easy' ? 'bg-green-500/10 text-green-500' : 
+                                    challenge.difficulty === 'medium' ? 'bg-amber-500/10 text-amber-500' : 
+                                    'bg-red-500/10 text-red-500'}
+                                `}>
+                                  {challenge.difficulty.charAt(0).toUpperCase() + challenge.difficulty.slice(1)}
+                                </div>
+                                
+                                <div className="text-xs font-medium py-0.5 px-2 bg-primary/10 text-primary rounded-full">
+                                  {challenge.expectedOutputType.charAt(0).toUpperCase() + challenge.expectedOutputType.slice(1)}
+                                </div>
                               </div>
                               
-                              <div className="text-xs font-medium py-0.5 px-2 bg-primary/10 text-primary rounded-full">
-                                {challenge.expectedOutputType.charAt(0).toUpperCase() + challenge.expectedOutputType.slice(1)}
+                              <div className="bg-muted/30 rounded-lg p-4 mb-6">
+                                <h4 className="text-sm font-medium mb-2">Prompt:</h4>
+                                <p className="font-mono text-sm whitespace-pre-wrap">{challenge.prompt}</p>
                               </div>
                             </div>
-                            
-                            <div className="bg-muted/30 rounded-lg p-4 mb-6">
-                              <h4 className="text-sm font-medium mb-2">Prompt:</h4>
-                              <p className="font-mono text-sm whitespace-pre-wrap">{challenge.prompt}</p>
-                            </div>
-                          </div>
 
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                            {responses.map((response) => {
-                              const model = getModelById(response.modelId);
-                              return (
-                                <div key={response.id} className="h-full flex flex-col" style={{ minHeight: "500px" }}>
-                                  <div className="bg-card border-t border-x rounded-t-xl p-4 flex items-center gap-3">
-                                    {model?.logoUrl && (
-                                      <div className="w-8 h-8 rounded-full bg-background flex items-center justify-center overflow-hidden p-1">
-                                        <img 
-                                          src={model.logoUrl} 
-                                          alt={model.name} 
-                                          className="h-full w-full object-contain"
-                                        />
-                                      </div>
-                                    )}
-                                    <span className="font-display font-medium">{model?.name}</span>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                              {responses.map((response) => {
+                                const model = getModelById(response.modelId);
+                                return (
+                                  <div key={response.id} className="h-full flex flex-col" style={{ minHeight: "500px" }}>
+                                    <div className="bg-card border-t border-x rounded-t-xl p-4 flex items-center gap-3">
+                                      {model?.logoUrl && (
+                                        <div className="w-8 h-8 rounded-full bg-background flex items-center justify-center overflow-hidden p-1">
+                                          <img 
+                                            src={model.logoUrl} 
+                                            alt={model.name} 
+                                            className="h-full w-full object-contain"
+                                          />
+                                        </div>
+                                      )}
+                                      <span className="font-display font-medium">{model?.name}</span>
+                                    </div>
+                                    
+                                    <div className="flex-grow border rounded-b-xl overflow-hidden">
+                                      <ModelCanvas 
+                                        title={challenge.title || ""}
+                                        description=""
+                                        output={{
+                                          ...response,
+                                          modelName: model?.name || formatModelName(response.modelId),
+                                          challengeId: challenge.id
+                                        }}
+                                        className="h-full"
+                                      />
+                                    </div>
                                   </div>
-                                  
-                                  <div className="flex-grow border rounded-b-xl overflow-hidden">
-                                    <ModelCanvas 
-                                      title={challenge.title || ""}
-                                      description=""
-                                      output={{
-                                        ...response,
-                                        modelName: model?.name || formatModelName(response.modelId),
-                                        challengeId: challenge.id
-                                      }}
-                                      className="h-full"
-                                    />
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                          
-                          {/* Add model duel UI for each challenge */}
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            <MinimalModelDuel
-                              model1Id={responses[0].modelId}
-                              model2Id={responses[1].modelId}
-                              challengeId={challenge.id}
-                              model1Name={getModelById(responses[0].modelId)?.name || formatModelName(responses[0].modelId)}
-                              model2Name={getModelById(responses[1].modelId)?.name || formatModelName(responses[1].modelId)}
-                              onVote={handleVoteComplete}
-                            />
+                                );
+                              })}
+                            </div>
+                            
+                            {/* Add model duel UI for each challenge */}
+                            <motion.div
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <MinimalModelDuel
+                                model1Id={responses[0].modelId}
+                                model2Id={responses[1].modelId}
+                                challengeId={challenge.id}
+                                model1Name={getModelById(responses[0].modelId)?.name || formatModelName(responses[0].modelId)}
+                                model2Name={getModelById(responses[1].modelId)?.name || formatModelName(responses[1].modelId)}
+                                onVote={handleVoteComplete}
+                              />
+                            </motion.div>
                           </motion.div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })
+                    )}
                   </ExpansionProvider>
                 </motion.div>
               )}

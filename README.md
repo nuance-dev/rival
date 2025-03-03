@@ -83,6 +83,16 @@
 <img src="https://github.com/user-attachments/assets/7ada05f3-1b69-4b63-9711-d29ef70988e5" width="100%" alt="Rich visualization of AI-generated SVG designs and code with syntax highlighting" />
 </td>
 </tr>
+<tr>
+<td width="50%">
+<h3>🗳️ AI Duels and Community Voting</h3>
+<p>Vote for your preferred AI responses in direct head-to-head duels. Choose a winner or record a tie when responses are equally good. Community votes are tallied in Supabase to track which models perform best across different challenge types.</p>
+</td>
+<td width="50%">
+<h3>📈 Real-time Vote Statistics</h3>
+<p>See how the community votes are distributed between models. Stats are displayed after you cast your vote, showing percentages for each model and ties, giving insight into which models the community prefers for specific challenges.</p>
+</td>
+</tr>
 </table>
 
 ### Why Compare AI Models?

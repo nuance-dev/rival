@@ -76,43 +76,23 @@ export function MinimalModelDuel({
     setVoteAnimation(winnerId);
     
     try {
-      // Handle tie/both vote scenario - we'll record this as a special case
-      if (winnerId === 'tie') {
-        // Just record locally that there was a tie vote
-        recordLocalVote(model1Id, model2Id, challengeId, 'tie');
-        setUserVote('tie');
-        
-        // Record time of vote for throttling
-        recordVoteTime();
-        
-        // After a short delay, fetch updated stats and show them
-        setTimeout(() => {
-          setShowDetails(true);
-          setVoteAnimation(null);
-          
-          // Notify parent if callback exists
-          if (onVote) onVote('tie');
-        }, 800);
-        
-        return;
-      }
-      
-      // Record vote in Supabase
+      // Record vote in Supabase - use appropriate winner_id for all cases including ties
       const vote = {
         model1_id: model1Id,
         model2_id: model2Id,
         challenge_id: challengeId,
-        winner_id: winnerId,
+        // Updated to handle tie votes directly - use 'tie' as winner_id
+        winner_id: winnerId === 'tie' ? 'tie' : winnerId,
         unique_voter_id: voterId
       };
       
       const { success, error } = await recordModelDuelVote(vote);
       
       if (success) {
-        // Update local state
+        // Update local state to show correct UI
         setUserVote(winnerId);
         
-        // Store vote in localStorage to prevent double voting
+        // Store vote in localStorage to prevent double voting and to track tie votes
         recordLocalVote(model1Id, model2Id, challengeId, winnerId);
         
         // Record time of vote for throttling
@@ -145,16 +125,17 @@ export function MinimalModelDuel({
   // Calculate percentages for the voting bar
   const calculatePercentages = () => {
     if (!stats || stats.total_votes === 0) {
-      return { model1Percent: 50, model2Percent: 50 };
+      return { model1Percent: 50, model2Percent: 50, tiePercent: 0 };
     }
     
     const model1Percent = Math.round((stats.model1_votes / stats.total_votes) * 100);
-    const model2Percent = 100 - model1Percent;
+    const tiePercent = Math.round((stats.tie_votes / stats.total_votes) * 100);
+    const model2Percent = 100 - model1Percent - tiePercent;
     
-    return { model1Percent, model2Percent };
+    return { model1Percent, model2Percent, tiePercent };
   };
 
-  const { model1Percent, model2Percent } = calculatePercentages();
+  const { model1Percent, model2Percent, tiePercent } = calculatePercentages();
 
   // Get display names for models that correctly respects model variants
   const getDisplayName = (modelId: string, nameHint: string) => {
@@ -240,7 +221,7 @@ export function MinimalModelDuel({
                     whileTap={{ scale: 0.98 }}
                   >
                     <div className="flex flex-col items-center gap-2">
-                      <span className="text-sm font-medium">It&apos;s a tie</span>
+                      <span className="text-sm font-medium">It{'\u2019'}s a tie</span>
                       <Medal className="h-4 w-4 text-amber-500" />
                     </div>
                     
@@ -283,7 +264,7 @@ export function MinimalModelDuel({
                   <span className="text-sm font-medium">Your vote:</span>
                   <span className="text-primary font-medium text-sm">
                     {userVote === 'tie' 
-                      ? "It&apos;s a tie" 
+                      ? "It\u2019s a tie" 
                       : userVote === model1Id 
                         ? model1DisplayName 
                         : model2DisplayName}
@@ -329,6 +310,22 @@ export function MinimalModelDuel({
                   </div>
                   <div className="w-10 text-xs text-right ml-2">{model1Percent}%</div>
                 </div>
+                
+                {stats.tie_votes > 0 && (
+                  <div className="flex items-center mb-2">
+                    <div className="w-[100px] text-xs truncate mr-2">It{'\u2019'}s a tie</div>
+                    <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                      <motion.div 
+                        className="h-full bg-amber-500 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${tiePercent}%` }}
+                        transition={{ duration: 0.5, delay: 0.15 }}
+                      />
+                    </div>
+                    <div className="w-10 text-xs text-right ml-2">{tiePercent}%</div>
+                  </div>
+                )}
+                
                 <div className="flex items-center">
                   <div className="w-[100px] text-xs truncate mr-2">{model2DisplayName}</div>
                   <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">

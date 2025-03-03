@@ -76,12 +76,13 @@ export function ModelDuel({
     setVoteAnimation(winnerId);
     
     try {
-      // Record vote in Supabase
+      // Record vote in Supabase - use appropriate winner_id for all cases including ties
       const vote = {
         model1_id: model1Id,
         model2_id: model2Id,
         challenge_id: challengeId,
-        winner_id: winnerId,
+        // Updated to handle tie votes directly
+        winner_id: winnerId === 'tie' ? 'tie' : winnerId,
         unique_voter_id: voterId
       };
       
@@ -125,19 +126,20 @@ export function ModelDuel({
     setShowStats((prev: boolean) => !prev);
   };
 
-  // Calculate percentages for the voting bar
+  // Update calculatePercentages to handle tie votes
   const calculatePercentages = () => {
     if (!stats || stats.total_votes === 0) {
-      return { model1Percent: 50, model2Percent: 50 };
+      return { model1Percent: 50, model2Percent: 50, tiePercent: 0 };
     }
     
     const model1Percent = Math.round((stats.model1_votes / stats.total_votes) * 100);
-    const model2Percent = 100 - model1Percent;
+    const tiePercent = Math.round((stats.tie_votes / stats.total_votes) * 100);
+    const model2Percent = 100 - model1Percent - tiePercent;
     
-    return { model1Percent, model2Percent };
+    return { model1Percent, model2Percent, tiePercent };
   };
 
-  const { model1Percent, model2Percent } = calculatePercentages();
+  const { model1Percent, model2Percent, tiePercent } = calculatePercentages();
 
   return (
     <div className="w-full py-6 px-2">
@@ -169,7 +171,7 @@ export function ModelDuel({
         
         {/* Voting buttons */}
         {!showStats && (
-          <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="grid grid-cols-3 gap-3 mb-4">
             <motion.button
               className={`relative flex flex-col items-center justify-center p-4 rounded-xl border border-border/50 bg-card/50 hover:bg-primary/5 hover:border-primary/30 transition-colors ${userVote === model1Id ? 'border-primary bg-primary/10' : ''}`}
               onClick={() => handleVote(model1Id)}
@@ -183,6 +185,26 @@ export function ModelDuel({
               {voteAnimation === model1Id && (
                 <motion.div
                   className="absolute inset-0 rounded-xl border-2 border-primary"
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: [0, 1, 0], scale: [1.1, 1.05, 1.2] }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                />
+              )}
+            </motion.button>
+            
+            <motion.button
+              className={`relative flex flex-col items-center justify-center p-4 rounded-xl border border-border/50 bg-card/50 hover:bg-amber-500/5 hover:border-amber-500/30 transition-colors ${userVote === 'tie' ? 'border-amber-500 bg-amber-500/10' : ''}`}
+              onClick={() => handleVote('tie')}
+              disabled={isVoting || !!userVote}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <span className="font-medium text-sm mb-1">It{'\u2019'}s a Tie</span>
+              <Trophy className="w-5 h-5 text-amber-500/80" />
+              
+              {voteAnimation === 'tie' && (
+                <motion.div
+                  className="absolute inset-0 rounded-xl border-2 border-amber-500"
                   initial={{ opacity: 0, scale: 1.1 }}
                   animate={{ opacity: [0, 1, 0], scale: [1.1, 1.05, 1.2] }}
                   transition={{ duration: 0.6, ease: "easeOut" }}
@@ -214,60 +236,59 @@ export function ModelDuel({
         
         {/* Results bar and stats */}
         <AnimatePresence>
-          {showStats && stats && (
-            <motion.div 
-              className="rounded-xl border bg-card/70 p-4 overflow-hidden"
+          {showStats && (
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.3 }}
+              className="space-y-4"
             >
-              <div className="flex justify-between items-center mb-2">
+              {/* Vote percentages */}
+              <div className="space-y-2">
                 <div className="flex items-center">
-                  <BarChart2 className="w-4 h-4 mr-1.5 text-muted-foreground" />
-                  <span className="text-sm font-medium">Community results</span>
+                  <div className="w-[100px] text-xs truncate mr-2">{formatModelName(model1Name)}</div>
+                  <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                    <motion.div 
+                      className="h-full bg-primary rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${model1Percent}%` }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  </div>
+                  <div className="w-10 text-xs text-right ml-2">{model1Percent}%</div>
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  {stats.total_votes} total vote{stats.total_votes !== 1 ? 's' : ''}
-                </div>
-              </div>
-              
-              {/* Voting results bar */}
-              <div className="h-8 bg-muted rounded-lg flex overflow-hidden mb-3">
-                <motion.div 
-                  className="h-full bg-primary/80 flex items-center justify-start pl-2"
-                  initial={{ width: "0%" }}
-                  animate={{ width: `${model1Percent}%` }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                >
-                  {model1Percent > 15 && (
-                    <div className="text-xs font-medium text-white flex items-center">
-                      {model1Percent}%
-                      {model1Percent > model2Percent && (
-                        <Trophy className="h-3 w-3 ml-1 text-yellow-300" />
-                      )}
-                    </div>
-                  )}
-                </motion.div>
                 
-                <motion.div 
-                  className="h-full bg-secondary/80 flex items-center justify-end pr-2"
-                  initial={{ width: "0%" }}
-                  animate={{ width: `${model2Percent}%` }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                >
-                  {model2Percent > 15 && (
-                    <div className="text-xs font-medium text-primary-foreground flex items-center">
-                      {model2Percent}%
-                      {model2Percent > model1Percent && (
-                        <Trophy className="h-3 w-3 ml-1 text-yellow-300" />
-                      )}
+                {/* Add tie percentage bar if there are tie votes */}
+                {tiePercent > 0 && (
+                  <div className="flex items-center">
+                    <div className="w-[100px] text-xs truncate mr-2">Tie</div>
+                    <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                      <motion.div 
+                        className="h-full bg-amber-500 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${tiePercent}%` }}
+                        transition={{ duration: 0.5, delay: 0.1 }}
+                      />
                     </div>
-                  )}
-                </motion.div>
+                    <div className="w-10 text-xs text-right ml-2">{tiePercent}%</div>
+                  </div>
+                )}
+                
+                <div className="flex items-center">
+                  <div className="w-[100px] text-xs truncate mr-2">{formatModelName(model2Name)}</div>
+                  <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                    <motion.div 
+                      className="h-full bg-secondary rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${model2Percent}%` }}
+                      transition={{ duration: 0.5, delay: 0.2 }}
+                    />
+                  </div>
+                  <div className="w-10 text-xs text-right ml-2">{model2Percent}%</div>
+                </div>
               </div>
               
-              {/* Model labels */}
               <div className="flex justify-between text-sm">
                 <div className="flex items-center">
                   <div className="w-3 h-3 rounded-full bg-primary/80 mr-1.5"></div>
@@ -279,13 +300,17 @@ export function ModelDuel({
                 </div>
               </div>
               
-              {/* User's choice */}
+              {/* User's choice - updated to handle tie votes */}
               {userVote && (
                 <div className="mt-3 pt-3 border-t border-border/30 text-sm">
                   <div className="flex items-center justify-center text-muted-foreground">
                     <Sparkles className="h-3.5 w-3.5 mr-1.5 text-yellow-500" />
                     You voted for <span className="font-medium ml-1 text-foreground">
-                      {userVote === model1Id ? formatModelName(model1Name) : formatModelName(model2Name)}
+                      {userVote === 'tie' 
+                        ? "It\u2019s a tie" 
+                        : userVote === model1Id 
+                          ? formatModelName(model1Name) 
+                          : formatModelName(model2Name)}
                     </span>
                   </div>
                 </div>

@@ -25,6 +25,7 @@ export type ModelDuelStats = {
   challenge_id: string;
   model1_votes: number;
   model2_votes: number;
+  tie_votes: number;
   total_votes: number;
 };
 
@@ -98,6 +99,7 @@ export async function getModelDuelStats(
         challenge_id: challengeId || 'all',
         model1_votes: 0,
         model2_votes: 0,
+        tie_votes: 0,
         total_votes: 0
       };
     }
@@ -129,6 +131,7 @@ export async function getModelDuelStats(
         challenge_id: challengeId || 'all',
         model1_votes: 0,
         model2_votes: 0,
+        tie_votes: 0,
         total_votes: 0
       };
     }
@@ -136,9 +139,13 @@ export async function getModelDuelStats(
     // Count votes for each model
     let model1Votes = 0;
     let model2Votes = 0;
+    let tieVotes = 0;
     
     data.forEach((vote: { winner_id: string; model1_id: string; model2_id: string }) => {
-      if (vote.winner_id === model1Id) {
+      // Check for tie votes (now using 'tie' directly as winner_id)
+      if (vote.winner_id === 'tie' || vote.winner_id.includes(':tie')) {
+        tieVotes++;
+      } else if (vote.winner_id === model1Id) {
         model1Votes++;
       } else if (vote.winner_id === model2Id) {
         model2Votes++;
@@ -151,7 +158,8 @@ export async function getModelDuelStats(
       challenge_id: challengeId || 'all',
       model1_votes: model1Votes,
       model2_votes: model2Votes,
-      total_votes: model1Votes + model2Votes
+      tie_votes: tieVotes,
+      total_votes: model1Votes + model2Votes + tieVotes
     };
   } catch (error) {
     console.error('Error getting model duel stats:', error);
