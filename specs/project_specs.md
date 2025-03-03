@@ -1,7 +1,7 @@
 # RIVAL - Project Specification
 
 ## Project Overview
-"RIVAL" (formerly "RIVAL") is a next-generation web application built with Next.js and Tailwind CSS v4 that displays AI model capabilities in an immersive, interactive way. The application showcases various AI models (Grok 3, Claude Sonnet 3.7/3.5, GPT-4o, GPT-o3, GPT-o1, Anthropic Claude 3 Haiku/Opus, etc.) with their responses to one-shot prompts, displayed in dynamic, expandable canvases.
+"RIVAL" is a next-generation web application built with Next.js and Tailwind CSS v4 that displays AI model capabilities through interactive comparisons. The application showcases various AI models (Grok 3, Claude Sonnet 3.7/3.5, GPT-4o, GPT-o3, GPT-o1, Anthropic Claude 3 Haiku/Opus, etc.) with their responses to one-shot prompts, displayed in dynamic, expandable canvases.
 
 ## Design Philosophy
 - **Aesthetic**: Minimalist yet distinctive design with subtle retro-inspired elements, drawing from industry leaders like Framer, Rive, Vercel, Linear, Supabase, Webflow, Valorant, Arc, Raycast, and Spline
@@ -114,20 +114,33 @@
    - Modal-based model selection with spring physics animations ✅
    - Intelligent grouping of challenges based on available model responses ✅
 
+11. **AI Duels Voting System** 🆕
+   - Supabase-powered voting system for model comparisons
+   - Anonymous voting with browser fingerprinting to prevent duplicate votes
+   - Real-time vote recording and statistics calculation
+   - Model leaderboard based on win/loss records and win percentages
+   - Interactive voting UI with satisfying confirmation animations
+   - Secure database implementation with Row Level Security
+   - Aggregated view for model performance statistics
+   - Challenge-specific voting metrics to determine best performers by task
+   - Retro-inspired voting UI with subtle animation feedback
+
 ## Project Structure
 ```
 versus/
 ├── app/                  # Next.js app router
 │   ├── api/              # API routes
-│   ├── challenges/       # Challenge pages
-│   ├── models/           # Model pages
-│   │   └── [id]/         # Model detail pages
-│   │       └── responses/# Model response pages
-│   │           └── [responseId]/ # Response detail pages
-│   ├── comparisons/      # Comparison pages
-│   ├── compare/          # NEW: Interactive model comparison section
-│   ├── capabilities/     # Capability pages
-│   └── layout.tsx        # Root layout
+│   │   └── votes/        # API routes for voting system
+│   │       └── route.ts  # Route handler for vote submissions
+│   │   ├── challenges/       # Challenge pages
+│   │   ├── models/           # Model pages
+│   │   │   └── [id]/         # Model detail pages
+│   │   │       └── responses/# Model response pages
+│   │   │           └── [responseId]/ # Response detail pages
+│   │   ├── comparisons/      # Comparison pages
+│   │   ├── compare/          # NEW: Interactive model comparison section
+│   │   ├── capabilities/     # Capability pages
+│   │   └── layout.tsx        # Root layout
 ├── components/           # React components
 │   ├── ui/               # UI components
 │   ├── canvas/           # Canvas components
@@ -171,7 +184,13 @@ versus/
 │   │       ├── index.ts  # Exports all Grok 3 responses
 │   │       └── todo-app.ts # Individual response file
 │   ├── prompt-challenges.ts  # Challenge data structure
+│   ├── supabase/         # Supabase integration files
+│   │   ├── client.ts     # Supabase client initialization
+│   │   ├── schema.ts     # TypeScript types for database schema
+│   │   └── votes.ts      # Functions for vote operations
 │   └── utils.ts          # Utility functions
+├── migrations/           # Database migration files
+│   └── 20240726000000_model_duel_votes.sql  # Initial schema creation
 ├── public/               # Static assets
 │   ├── models/           # AI model SVG logos
 ├── styles/               # Global styles
@@ -241,6 +260,17 @@ versus/
    - Modal-based model selector with spring physics animations ✅
    - Responsive layout for mobile and desktop devices ✅
 
+9. **Leaderboard Page** 🆕
+   - Ranking of AI models based on user votes
+   - Performance statistics including wins, losses, and win percentages
+   - Filtering by model providers and challenge categories
+   - Performance trends with visual data representation
+   - Challenge-specific leaderboards to show best performers by task type
+   - Retro-inspired design with smooth animations and transitions
+   - Direct links to model duels for comparing top performers
+   - Interactive UI with real-time updates when new votes are cast
+   - Responsive design for mobile and desktop experiences
+
 ## Design Components
 1. **Header** ✅
    - Minimal navigation with hover-lift effect
@@ -292,6 +322,16 @@ versus/
    - Visual feedback for selected challenge ✅
    - Card-based challenge display with important metadata ✅
 
+9. **Voting UI** 🆕
+   - Interactive vote buttons with satisfying hover and click animations
+   - Vote confirmation animation with retro-inspired visual feedback
+   - Real-time results display with animated percentage bars
+   - Model performance statistics with visual data presentation
+   - Leaderboard card design with ranking indicators
+   - Vote history section for tracking previous votes
+   - Challenge-specific voting metrics display
+   - Responsive design adapting to different screen sizes
+
 ## Animation Strategy
 - Subtle hover effects with purposeful feedback ✅
 - Smooth transitions between canvas states using AnimatePresence ✅
@@ -331,6 +371,56 @@ versus/
 - Performance metrics logging for detailed debugging ✅
 - Memoized challenge filtering to prevent unnecessary recalculations ✅
 - Optimized modal rendering with proper cleanup ✅
+
+## Supabase Integration
+### Database Setup
+- Supabase project with environment variables in `.env.local`:
+  ```
+  NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+  NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+  ```
+
+### Database Schema
+1. **model_duel_votes Table**
+   - `id`: UUID (Primary Key with default gen_random_uuid())
+   - `created_at`: Timestamp with time zone (default now())
+   - `model1_id`: TEXT (NOT NULL) - First model in the comparison
+   - `model2_id`: TEXT (NOT NULL) - Second model in the comparison
+   - `challenge_id`: TEXT (NOT NULL) - Challenge being compared
+   - `winner_id`: TEXT (NOT NULL) - Model that received the vote
+   - `unique_voter_id`: TEXT (NOT NULL) - Anonymous identifier to prevent duplicate votes
+   - Constraints:
+     - `vote_model_pair`: Ensures model1_id ≠ model2_id
+     - `winner_is_valid`: Ensures winner_id is either model1_id or model2_id
+
+2. **Indexes**
+   - `idx_model_duel_votes_model_pair`: On (model1_id, model2_id) for faster lookups
+   - `idx_model_duel_votes_challenge`: On challenge_id
+   - `idx_model_duel_votes_unique_vote`: Unique index on (model1_id, model2_id, challenge_id, unique_voter_id) to prevent duplicate votes
+
+3. **Security**
+   - Row Level Security enabled
+   - Policies:
+     - "Allow anonymous inserts": Permits anonymous users to add votes
+     - "Allow public reads": Permits all users to read vote data
+     - No update or delete permissions for any user
+
+4. **model_duel_stats View**
+   - Provides aggregated statistics:
+     - `model_id`: The AI model identifier
+     - `wins`: Total number of times the model was voted as winner
+     - `losses`: Total number of times the model was voted against
+     - `win_percentage`: Calculated win rate as a percentage
+   - Automatically sorted by win_percentage DESC, wins DESC
+
+### AI Duels Feature Enhancement 🆕
+- Voting system for direct model comparison on challenges
+- Anonymous voting with duplicate prevention
+- User-driven ranking of model performance
+- Aggregated statistics of model performance across challenges
+- Interactive UI for casting votes
+- Real-time display of voting results and model rankings
+- Integration with existing Compare Page functionality
 
 ## Implementation Plan
 
@@ -383,6 +473,18 @@ versus/
 8. Implemented responsive design for mobile and desktop experiences ✅
 9. Added direct linking to model and challenge detail pages ✅
 10. Enhanced user experience with subtle loading indicators ✅
+
+### Phase 11: AI Duels and Voting System 🆕
+1. Set up Supabase integration for database functionality
+2. Create model_duel_votes table with necessary constraints and indexes
+3. Implement Row Level Security policies for secure anonymous voting
+4. Develop model_duel_stats view for aggregated performance metrics
+5. Design interactive voting UI with subtle retro-inspired elements
+6. Implement voting functionality in the compare page interface
+7. Add real-time results display with Framer-inspired animations
+8. Create leaderboard view for top-performing models
+9. Implement anonymous voter tracking with browser fingerprinting
+10. Add vote confirmation and success animations
 
 ## Current Progress
 - ✅ Project setup and structure established
@@ -446,6 +548,9 @@ versus/
 - ✅ Implemented smooth animations with Framer Motion for seamless transitions
 - ✅ Optimized memory usage with proper cleanup of animation states
 - 🔄 Continuing to enhance UI polish and interactions
+- 🔄 Implementing Supabase integration for AI Duels voting system
+- 🔄 Setting up database schema with model_duel_votes table and model_duel_stats view
+- 🔄 Developing interactive voting UI with retro-inspired design elements
 
 
 ## Animation Strategy
