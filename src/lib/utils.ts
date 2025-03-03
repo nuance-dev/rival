@@ -263,8 +263,6 @@ export function formatModelName(modelId: string): string {
     'mistral-small': 'Mistral Small',
     // Additional edge cases
     'deepseek-r1': 'DeepSeek R1',
-    // Gemini model special cases - ensure all variants are handled
-    'gemini-2-0-pro': 'Gemini 2.0 Pro'
   };
   
   // First, check for exact matches in our special cases
