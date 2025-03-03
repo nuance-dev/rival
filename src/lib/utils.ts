@@ -217,118 +217,65 @@ export function getModelLogoPath(modelId: string, provider?: string): string {
 export function formatModelName(modelId: string): string {
   if (!modelId) return "Unknown Model";
   
-  // Normalize model ID to lowercase for consistent matching
-  const normalizedId = modelId.toLowerCase();
-  
-  // Expanded special cases map with more model variants
-  const specialCases: Record<string, string> = {
-    'o1': 'o1',
-    'o1-preview': 'o1 Preview',
-    'o1-mini': 'o1 Mini',
-    'o3': 'o3',
-    'o3-mini': 'o3 Mini', // Ensure o3-mini is correctly shown as o3 Mini
-    'gpt-o3-mini': 'o3 Mini', // Handle the canonical form too
-    'r1': 'r1',
-    'gpt-4o': 'GPT-4o',
-    'gpt4o': 'GPT-4o',
-    'gpt-o3': 'o3',
-    'gpt-o1': 'o1',
-    'gpt-4-vision': 'GPT-4 Vision',
-    'gpt-4-turbo': 'GPT-4 Turbo',
-    'gpt-4': 'GPT-4',
-    'gpt-4-5': 'GPT-4.5',
-    'gpt-4.5': 'GPT-4.5',
-    'gpt4.5': 'GPT-4.5',
-    'gpt45': 'GPT-4.5',
-    'gpt-3.5-turbo': 'GPT-3.5 Turbo',
-    'gpt-3.5': 'GPT-3.5',
-    'claude-3-7-sonnet': 'Claude 3.7 Sonnet',
-    'claude-3-5-sonnet': 'Claude Sonnet 3.6 (2022-10-22)',
-    'claude-3-haiku': 'Claude 3 Haiku',
-    'claude-3-opus': 'Claude 3 Opus',
-    'claude-3-sonnet': 'Claude 3 Sonnet',
-    'claude35': 'Claude 3.5',
-    'claude37': 'Claude 3.7',
-    'llama-3': 'Llama 3',
-    'gemini-1-5-pro': 'Gemini 1.5 Pro',
-    'gemini-1-5-flash': 'Gemini 1.5 Flash',
-    'gemini-2-0-pro': 'Gemini 2.0 Pro',
-    'gemini-2-0-flash': 'Gemini 2.0 Flash',
-    'gemini-2-0-flash-thinking-exp': 'Gemini 2.0 Flash Thinking Exp',
-    'gemini-2-0-pro-exp': 'Gemini 2.0 Pro Exp',
-    'gemini-2-0-pro-thinking-exp': 'Gemini 2.0 Pro Thinking Exp',
-    'gemma-1-5': 'Gemma 1.5',
-    'mistral-large': 'Mistral Large',
-    'mistral-medium': 'Mistral Medium',
-    'mistral-small': 'Mistral Small',
-    // Additional edge cases
-    'deepseek-r1': 'DeepSeek R1',
+  // Static mapping for specific model IDs
+  const modelMapping: Record<string, string> = {
+    "gpt-4o": "GPT-4o",
+    "gpt-4": "GPT-4",
+    "gpt-3.5-turbo": "GPT-3.5 Turbo",
+    "gpt-4.5": "GPT-4.5",
+    "grok-1": "Grok 1",
+    "grok-1.5": "Grok 1.5",
+    "grok-2": "Grok 2",
+    "grok-3": "Grok 3",
+    "grok-3-thinking": "Grok 3 Thinking",
+    "claude-3-opus": "Claude 3 Opus",
+    "claude-3-sonnet": "Claude 3 Sonnet",
+    "claude-3-haiku": "Claude 3 Haiku",
+    "claude-3.5-sonnet": "Claude 3.5 Sonnet",
+    "claude-3.7-sonnet": "Claude 3.7 Sonnet",
+    "claude-3.7-thinking-sonnet": "Claude 3.7 Thinking Sonnet",
+    "claude-3.7-haiku": "Claude 3.7 Haiku",
+    "claude-2": "Claude 2",
+    "claude-instant": "Claude Instant",
+    "gemini-pro": "Gemini Pro",
+    "gemini-1.5-pro": "Gemini 1.5 Pro",
+    "gemini-2.0-pro": "Gemini 2.0 Pro",
+    "gemini-2.0-pro-exp": "Gemini 2.0 Pro",
+    "gemini-2.0-flash-thinking-exp": "Gemini 2.0 Flash Thinking",
+    "llama-2-7b": "Llama 2 (7B)",
+    "llama-2-13b": "Llama 2 (13B)",
+    "llama-2-70b": "Llama 2 (70B)",
+    "llama-3-8b": "Llama 3 (8B)",
+    "llama-3-70b": "Llama 3 (70B)",
+    "mistral-7b": "Mistral (7B)",
+    "mixtral-8x7b": "Mixtral (8x7B)",
+    "command-r": "Command R",
+    "claude-3": "Claude 3",
+    "palm-2": "PaLM 2",
+    "deepseek-r1": "DeepSeek R1",
+    "o1": "o1",
+    "o1-preview": "o1 Preview",
+    "o1-mini": "o1 Mini",
+    "o3-mini": "o3 Mini"
   };
-  
-  // First, check for exact matches in our special cases
-  if (specialCases[normalizedId]) {
-    return specialCases[normalizedId];
+
+  // Check for direct matches in the mapping
+  if (modelMapping[modelId]) {
+    return modelMapping[modelId];
   }
   
-  // Special handling for Gemini models to ensure correct versioning
-  if (normalizedId.includes('gemini')) {
-    // Extract version numbers properly
-    const geminiMatch = normalizedId.match(/gemini-?(\d+)(?:-?(\d+))?-?([a-z-]+)?/i);
-    if (geminiMatch) {
-      const majorVersion = geminiMatch[1] || '';
-      const minorVersion = geminiMatch[2] || '';
-      let variant = geminiMatch[3] || '';
+  // Handle models with suffixes like -vision, -preview, etc.
+  for (const [baseId, baseName] of Object.entries(modelMapping)) {
+    if (modelId.startsWith(baseId + "-")) {
+      const suffix = modelId.substring(baseId.length + 1);
       
-      // Format the variant part (pro, flash, etc.)
-      if (variant) {
-        variant = variant
-          .split('-')
-          .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-          .join(' ');
-      }
+      // Format the suffix: capitalize first letter of each word, convert hyphens to spaces
+      const formattedSuffix = suffix
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
       
-      // Construct the full model name with proper version formatting
-      let formattedName = 'Gemini';
-      
-      // Special case for Gemini 2.0
-      if (majorVersion === '2' || majorVersion === '20') {
-        formattedName += ' 2.0';
-      } else if (majorVersion && minorVersion) {
-        formattedName += ` ${majorVersion}.${minorVersion}`;
-      } else if (majorVersion) {
-        formattedName += ` ${majorVersion}`;
-      }
-      
-      if (variant) {
-        formattedName += ` ${variant}`;
-      }
-      
-      return formattedName;
-    }
-  }
-  
-  // If no exact match, check for partial matches using normalized ID
-  for (const [key, value] of Object.entries(specialCases)) {
-    // For model variants like o1-mini, ensure we prioritize the most specific match
-    // This helps prevent o3-mini being matched as just o3
-    if (normalizedId === key || normalizedId.startsWith(key + '-')) {
-      // If it's an exact match OR it's a variant (with a hyphen), return the value
-      if (normalizedId === key) {
-        return value;
-      }
-      
-      // For variants, extract the suffix and append it
-      const suffix = normalizedId.slice(key.length);
-      if (suffix.startsWith('-') && suffix.length > 1) {
-        // Capitalize the suffix and append it
-        const formattedSuffix = suffix
-          .slice(1) // Remove the hyphen
-          .split('-')
-          .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-          .join(' ');
-        
-        return `${value} ${formattedSuffix}`;
-      }
+      return `${baseName} ${formattedSuffix}`;
     }
   }
   
@@ -354,52 +301,15 @@ export function formatModelName(modelId: string): string {
         }
       }
       
-      // Handle parts with version numbers
-      if (/\d/.test(part)) {
-        // Preserve numbers and only add spaces between letters and numbers
-        const formattedChars = [];
-        for (let i = 0; i < part.length; i++) {
-          const char = part.charAt(i);
-          
-          // Add the character
-          if (i === 0) {
-            formattedChars.push(char.toUpperCase());
-          } else {
-            formattedChars.push(char);
-          }
-          
-          // Only add a space between a letter and a number
-          if (i < part.length - 1) {
-            const nextChar = part.charAt(i + 1);
-            const isCurrentLetter = /[a-zA-Z]/.test(char);
-            const isNextNumber = /[0-9]/.test(nextChar);
-            const isCurrentNumber = /[0-9]/.test(char);
-            const isNextLetter = /[a-zA-Z]/.test(nextChar);
-            
-            // Add space only when transitioning between letter and number
-            if ((isCurrentLetter && isNextNumber) || (isCurrentNumber && isNextLetter)) {
-              formattedChars.push(' ');
-            }
-            
-            // Never add space around decimal points
-            if (nextChar === '.' || char === '.') {
-              formattedChars.pop(); // Remove any space we might have added
-            }
-          }
-        }
-        
-        return formattedChars.join('');
+      // Special case for letter+number combinations like o3
+      if (/^[a-z]\d+$/i.test(part)) {
+        return part.toLowerCase(); // Keep as is
       }
       
-      // Regular word capitalization
+      // Capitalize first letter
       return part.charAt(0).toUpperCase() + part.slice(1);
     })
-    .join(' ')
-    // Fix common formatting issues
-    .replace(/Gpt/g, 'GPT')
-    .replace(/Llm/g, 'LLM')
-    .replace(/Ai/g, 'AI')
-    .trim();
+    .join(' ');
 }
 
 /**
