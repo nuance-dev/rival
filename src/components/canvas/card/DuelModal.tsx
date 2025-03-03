@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, ExternalLink, Swords, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { AlertCircle, ExternalLink, Swords, X, ChevronLeft, ChevronDown } from 'lucide-react';
 import { 
   ModelDuelStats, 
   generateVoterId, 
@@ -342,7 +342,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
                 {isMobile ? (
                   <div className="flex flex-col h-full">
                     {/* Tab indicators */}
-                    <div className="flex border-b border-border bg-muted/5">
+                    <div className="flex border-b border-border bg-muted/5 sticky top-0 z-10">
                       <button
                         className={`flex-1 flex items-center justify-center gap-2 p-3 text-sm font-medium transition-colors ${
                           activeTab === 'model1' 
@@ -366,43 +366,30 @@ export const DuelModal: React.FC<DuelModalProps> = ({
                         {formatModelName(selectedModel || '')}
                       </button>
                     </div>
-                    
-                    {/* Content area with guaranteed height */}
-                    <div className="flex-1 overflow-hidden" style={{ height: "calc(100vh - 340px)", minHeight: "300px", position: "relative" }}>
-                      {activeTab === 'model1' && (
-                        <div className="absolute inset-0 overflow-y-auto p-4 pb-14">
+
+                    {/* Simple scrollable content */}
+                    <div className="h-[50vh] overflow-auto" style={{ maxHeight: "calc(100vh - 280px)" }}>
+                      {activeTab === 'model1' ? (
+                        <div className="p-4">
                           <CardContent 
                             output={currentOutput}
                             expanded={false}
                           />
                         </div>
-                      )}
-                      
-                      {activeTab === 'model2' && (
-                        <div className="absolute inset-0 overflow-y-auto p-4 pb-14">
+                      ) : (
+                        <div className="p-4">
                           <CardContent 
                             output={selectedModelOutput}
                             expanded={false}
                           />
                         </div>
                       )}
-                      
-                      {/* Navigation buttons - positioned at bottom with padding to ensure visibility */}
-                      <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-2 z-10 p-2 bg-gradient-to-t from-background/70 to-transparent pt-6">
-                        <button
-                          className="p-2 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 hover:bg-primary/5 transition-colors shadow-md"
-                          onClick={() => setActiveTab('model1')}
-                          disabled={activeTab === 'model1'}
-                        >
-                          <ChevronLeft className="h-4 w-4" />
-                        </button>
-                        <button
-                          className="p-2 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 hover:bg-primary/5 transition-colors shadow-md"
-                          onClick={() => setActiveTab('model2')}
-                          disabled={activeTab === 'model2'}
-                        >
-                          <ChevronRight className="h-4 w-4" />
-                        </button>
+                    </div>
+                    
+                    {/* Indicator for scrolling */}
+                    <div className="py-2 flex justify-center text-xs text-muted-foreground">
+                      <div className="animate-bounce flex items-center">
+                        Scroll to see more <ChevronDown className="h-3 w-3 ml-1" />
                       </div>
                     </div>
                   </div>

@@ -15,6 +15,7 @@ import { sortOutputs } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import VirtualizedMasonryGrid from "@/components/canvas/VirtualizedMasonryGrid";
+import { MobileFilterDropdown } from "@/components/canvas/MobileFilterDropdown";
 
 // Helper function to convert ModelResponse to ModelOutput format
 const convertModelResponseToOutput = (response: ModelResponse): ModelOutput & { challengeId?: string } => {
@@ -437,9 +438,10 @@ export default function Home() {
           className={`relative md:sticky md:top-[56px] z-20 py-2 backdrop-blur-lg bg-background/80 border-y transition-all duration-300 -mt-4 ${expandedId ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
         >
           <div className="container">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-y-3">
+            {/* Desktop view */}
+            <div className="hidden md:flex md:flex-row md:items-center md:justify-between">
               {/* Category Filter Buttons */}
-              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 md:py-0 w-full md:w-auto pb-2 md:pb-0">
+              <div className="flex items-center gap-2 py-0 w-auto">
                 <button
                   onClick={() => handleCategoryChange(null)}
                   className={`h-8 px-4 rounded-full text-sm whitespace-nowrap transition-colors hover-lift ${!activeCategory ? 'bg-primary text-primary-foreground shimmer' : 'bg-muted/50 hover:bg-muted'}`}
@@ -471,7 +473,18 @@ export default function Home() {
               <SortingControl 
                 currentSort={sortOption} 
                 onSortChange={handleSortChange}
-                className="ml-0 md:ml-auto"
+                className="ml-auto"
+              />
+            </div>
+            
+            {/* Mobile view with dropdown */}
+            <div className="md:hidden">
+              <MobileFilterDropdown 
+                categories={categories}
+                activeCategory={activeCategory}
+                onCategoryChange={handleCategoryChange}
+                sortOption={sortOption}
+                onSortChange={handleSortChange}
               />
             </div>
           </div>

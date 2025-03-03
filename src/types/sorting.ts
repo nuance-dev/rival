@@ -1,0 +1,1 @@
+export type SortingOption = 'chaotic' | 'latest' | 'type'; 
