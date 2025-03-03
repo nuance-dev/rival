@@ -210,7 +210,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm" onClick={onClose}>
       <motion.div 
-        className="bg-card border border-border rounded-xl shadow-lg w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
+        className="bg-card border border-border rounded-xl shadow-lg w-full max-w-5xl h-[90vh] md:h-[85vh] overflow-hidden flex flex-col"
         onClick={e => e.stopPropagation()}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -324,7 +324,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
               )}
               
               {/* Duel content */}
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+              <div className="flex-1 flex flex-col md:grid md:grid-cols-2 overflow-hidden">
                 {/* Current model response */}
                 <div className="flex flex-col overflow-hidden border-b md:border-b-0 md:border-r border-border">
                   <div className="flex items-center justify-center gap-2 p-4 border-b border-border bg-muted/5">
