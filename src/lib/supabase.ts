@@ -28,13 +28,42 @@ export type ModelDuelStats = {
   total_votes: number;
 };
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Create a mock Supabase client for SSR/SSG when credentials are missing
+const createMockClient = () => {
+  return {
+    from: () => ({
+      insert: () => Promise.resolve({ data: null, error: new Error('Supabase credentials missing') }),
+      select: () => ({
+        eq: () => ({
+          or: () => ({
+            or: () => Promise.resolve({ data: [], error: null })
+          })
+        }),
+        or: () => ({
+          or: () => Promise.resolve({ data: [], error: null })
+        })
+      })
+    }),
+    // Add any other methods that might be used
+  };
+};
+
+// Create the client or a mock client if credentials are missing
+export const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : (createMockClient() as unknown) as ReturnType<typeof createClient>;
 
 /**
  * Records a vote in a model duel
  */
 export async function recordModelDuelVote(vote: Omit<ModelDuelVote, 'id' | 'created_at'>) {
   try {
+    // Early return if Supabase is not properly initialized
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.warn('Cannot record vote: Supabase credentials missing');
+      return { success: false, error: new Error('Supabase credentials missing') };
+    }
+
     const { data, error } = await supabase
       .from('model_duel_votes')
       .insert([vote]);
@@ -60,6 +89,19 @@ export async function getModelDuelStats(
   challengeId?: string
 ): Promise<ModelDuelStats | null> {
   try {
+    // Early return dummy stats if Supabase is not properly initialized
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.warn('Cannot get stats: Supabase credentials missing');
+      return {
+        model1_id: model1Id,
+        model2_id: model2Id,
+        challenge_id: challengeId || 'all',
+        model1_votes: 0,
+        model2_votes: 0,
+        total_votes: 0
+      };
+    }
+
     let query = supabase
       .from('model_duel_votes')
       .select('model1_id, model2_id, challenge_id, winner_id');

@@ -162,10 +162,11 @@ export default function Home() {
   }, []);
   
   // Apply sorting based on the selected sort option
-  const chaoticDependency = sortOption === 'chaotic' ? randomKey : undefined;
+  const chaoticSortKey = sortOption === 'chaotic' ? randomKey : undefined;
   const sortedModelOutputs = useMemo(() => {
     return sortOutputs(allModelOutputs, sortOption);
-  }, [allModelOutputs, sortOption, chaoticDependency]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allModelOutputs, sortOption, chaoticSortKey]);
   
   // Filter outputs based on active category
   const filteredModelOutputs = useMemo(() => {
