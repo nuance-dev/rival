@@ -52,9 +52,6 @@ const convertModelResponseToOutput = (response: ModelResponse): ModelOutput & { 
   
   // Remove duplicates
   inferredCategories = [...new Set(inferredCategories)];
-  
-  // Enhanced debug logging for challenge ID extraction
-  console.debug(`[Processing Response] ${response.id} - ${response.title}`);
 
   // Improved challenge ID extraction with multiple strategies
   let challengeId = '';
@@ -94,15 +91,6 @@ const convertModelResponseToOutput = (response: ModelResponse): ModelOutput & { 
       .replace(/\s+/g, '-')     // Replace spaces with hyphens
       .substring(0, 30);        // Keep it reasonable length
   }
-  
-  // Enhanced debug logging for challenge extraction
-  console.debug(`[ChallengeID Extraction] Response ID: ${response.id}`, {
-    originalChallengeId: response.challengeId,
-    modelId: response.modelId,
-    extractedChallengeId: challengeId,
-    idStartsWithModelId: response.id.startsWith(response.modelId),
-    idContainsHyphen: response.id.includes('-')
-  });
   
   // Keep original ethics debug info
   if (response.title.toLowerCase().includes('ethics') || response.description?.toLowerCase().includes('ethics')) {

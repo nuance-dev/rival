@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, ExternalLink, Swords, X, ChevronLeft } from 'lucide-react';
+import { AlertCircle, ExternalLink, Swords, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { 
   ModelDuelStats, 
   generateVoterId, 
@@ -44,6 +44,19 @@ export const DuelModal: React.FC<DuelModalProps> = ({
   const [userVote, setUserVote] = useState<string | null>(null);
   const [voterId] = useState(() => generateVoterId());
   const [voteAnimation, setVoteAnimation] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'model1' | 'model2'>('model1');
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Check if we're on mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
   // Close on escape key
   useEffect(() => {
@@ -325,37 +338,108 @@ export const DuelModal: React.FC<DuelModalProps> = ({
               
               {/* Duel content */}
               <div className="flex-1 grid grid-cols-1 md:grid-cols-2 overflow-hidden">
-                {/* Current model response */}
-                <div className="flex flex-col overflow-hidden border-b md:border-b-0 md:border-r border-border">
-                  <div className="flex items-center justify-center gap-2 p-4 border-b border-border bg-muted/5">
-                    <ModelIcon modelId={currentOutput.modelId || ''} className="w-5 h-5" />
-                    <span className="font-medium">
-                      {formatModelName(currentOutput.modelId || '')}
-                    </span>
+                {/* Mobile tabbed interface */}
+                {isMobile ? (
+                  <div className="flex flex-col h-full">
+                    {/* Tab indicators */}
+                    <div className="flex border-b border-border bg-muted/5">
+                      <button
+                        className={`flex-1 flex items-center justify-center gap-2 p-3 text-sm font-medium transition-colors ${
+                          activeTab === 'model1' 
+                            ? 'text-primary border-b-2 border-primary' 
+                            : 'text-muted-foreground'
+                        }`}
+                        onClick={() => setActiveTab('model1')}
+                      >
+                        <ModelIcon modelId={currentOutput.modelId || ''} className="w-4 h-4" />
+                        {formatModelName(currentOutput.modelId || '')}
+                      </button>
+                      <button
+                        className={`flex-1 flex items-center justify-center gap-2 p-3 text-sm font-medium transition-colors ${
+                          activeTab === 'model2' 
+                            ? 'text-primary border-b-2 border-primary' 
+                            : 'text-muted-foreground'
+                        }`}
+                        onClick={() => setActiveTab('model2')}
+                      >
+                        <ModelIcon modelId={selectedModel || ''} className="w-4 h-4" />
+                        {formatModelName(selectedModel || '')}
+                      </button>
+                    </div>
+                    
+                    {/* Content area with guaranteed height */}
+                    <div className="flex-1 overflow-hidden" style={{ height: "calc(100vh - 340px)", minHeight: "300px", position: "relative" }}>
+                      {activeTab === 'model1' && (
+                        <div className="absolute inset-0 overflow-y-auto p-4 pb-14">
+                          <CardContent 
+                            output={currentOutput}
+                            expanded={false}
+                          />
+                        </div>
+                      )}
+                      
+                      {activeTab === 'model2' && (
+                        <div className="absolute inset-0 overflow-y-auto p-4 pb-14">
+                          <CardContent 
+                            output={selectedModelOutput}
+                            expanded={false}
+                          />
+                        </div>
+                      )}
+                      
+                      {/* Navigation buttons - positioned at bottom with padding to ensure visibility */}
+                      <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-2 z-10 p-2 bg-gradient-to-t from-background/70 to-transparent pt-6">
+                        <button
+                          className="p-2 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 hover:bg-primary/5 transition-colors shadow-md"
+                          onClick={() => setActiveTab('model1')}
+                          disabled={activeTab === 'model1'}
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                        </button>
+                        <button
+                          className="p-2 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 hover:bg-primary/5 transition-colors shadow-md"
+                          onClick={() => setActiveTab('model2')}
+                          disabled={activeTab === 'model2'}
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1 overflow-auto p-4">
-                    <CardContent 
-                      output={currentOutput}
-                      expanded={false}
-                    />
-                  </div>
-                </div>
-                
-                {/* Selected model response */}
-                <div className="flex flex-col overflow-hidden">
-                  <div className="flex items-center justify-center gap-2 p-4 border-b border-border bg-muted/5">
-                    <ModelIcon modelId={selectedModel || ''} className="w-5 h-5" />
-                    <span className="font-medium">
-                      {formatModelName(selectedModel || '')}
-                    </span>
-                  </div>
-                  <div className="flex-1 overflow-auto p-4">
-                    <CardContent 
-                      output={selectedModelOutput}
-                      expanded={false}
-                    />
-                  </div>
-                </div>
+                ) : (
+                  <>
+                    {/* Desktop side-by-side view */}
+                    <div className="flex flex-col overflow-hidden border-b md:border-b-0 md:border-r border-border">
+                      <div className="flex items-center justify-center gap-2 p-4 border-b border-border bg-muted/5">
+                        <ModelIcon modelId={currentOutput.modelId || ''} className="w-5 h-5" />
+                        <span className="font-medium">
+                          {formatModelName(currentOutput.modelId || '')}
+                        </span>
+                      </div>
+                      <div className="flex-1 overflow-auto p-4">
+                        <CardContent 
+                          output={currentOutput}
+                          expanded={false}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col overflow-hidden">
+                      <div className="flex items-center justify-center gap-2 p-4 border-b border-border bg-muted/5">
+                        <ModelIcon modelId={selectedModel || ''} className="w-5 h-5" />
+                        <span className="font-medium">
+                          {formatModelName(selectedModel || '')}
+                        </span>
+                      </div>
+                      <div className="flex-1 overflow-auto p-4">
+                        <CardContent 
+                          output={selectedModelOutput}
+                          expanded={false}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
               
               {/* Voting footer */}
@@ -391,7 +475,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
                   
                   {/* Tie option */}
                   <motion.button
-                    className="relative flex flex-col items-center justify-center py-4 px-4 rounded-lg border border-border/50 bg-card/50 hover:bg-primary/5 hover:border-primary/30 transition-colors"
+                    className="relative flex flex-col items-center justify-center py-4 px-4 rounded-lg border border-border/50 bg-card/50 hover:bg-amber-500/5 hover:border-amber-500/30 transition-colors"
                     onClick={() => handleVote("tie")}
                     disabled={!!userVote}
                     whileHover={{ y: -2 }}
@@ -407,7 +491,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
                     
                     {voteAnimation === "tie" && (
                       <motion.div
-                        className="absolute inset-0 rounded-lg border-2 border-primary"
+                        className="absolute inset-0 rounded-lg border-2 border-amber-500"
                         initial={{ opacity: 0, scale: 1.1 }}
                         animate={{ opacity: [0, 1, 0], scale: [1.1, 1.05, 1.2] }}
                         transition={{ duration: 0.6, ease: "easeOut" }}

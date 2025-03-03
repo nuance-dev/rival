@@ -3,8 +3,8 @@ import CardHeader from "./CardHeader";
 import CardContent from "./CardContent";
 import { ModelOutput } from "@/types/models";
 import { ChevronDown, MessageSquare, ExternalLink, Swords } from "lucide-react";
-import ModelIcon from "../ModelIcon";
-import FunFactTooltip from "../FunFactTooltip";
+import ModelIcon from "@/components/canvas/ModelIcon";
+import FunFactTooltip from "@/components/canvas/FunFactTooltip";
 import { formatModelName } from "@/lib/utils";
 import DuelModal from "./DuelModal";
 
