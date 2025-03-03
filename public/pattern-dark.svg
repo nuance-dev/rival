@@ -1,0 +1,10 @@
+<svg width="302" height="302" viewBox="0 0 302 302" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 101H301" stroke="#AAAAAA" stroke-opacity="0.25" stroke-width="1"/>
+<path d="M1 1H301" stroke="#AAAAAA" stroke-opacity="0.25" stroke-width="1"/>
+<path d="M1 201H301" stroke="#AAAAAA" stroke-opacity="0.25" stroke-width="1"/>
+<path d="M1 301H301" stroke="#AAAAAA" stroke-opacity="0.25" stroke-width="1"/>
+<path d="M101 1L101 301" stroke="#AAAAAA" stroke-opacity="0.25" stroke-width="1"/>
+<path d="M1 1L0.999987 301" stroke="#AAAAAA" stroke-opacity="0.25" stroke-width="1"/>
+<path d="M301 1L301 301" stroke="#AAAAAA" stroke-opacity="0.25" stroke-width="1"/>
+<path d="M201 1L201 301" stroke="#AAAAAA" stroke-opacity="0.25" stroke-width="1"/>
+</svg> 

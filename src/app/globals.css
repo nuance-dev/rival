@@ -1,0 +1,730 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Remove default disclosure triangle from details elements */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Jacquard 24 font is loaded from Google Fonts via layout.tsx head */
+.jacquard-24-regular {
+  font-family: "Jacquard 24", serif;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.03em;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  transition: text-shadow 0.3s ease;
+}
+
+/* Add a subtle pixel glow effect on hover */
+a:hover .jacquard-24-regular, 
+button:hover .jacquard-24-regular,
+.jacquard-24-regular:hover {
+  text-shadow: 0 0 1px currentColor;
+}
+
+.dark a:hover .jacquard-24-regular,
+.dark button:hover .jacquard-24-regular,
+.dark .jacquard-24-regular:hover {
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Pixel aesthetic for decorative elements - inspired by Jacquard's retro look */
+.pixel-edge {
+  position: relative;
+}
+
+.pixel-edge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: transparent;
+  box-shadow: 
+    1px 0 0 0 currentColor, 
+    -1px 0 0 0 currentColor, 
+    0 1px 0 0 currentColor, 
+    0 -1px 0 0 currentColor;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.pixel-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid;
+  border-color: currentColor;
+  opacity: 0.1;
+  clip-path: polygon(
+    0 5px, 5px 5px, 5px 0, calc(100% - 5px) 0, calc(100% - 5px) 5px, 100% 5px,
+    100% calc(100% - 5px), calc(100% - 5px) calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%,
+    5px calc(100% - 5px), 0 calc(100% - 5px)
+  );
+  pointer-events: none;
+}
+
+/* CRT Scan Lines Effect - subtle retro vibe */
+.crt-scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.01) 50%,
+    transparent 100%
+  );
+  background-size: 100% 2px;
+  pointer-events: none;
+  opacity: 0.3;
+  z-index: 2;
+}
+
+.dark .crt-scanlines::after {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.01) 50%,
+    transparent 100%
+  );
+  opacity: 0.2;
+}
+
+/* Retro Glow Effect */
+.retro-glow {
+  position: relative;
+}
+
+.retro-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0.05;
+  filter: blur(12px);
+  z-index: -1;
+}
+
+.dark .retro-glow::before {
+  opacity: 0.15;
+  filter: blur(15px);
+}
+
+/* Retro Terminal Blink */
+@keyframes cursor-blink {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.cursor-blink::after {
+  content: '|';
+  margin-left: 0.15em;
+  opacity: 0;
+  animation: cursor-blink 1.2s infinite;
+}
+
+/* VHS Distortion Effect - extremely subtle by default */
+.vhs-distortion {
+  position: relative;
+  overflow: hidden;
+}
+
+.vhs-distortion::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.02) 50%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.vhs-distortion:hover::before {
+  opacity: 0.3;
+  animation: vhs-drift 2s infinite alternate;
+}
+
+@keyframes vhs-drift {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(0.5px); }
+}
+
+/* Skeleton Loading Shimmer Effect */
+.shimmer-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.1) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer-loading 2s infinite;
+  pointer-events: none;
+}
+
+.dark .shimmer-loading::after {
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.03) 20%,
+    rgba(255, 255, 255, 0.06) 60%,
+    rgba(255, 255, 255, 0)
+  );
+}
+
+@keyframes shimmer-loading {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Pixel-perfect borders */
+.pixel-perfect {
+  image-rendering: pixelated;
+  position: relative;
+}
+
+.pixel-perfect::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 0 1px currentColor;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
+    
+    /* New retro-inspired colors */
+    --retro-primary: 260 100% 60%;
+    --retro-secondary: 180 100% 50%;
+    --retro-accent: 320 100% 65%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    
+    /* Retro colors for dark mode */
+    --retro-primary: 260 80% 65%;
+    --retro-secondary: 180 90% 55%;
+    --retro-accent: 320 90% 70%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-[hsl(var(--border))];
+  }
+  
+  body {
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))] antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Apply Jacquard 24 to headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Jacquard 24", serif;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))];
+  }
+  
+  /* New retro-inspired gradients */
+  .retro-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--retro-primary))] via-[hsl(var(--retro-secondary))] to-[hsl(var(--retro-accent))];
+  }
+  
+  .retro-bg-gradient {
+    @apply bg-gradient-to-br from-[hsl(var(--retro-primary)/0.1)] via-[hsl(var(--retro-secondary)/0.05)] to-[hsl(var(--retro-accent)/0.1)];
+  }
+
+  /* Pattern background */
+  .pattern-background {
+    background-image: url('/pattern.svg');
+    background-repeat: repeat;
+    background-size: 100px;
+    opacity: 0.15;
+    mix-blend-mode: multiply;
+  }
+
+  .dark .pattern-background {
+    background-image: url('/pattern-dark.svg');
+    opacity: 0.3;
+    mix-blend-mode: screen;
+  }
+  
+  /* Grid pattern background - retro style */
+  .grid-background {
+    background-image: 
+      linear-gradient(to right, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  .dark .grid-background {
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  }
+
+  /* Light shimmer animation - more subtle */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      to bottom right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.03) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(30deg);
+    animation: shimmer 12s linear infinite;
+  }
+
+  .dark .shimmer::after {
+    background: linear-gradient(
+      to bottom right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.03) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+  
+  /* Enhanced shimmer effect with retro vibe */
+  .retro-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .retro-shimmer::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: linear-gradient(
+      to bottom right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.03) 25%,
+      rgba(138, 43, 226, 0.02) 50%,
+      rgba(0, 255, 255, 0.03) 75%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(30deg);
+    animation: retro-shimmer 16s linear infinite;
+  }
+  
+  @keyframes retro-shimmer {
+    0% {
+      transform: translateX(-100%) rotate(30deg);
+    }
+    100% {
+      transform: translateX(100%) rotate(30deg);
+    }
+  }
+
+  /* Subtle background shimmer */
+  .bg-shimmer {
+    position: relative;
+  }
+  
+  .bg-shimmer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      45deg,
+      transparent 0%,
+      rgba(var(--foreground-rgb), 0.005) 50%,
+      transparent 100%
+    );
+    opacity: 0.2;
+    animation: bg-shimmer 20s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%) rotate(30deg);
+    }
+    100% {
+      transform: translateX(100%) rotate(30deg);
+    }
+  }
+  
+  @keyframes bg-shimmer {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 200% 200%;
+    }
+  }
+  
+  /* Framer-inspired hover effect */
+  .hover-lift {
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+  
+  /* Framer-inspired card hover effect */
+  .card-hover {
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  }
+  
+  .dark .card-hover:hover {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Animations and effects */
+.saturate-0 {
+  filter: saturate(0);
+}
+
+.saturate-50 {
+  filter: saturate(0.5);
+}
+
+.blur-xs {
+  filter: blur(1px);
+}
+
+.blur-sm {
+  filter: blur(4px);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .glass {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Framer-inspired glass */
+.framer-glass {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
+  transform: translateZ(0); 
+  backface-visibility: hidden;
+}
+
+.dark .framer-glass {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+}
+
+.framer-glass:hover {
+  box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+.dark .framer-glass:hover {
+  box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.4);
+}
+
+/* Scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* For WebKit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Expanded card portal styling */
+.portal-expanded-card {
+  position: relative !important;
+  margin: auto !important;
+  width: 100% !important;
+  max-width: 90vw !important;
+  max-height: 90vh !important;
+  z-index: 100 !important;
+  transform: translate3d(0, -20px, 0) scale(1.05) !important;
+  animation: card-lift-and-grow 0.4s cubic-bezier(0.2, 0.7, 0.2, 1.1) forwards;
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.4) !important;
+  pointer-events: auto !important;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* Container for expanded cards - ensure proper stacking */
+#expanded-card-container {
+  isolation: isolate;
+  pointer-events: none;
+}
+
+/* Expansion backdrop */
+#expansion-backdrop {
+  isolation: isolate;
+  z-index: 40;
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: opacity 0.3s ease-in-out;
+  pointer-events: auto;
+  animation: backdrop-fade 0.3s ease-out forwards;
+  will-change: opacity;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#expansion-backdrop.fade-out {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Card wrapper styling for animations and interaction */
+.card-wrapper {
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.3s ease;
+  will-change: transform;
+}
+
+.card-wrapper:hover {
+  transform: translateY(-8px);
+}
+
+.card-wrapper.card-clicked {
+  transform: scale(1.05) translateY(-10px);
+  opacity: 0.9;
+}
+
+/* Animation for the card pop effect */
+@keyframes card-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Animation for the card lift and grow effect */
+@keyframes card-lift-and-grow {
+  0% {
+    opacity: 0.9;
+    transform: scale(1) translateY(0);
+    box-shadow: 0 10px 25px -12px rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translate3d(0, -15px, 0) scale(1.03);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, -20px, 0) scale(1.05);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* Animation for backdrop fade in */
+@keyframes backdrop-fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Mobile touch optimizations */
+@media (max-width: 768px) {
+  /* Larger touch targets for better mobile UX */
+  button, a {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  /* Proper spacing for cards on mobile */
+  .grid {
+    gap: 1rem !important;
+  }
+  
+  /* Remove hover effects that may cause confusion on touch devices */
+  .card-lifting:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Add visible tap states instead */
+  .card-lifting:active {
+    transform: scale(0.98) !important;
+    transition: transform 0.2s ease !important;
+  }
+  
+  /* Make model badges more visible on mobile */
+  .model-badge {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  /* Increase card spacing for better touch targets */
+  .grid-item {
+    margin-bottom: 1rem;
+  }
+  
+  /* Better mobile paddings for content */
+  .container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  /* Enhanced model badge styling for mobile */
+  .model-badge {
+    max-width: fit-content !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    border-radius: 999px !important;
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  /* Enhanced spacing for content at the bottom of the screen */
+  .content-container {
+    padding-bottom: 5rem !important; /* Extra padding at bottom for better tap targets on bottom of screen */
+  }
+  
+  /* Better scrolling performance */
+  * {
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Remove fast tap highlight */
+  * {
+    -webkit-tap-highlight-color: transparent !important;
+  }
+}
+
+/* Improved focus states for keyboard navigation */
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  transition: outline-offset 0.15s ease;
+}

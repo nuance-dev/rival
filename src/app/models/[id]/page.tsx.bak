@@ -1,0 +1,246 @@
+import React from "react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Layout } from "@/components/layout/Layout";
+import { models, outputs } from "@/lib/data";
+import { getResponsesByModelId } from "@/lib/model-responses";
+import { cn } from "@/lib/utils";
+import { ModelOutput } from "@/components/models/ModelOutput";
+import { ModelResponseCard } from "@/components/models/ModelResponseCard";
+import type { Metadata } from "next";
+import SimpleImage from "@/components/ui/SimpleImage";
+
+  const model = models.find((m) => m.id === params.id);
+  
+  if (!model) {
+    return {
+      title: "Model Not Found",
+      description: "The requested model could not be found."
+    };
+  }
+  
+  return {
+    title: `${model.name} | AI Model Showcase`,
+    description: model.description || `Learn about ${model.name} capabilities and examples.`,
+    openGraph: {
+      title: `${model.name} | AI Model Showcase`,
+      description: model.description || `Learn about ${model.name} capabilities and examples.`,
+      images: [model.logoUrl || '/images/opengraph.png'],
+    },
+  };
+};
+
+  const model = models.find((m) => m.id === params.id);
+  
+  if (!model) {
+    return {
+      title: "Model Not Found",
+      description: "The requested model could not be found."
+    };
+  }
+  
+  return {
+    title: `${model.name} | AI Model Showcase`,
+    description: model.description || `Learn about ${model.name} capabilities and examples.`,
+    openGraph: {
+      title: `${model.name} | AI Model Showcase`,
+      description: model.description || `Learn about ${model.name} capabilities and examples.`,
+      images: [model.logoUrl || '/images/opengraph.png'],
+    },
+  };
+};
+
+  const model = models.find((m) => m.id === params.id);
+  
+  if (!model) {
+    return {
+      title: "Model Not Found",
+      description: "The requested model could not be found."
+    };
+  }
+  
+  return {
+    title: `${model.name} | AI Model Showcase`,
+    description: model.description || `Learn about ${model.name} capabilities and examples.`,
+    openGraph: {
+      title: `${model.name} | AI Model Showcase`,
+      description: model.description || `Learn about ${model.name} capabilities and examples.`,
+      images: [model.logoUrl || '/images/opengraph.png'],
+    },
+  };
+};
+
+export default async function ModelDetailPage({ params }: { params: { id: string } }) {
+  const modelId = params.id;
+  const model = models.find((m) => m.id === modelId);
+  
+  if (!model) {
+    notFound();
+  }
+
+  // Get related models from the same provider
+  const getRelatedModels = (currentModel: typeof model) => {
+    if (!currentModel?.provider) return [];
+    
+    return models
+      .filter(m => m.provider === currentModel.provider && m.id !== currentModel.id)
+      .slice(0, 3);
+  };
+  
+  // Get model outputs for this model
+  const getModelOutputs = (id: string) => {
+    return outputs.filter(o => o.modelId === id);
+  };
+
+  // Get related models
+  const relatedModels = getRelatedModels(model);
+  
+  // Get model outputs
+  const modelOutputs = getModelOutputs(modelId);
+  
+  // Get responses for this model
+  const modelResponses = getResponsesByModelId(modelId);
+  const latestResponses = [...modelResponses].sort(
+    (a, b) => new Date(b.responseDate).getTime() - new Date(a.responseDate).getTime()
+  ).slice(0, 3);
+  
+  return (
+    <Layout>
+      <div className="container py-12">
+        {/* Model header section */}
+        <section className="flex flex-col md:flex-row gap-6 items-start mb-16">
+          {/* Model Logo */}
+          <div 
+            className={cn(
+              "w-20 h-20 rounded-xl flex items-center justify-center shrink-0",
+              "bg-gradient-to-br from-primary/10 to-primary/30"
+            )}
+            style={model.gradientColors ? {
+              backgroundImage: `linear-gradient(to bottom right, ${model.gradientColors[0]}, ${model.gradientColors[1]})`,
+            } : undefined}
+          >
+            {model.logoUrl ? (
+              <img 
+                src={model.logoUrl} 
+                alt={model.name} 
+                className="w-12 h-12 object-contain" 
+              />
+            ) : (
+              <span className="text-xl font-bold">{model.name.charAt(0)}</span>
+            )}
+          </div>
+          
+          {/* Model Info */}
+          <div>
+            <h1 className="text-4xl font-display mb-3">{model.name}</h1>
+            <p className="text-muted-foreground mb-4 max-w-3xl">
+              {model.description}
+            </p>
+            
+            <div className="flex flex-wrap gap-2 mb-6">
+              {model.capabilities.map((capability) => (
+                <span 
+                  key={capability}
+                  className="px-3 py-1 bg-muted/50 rounded-full text-xs"
+                >
+                  {capability.split('-').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                  ).join(' ')}
+                </span>
+              ))}
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div>
+                <div className="text-muted-foreground">Provider</div>
+                <div className="font-medium">
+                  {model.provider.charAt(0).toUpperCase() + model.provider.slice(1)}
+                </div>
+              </div>
+              <div>
+                <div className="text-muted-foreground">Release Date</div>
+                <div className="font-medium">{model.releaseDate}</div>
+              </div>
+              <div>
+                <div className="text-muted-foreground">Size</div>
+                <div className="font-medium">{model.size.toUpperCase()}</div>
+              </div>
+              {model.parametersCount && (
+                <div>
+                  <div className="text-muted-foreground">Parameters</div>
+                  <div className="font-medium">{model.parametersCount}</div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+        
+        {/* Latest Responses Section */}
+        {latestResponses.length > 0 && (
+          <section className="mb-16">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-display">Latest Responses</h2>
+              {modelResponses.length > 3 && (
+                <Link href={`/models/${modelId}/responses`} className="text-sm text-primary hover:underline">
+                  View all responses →
+                </Link>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {latestResponses.map(response => (
+                <ModelResponseCard 
+                  key={response.id}
+                  response={response}
+                  modelId={modelId}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+        
+        {/* Example Outputs Section */}
+        <section className="mb-16">
+          <h2 className="text-2xl font-display mb-6">Example Outputs</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {modelOutputs.map((output) => (
+              <ModelOutput key={output.id} output={output} />
+            ))}
+          </div>
+        </section>
+        
+        {/* Related Models Section */}
+        {relatedModels.length > 0 && (
+          <section className="mb-16">
+            <h2 className="text-2xl font-display mb-6">More from {model.provider}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {relatedModels.map((relatedModel) => (
+                <Link
+                  key={relatedModel.id}
+                  href={`/models/${relatedModel.id}`}
+                  className="bg-card border border-border rounded-xl p-5 hover:shadow-md transition-shadow"
+                >
+                  {relatedModel.logoUrl && (
+                    <div className="h-12 w-12 mb-4">
+                      <SimpleImage
+                        src={relatedModel.logoUrl}
+                        alt={`${relatedModel.name} logo`}
+                        width={48}
+                        height={48}
+                        className="h-full w-full object-contain"
+                        objectFit="contain"
+                      />
+                    </div>
+                  )}
+                  
+                  <h3 className="text-xl font-medium mb-2">{relatedModel.name}</h3>
+                  <p className="text-muted-foreground text-sm line-clamp-2">{relatedModel.description}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    </Layout>
+  );
+} 
