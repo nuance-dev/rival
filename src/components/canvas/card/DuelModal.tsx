@@ -396,33 +396,37 @@ export const DuelModal: React.FC<DuelModalProps> = ({
                 ) : (
                   <>
                     {/* Desktop side-by-side view */}
-                    <div className="flex flex-col overflow-hidden border-b md:border-b-0 md:border-r border-border">
-                      <div className="flex items-center justify-center gap-2 p-4 border-b border-border bg-muted/5">
+                    <div className="flex flex-col h-full border-b md:border-b-0 md:border-r border-border">
+                      <div className="flex items-center justify-center gap-2 p-4 border-b border-border bg-muted/5 sticky top-0 z-10">
                         <ModelIcon modelId={currentOutput.modelId || ''} className="w-5 h-5" />
                         <span className="font-medium">
                           {formatModelName(currentOutput.modelId || '')}
                         </span>
                       </div>
-                      <div className="flex-1 overflow-auto p-4" style={{ maxHeight: "calc(70vh - 120px)" }}>
-                        <CardContent 
-                          output={currentOutput}
-                          expanded={false}
-                        />
+                      <div className="overflow-y-auto" style={{ height: "calc(60vh)" }}>
+                        <div className="p-4">
+                          <CardContent 
+                            output={currentOutput}
+                            expanded={false}
+                          />
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="flex flex-col overflow-hidden">
-                      <div className="flex items-center justify-center gap-2 p-4 border-b border-border bg-muted/5">
+                    <div className="flex flex-col h-full border-border">
+                      <div className="flex items-center justify-center gap-2 p-4 border-b border-border bg-muted/5 sticky top-0 z-10">
                         <ModelIcon modelId={selectedModel || ''} className="w-5 h-5" />
                         <span className="font-medium">
                           {formatModelName(selectedModel || '')}
                         </span>
                       </div>
-                      <div className="flex-1 overflow-auto p-4" style={{ maxHeight: "calc(70vh - 120px)" }}>
-                        <CardContent 
-                          output={selectedModelOutput}
-                          expanded={false}
-                        />
+                      <div className="overflow-y-auto" style={{ height: "calc(60vh)" }}>
+                        <div className="p-4">
+                          <CardContent 
+                            output={selectedModelOutput}
+                            expanded={false}
+                          />
+                        </div>
                       </div>
                     </div>
                   </>
