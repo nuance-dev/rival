@@ -25,7 +25,8 @@ export function ChallengeSelector({
   searchQuery,
   challengesByCategory,
   onCategorySelect,
-  onSearchChange: _,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onSearchChange,
   onChallengeSelect,
   selectedChallenge,
   onViewAllChallenges

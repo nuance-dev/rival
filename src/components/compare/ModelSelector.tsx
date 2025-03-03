@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ChevronDown, XCircle, Check, Box } from 'lucide-react';
 import { models } from '@/lib/data';
@@ -49,10 +50,12 @@ export function ModelSelector({
                 <div className="flex items-center gap-3">
                   {getModelById(selectedModels[0])?.logoUrl && (
                     <div className="w-8 h-8 min-w-[2rem] rounded-full bg-card flex-shrink-0 flex items-center justify-center overflow-hidden p-1 border border-border/30">
-                      <img 
-                        src={getModelById(selectedModels[0])?.logoUrl} 
+                      <Image 
+                        src={getModelById(selectedModels[0])?.logoUrl || '/placeholder.svg'} 
                         alt={getModelById(selectedModels[0])?.name || "Model logo"} 
                         className="h-full w-full object-contain"
+                        width={32}
+                        height={32}
                         loading="eager"
                       />
                     </div>
@@ -87,10 +90,12 @@ export function ModelSelector({
                 <div className="flex items-center gap-3">
                   {getModelById(selectedModels[1])?.logoUrl && (
                     <div className="w-8 h-8 min-w-[2rem] rounded-full bg-card flex-shrink-0 flex items-center justify-center overflow-hidden p-1 border border-border/30">
-                      <img 
-                        src={getModelById(selectedModels[1])?.logoUrl} 
+                      <Image 
+                        src={getModelById(selectedModels[1])?.logoUrl || '/placeholder.svg'} 
                         alt={getModelById(selectedModels[1])?.name || "Model logo"} 
                         className="h-full w-full object-contain"
+                        width={32}
+                        height={32}
                         loading="eager"
                       />
                     </div>
@@ -203,10 +208,12 @@ export function ModelSelectorModal({
                       >
                         <div className="w-8 h-8 min-w-[2rem] rounded-full bg-background flex-shrink-0 flex items-center justify-center overflow-hidden p-1 border border-border/30">
                           {model.logoUrl ? (
-                            <img 
-                              src={model.logoUrl} 
+                            <Image 
+                              src={model.logoUrl || '/placeholder.svg'} 
                               alt={model.name} 
                               className="h-full w-full object-contain"
+                              width={32}
+                              height={32}
                               loading="eager"
                             />
                           ) : (

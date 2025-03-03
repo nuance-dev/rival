@@ -135,7 +135,7 @@ export default function Home() {
     if (sortOption === 'chaotic') {
       setRandomKey(Math.random().toString(36).substring(2, 10));
     }
-  }, []);
+  }, [sortOption]);
   
   // Re-shuffle when manually switching to chaotic mode
   useEffect(() => {
@@ -162,9 +162,10 @@ export default function Home() {
   }, []);
   
   // Apply sorting based on the selected sort option
+  const chaoticDependency = sortOption === 'chaotic' ? randomKey : undefined;
   const sortedModelOutputs = useMemo(() => {
     return sortOutputs(allModelOutputs, sortOption);
-  }, [allModelOutputs, sortOption, sortOption === 'chaotic' ? randomKey : undefined]);
+  }, [allModelOutputs, sortOption, chaoticDependency]);
   
   // Filter outputs based on active category
   const filteredModelOutputs = useMemo(() => {
