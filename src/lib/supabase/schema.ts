@@ -13,7 +13,7 @@
  * 
  * Notable constraints:
  * - model1_id must be different from model2_id (vote_model_pair)
- * - winner_id must be either model1_id or model2_id (winner_is_valid)
+ * - winner_id must be either model1_id, model2_id or tie (winner_is_valid)
  * - Each voter can only vote once for a specific model pair and challenge combination
  */
 export interface ModelDuelVote {
