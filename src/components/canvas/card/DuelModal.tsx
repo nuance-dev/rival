@@ -364,7 +364,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
                     </div>
 
                     {/* Improved scrollable content for mobile */}
-                    <div className="flex-1 overflow-auto pb-16" style={{ maxHeight: "60vh", height: "auto" }}>
+                    <div className="flex-1 overflow-auto pb-16" style={{ maxHeight: "75vh", height: "auto" }}>
                       {activeTab === 'model1' ? (
                         <div className="p-4">
                           <CardContent 
@@ -392,7 +392,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
                           {formatModelName(currentOutput.modelId || '')}
                         </span>
                       </div>
-                      <div className="flex-1 overflow-auto pb-12" style={{ maxHeight: "calc(100vh - 320px)" }}>
+                      <div className="flex-1 overflow-auto pb-12" style={{ maxHeight: "calc(100vh - 250px)" }}>
                         <div className="p-4">
                           <CardContent 
                             output={currentOutput}
@@ -409,7 +409,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
                           {formatModelName(selectedModel || '')}
                         </span>
                       </div>
-                      <div className="flex-1 overflow-auto pb-12" style={{ maxHeight: "calc(100vh - 320px)" }}>
+                      <div className="flex-1 overflow-auto pb-12" style={{ maxHeight: "calc(100vh - 250px)" }}>
                         <div className="p-4">
                           <CardContent 
                             output={selectedModelOutput}
