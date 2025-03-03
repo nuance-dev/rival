@@ -3,12 +3,10 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
 import { useSafeAnimation } from "@/hooks/useSafeAnimation";
 import { cn } from "@/lib/utils";
 import SimpleImage from "@/components/ui/SimpleImage";
 import { NewOutputCard } from "@/components/canvas/NewOutputCard";
-import { ModelResponseCard } from "@/components/models/ModelResponseCard";
 import { AIModel, ModelResponse } from "@/types/models";
 import ModelInsights from "@/components/models/ModelInsights";
 
@@ -76,12 +74,10 @@ interface ModelDetailClientProps {
 export function ModelDetailClient({
   model,
   modelResponses,
-  latestResponses,
   relatedModels
 }: ModelDetailClientProps) {
   // Use safe animation to prevent double triggering
   const { isVisible: headerVisible } = useSafeAnimation('model-detail-header');
-  const { isVisible: responsesVisible } = useSafeAnimation('model-detail-responses');
   const { isVisible: outputsVisible } = useSafeAnimation('model-detail-outputs');
   const { isVisible: relatedVisible } = useSafeAnimation('model-detail-related');
 

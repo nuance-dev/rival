@@ -2,8 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { ModelDuelStats, generateVoterId, recordModelDuelVote, getModelDuelStats } from '@/lib/supabase';
+import { ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
+import { 
+  ModelDuelStats, 
+  generateVoterId, 
+  recordModelDuelVote, 
+  getModelDuelStats,
+  hasVotedOnDuel,
+  recordLocalVote,
+  isThrottled,
+  recordVoteTime 
+} from '@/lib/supabase';
 import { formatModelName } from '@/lib/utils';
 
 type MinimalModelDuelProps = {
@@ -28,6 +37,7 @@ export function MinimalModelDuel({
   const [isVoting, setIsVoting] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [voterId] = useState(() => generateVoterId());
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Fetch current stats when component mounts
   useEffect(() => {
@@ -36,11 +46,13 @@ export function MinimalModelDuel({
         const duelStats = await getModelDuelStats(model1Id, model2Id, challengeId);
         setStats(duelStats);
         
-        // Check if user has already voted
-        const storedVote = localStorage.getItem(`vote-${model1Id}-${model2Id}-${challengeId}`);
-        if (storedVote) {
-          setUserVote(storedVote);
-          setShowDetails(true); // Auto-show results if user has voted
+        // Check if user has already voted using the helper function
+        if (hasVotedOnDuel(model1Id, model2Id, challengeId)) {
+          const storedVote = localStorage.getItem(`vote_${model1Id}_${model2Id}_${challengeId}`);
+          if (storedVote) {
+            setUserVote(storedVote);
+            setShowDetails(true); // Auto-show results if user has voted
+          }
         }
       } catch (error) {
         console.error("Error fetching duel stats:", error);
@@ -51,7 +63,17 @@ export function MinimalModelDuel({
   }, [model1Id, model2Id, challengeId]);
 
   const handleVote = async (winnerId: string) => {
+    // Reset any previous error messages
+    setErrorMessage(null);
+    
+    // Check if user has already voted or is currently voting
     if (isVoting || userVote) return;
+    
+    // Check for throttling (voting too quickly)
+    if (isThrottled()) {
+      setErrorMessage("Please wait a moment before voting again");
+      return;
+    }
     
     setIsVoting(true);
     
@@ -65,26 +87,34 @@ export function MinimalModelDuel({
         unique_voter_id: voterId
       };
       
-      const { success } = await recordModelDuelVote(vote);
+      const { success, error } = await recordModelDuelVote(vote);
       
       if (success) {
         // Update local state
         setUserVote(winnerId);
         
         // Store vote in localStorage to prevent double voting
-        localStorage.setItem(`vote_${model1Id}_${model2Id}_${challengeId}`, winnerId);
+        recordLocalVote(model1Id, model2Id, challengeId, winnerId);
+        
+        // Record time of vote for throttling
+        recordVoteTime();
         
         // After a short delay, fetch updated stats and show them
         setTimeout(async () => {
           const updatedStats = await getModelDuelStats(model1Id, model2Id, challengeId);
           setStats(updatedStats);
+          setShowDetails(true);
           
           // Notify parent if callback exists
           if (onVote) onVote(winnerId);
         }, 1000);
+      } else if (error) {
+        // Show user-friendly error message
+        setErrorMessage("Unable to record your vote. Please try again later.");
       }
     } catch (error) {
       console.error('Error voting:', error);
+      setErrorMessage("Something went wrong. Please try again later.");
     } finally {
       setTimeout(() => {
         setIsVoting(false);
@@ -110,49 +140,67 @@ export function MinimalModelDuel({
     <div className="w-full py-3 mt-6">
       <div className="max-w-3xl mx-auto">
         {/* Minimal voting buttons that live BETWEEN the model outputs */}
-        <div className="flex justify-between items-center border-t border-b py-3 px-2">
-          <div className="text-sm text-muted-foreground font-medium flex items-center gap-1.5">
-            {userVote 
-              ? <>Your vote: <span className="text-foreground">{userVote === model1Id ? formatModelName(model1Name) : formatModelName(model2Name)}</span></>
-              : "Which response do you prefer?"}
+        <div className="flex flex-col">
+          <div className="flex justify-between items-center border-t border-b py-3 px-2">
+            <div className="text-sm text-muted-foreground font-medium flex items-center gap-1.5">
+              {userVote 
+                ? <>Your vote: <span className="text-foreground">{userVote === model1Id ? formatModelName(model1Name) : formatModelName(model2Name)}</span></>
+                : "Which response do you prefer?"}
+            </div>
+            
+            {!userVote ? (
+              <div className="flex gap-2">
+                <motion.button
+                  className="px-3 py-1 text-xs font-medium rounded-md border bg-card/50 hover:bg-primary/5 hover:border-primary/30 transition-colors"
+                  onClick={() => handleVote(model1Id)}
+                  disabled={isVoting}
+                  whileHover={{ y: -1 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {formatModelName(model1Name)}
+                </motion.button>
+
+                <motion.button
+                  className="px-3 py-1 text-xs font-medium rounded-md border bg-card/50 hover:bg-primary/5 hover:border-primary/30 transition-colors"
+                  onClick={() => handleVote(model2Id)}
+                  disabled={isVoting}
+                  whileHover={{ y: -1 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {formatModelName(model2Name)}
+                </motion.button>
+              </div>
+            ) : (
+              <motion.button
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center"
+                onClick={() => setShowDetails(!showDetails)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                {showDetails ? (
+                  <>Hide results <ChevronUp className="h-3.5 w-3.5 ml-1" /></>
+                ) : (
+                  <>Show results <ChevronDown className="h-3.5 w-3.5 ml-1" /></>
+                )}
+              </motion.button>
+            )}
           </div>
           
-          {!userVote ? (
-            <div className="flex gap-2">
-              <motion.button
-                className="px-3 py-1 text-xs font-medium rounded-md border bg-card/50 hover:bg-primary/5 hover:border-primary/30 transition-colors"
-                onClick={() => handleVote(model1Id)}
-                disabled={isVoting}
-                whileHover={{ y: -1 }}
-                whileTap={{ scale: 0.98 }}
+          {/* Error message */}
+          <AnimatePresence>
+            {errorMessage && (
+              <motion.div 
+                className="mt-2 text-xs text-red-500 flex items-center justify-center"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
               >
-                {formatModelName(model1Name)}
-              </motion.button>
-
-              <motion.button
-                className="px-3 py-1 text-xs font-medium rounded-md border bg-card/50 hover:bg-primary/5 hover:border-primary/30 transition-colors"
-                onClick={() => handleVote(model2Id)}
-                disabled={isVoting}
-                whileHover={{ y: -1 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                {formatModelName(model2Name)}
-              </motion.button>
-            </div>
-          ) : (
-            <motion.button
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center"
-              onClick={() => setShowDetails(!showDetails)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              {showDetails ? (
-                <>Hide results <ChevronUp className="h-3.5 w-3.5 ml-1" /></>
-              ) : (
-                <>Show results <ChevronDown className="h-3.5 w-3.5 ml-1" /></>
-              )}
-            </motion.button>
-          )}
+                <AlertCircle className="h-3 w-3 mr-1" />
+                {errorMessage}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
         
         {/* Expandable results bar */}

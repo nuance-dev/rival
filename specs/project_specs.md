@@ -182,7 +182,6 @@ versus/
 │   │   └── OneShotBadge.tsx       # Badge for one-shot responses
 │   ├── models/           # AI model components
 │   │   ├── ModelOutput.tsx     # Output display component
-│   │   └── ModelResponseCard.tsx # Response card component
 │   └── layout/           # Layout components
 ├── hooks/                # Custom React hooks
 │   ├── useSafeAnimation.ts # Hook to prevent animation jumping and double-triggering

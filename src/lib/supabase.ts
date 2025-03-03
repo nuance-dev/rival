@@ -160,7 +160,7 @@ export async function getModelDuelStats(
 }
 
 /**
- * Generates a random UUID for anonymous voters
+ * Generates a random UUID for anonymous voters with additional security measures
  */
 export function generateVoterId(): string {
   // Check if we already have a voter ID stored
@@ -175,10 +175,65 @@ export function generateVoterId(): string {
   // Generate a new ID if we don't have one
   const newId = crypto.randomUUID();
   
+  // Add timestamp for additional uniqueness
+  const timestamp = Date.now().toString();
+  const enhancedId = `${newId}_${timestamp}`;
+  
   // Store it for future use
   if (typeof localStorage !== 'undefined') {
-    localStorage.setItem('rival_voter_id', newId);
+    localStorage.setItem('rival_voter_id', enhancedId);
   }
   
-  return newId;
+  return enhancedId;
+}
+
+/**
+ * Checks if a user has already voted on a specific model duel
+ * @returns true if the user has already voted
+ */
+export function hasVotedOnDuel(model1Id: string, model2Id: string, challengeId: string): boolean {
+  if (typeof localStorage === 'undefined') return false;
+  
+  const voteKey = `vote_${model1Id}_${model2Id}_${challengeId}`;
+  return localStorage.getItem(voteKey) !== null;
+}
+
+/**
+ * Records that a user has voted on a specific model duel in localStorage
+ */
+export function recordLocalVote(model1Id: string, model2Id: string, challengeId: string, winnerId: string): void {
+  if (typeof localStorage === 'undefined') return;
+  
+  const voteKey = `vote_${model1Id}_${model2Id}_${challengeId}`;
+  localStorage.setItem(voteKey, winnerId);
+  
+  // Also record when this vote was cast (for throttling)
+  const timeKey = `vote_time_${model1Id}_${model2Id}_${challengeId}`;
+  localStorage.setItem(timeKey, Date.now().toString());
+}
+
+/**
+ * Checks if user is being throttled (voting too quickly)
+ * @returns true if the user should be throttled
+ */
+export function isThrottled(): boolean {
+  if (typeof localStorage === 'undefined') return false;
+  
+  const lastVoteTime = localStorage.getItem('last_vote_time');
+  if (!lastVoteTime) return false;
+  
+  const now = Date.now();
+  const timeSinceLastVote = now - parseInt(lastVoteTime, 10);
+  
+  // Throttle if less than 3 seconds since last vote
+  return timeSinceLastVote < 3000;
+}
+
+/**
+ * Records the time of the last vote for throttling purposes
+ */
+export function recordVoteTime(): void {
+  if (typeof localStorage === 'undefined') return;
+  
+  localStorage.setItem('last_vote_time', Date.now().toString());
 } 

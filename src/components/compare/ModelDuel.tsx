@@ -2,8 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, ThumbsUp, BarChart2, Sparkles } from 'lucide-react';
-import { ModelDuelStats, generateVoterId, recordModelDuelVote, getModelDuelStats } from '@/lib/supabase';
+import { Trophy, ThumbsUp, BarChart2, Sparkles, AlertCircle } from 'lucide-react';
+import { 
+  ModelDuelStats, 
+  generateVoterId, 
+  recordModelDuelVote, 
+  getModelDuelStats,
+  hasVotedOnDuel,
+  recordLocalVote,
+  isThrottled,
+  recordVoteTime
+} from '@/lib/supabase';
 import { formatModelName } from '@/lib/utils';
 
 type ModelDuelProps = {
@@ -29,6 +38,7 @@ export function ModelDuel({
   const [showStats, setShowStats] = useState(false);
   const [voterId] = useState(() => generateVoterId());
   const [voteAnimation, setVoteAnimation] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Fetch current stats when component mounts
   useEffect(() => {
@@ -36,11 +46,13 @@ export function ModelDuel({
       const duelStats = await getModelDuelStats(model1Id, model2Id, challengeId);
       setStats(duelStats);
       
-      // Check local storage for previous vote
-      const localVote = localStorage.getItem(`vote_${model1Id}_${model2Id}_${challengeId}`);
-      if (localVote) {
-        setUserVote(localVote);
-        setShowStats(true);
+      // Check if user has already voted using our helper function
+      if (hasVotedOnDuel(model1Id, model2Id, challengeId)) {
+        const localVote = localStorage.getItem(`vote_${model1Id}_${model2Id}_${challengeId}`);
+        if (localVote) {
+          setUserVote(localVote);
+          setShowStats(true);
+        }
       }
     }
     
@@ -48,7 +60,17 @@ export function ModelDuel({
   }, [model1Id, model2Id, challengeId]);
 
   const handleVote = async (winnerId: string) => {
+    // Reset any previous error messages
+    setErrorMessage(null);
+    
+    // Check if user has already voted or is currently voting
     if (isVoting || userVote) return;
+    
+    // Check for throttling (voting too quickly)
+    if (isThrottled()) {
+      setErrorMessage("Please wait a moment before voting again");
+      return;
+    }
     
     setIsVoting(true);
     setVoteAnimation(winnerId);
@@ -63,14 +85,17 @@ export function ModelDuel({
         unique_voter_id: voterId
       };
       
-      const { success } = await recordModelDuelVote(vote);
+      const { success, error } = await recordModelDuelVote(vote);
       
       if (success) {
         // Update local state
         setUserVote(winnerId);
         
         // Store vote in localStorage to prevent double voting
-        localStorage.setItem(`vote_${model1Id}_${model2Id}_${challengeId}`, winnerId);
+        recordLocalVote(model1Id, model2Id, challengeId, winnerId);
+        
+        // Record time of vote for throttling
+        recordVoteTime();
         
         // After a short delay, fetch updated stats and show them
         setTimeout(async () => {
@@ -82,9 +107,13 @@ export function ModelDuel({
           // Notify parent if callback exists
           if (onVote) onVote(winnerId);
         }, 1000);
+      } else if (error) {
+        // Show user-friendly error message
+        setErrorMessage("Unable to record your vote. Please try again later.");
       }
     } catch (error) {
       console.error('Error voting:', error);
+      setErrorMessage("Something went wrong. Please try again later.");
     } finally {
       setTimeout(() => {
         setIsVoting(false);
@@ -123,6 +152,19 @@ export function ModelDuel({
               ? "You've voted! See the results below." 
               : "Which AI response do you prefer? Cast your vote!"}
           </p>
+          
+          {/* Error message */}
+          {errorMessage && (
+            <motion.div 
+              className="mt-2 text-sm text-red-500 flex items-center justify-center"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+            >
+              <AlertCircle className="h-3.5 w-3.5 mr-1.5" />
+              {errorMessage}
+            </motion.div>
+          )}
         </div>
         
         {/* Voting buttons */}

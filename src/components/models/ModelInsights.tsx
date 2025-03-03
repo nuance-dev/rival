@@ -92,7 +92,18 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   return null;
 };
 
-const ModelInsights = ({ model }: { model: AIModel }) => {
+// Main ModelInsights wrapper component that handles conditional rendering
+const ModelInsightsWrapper = ({ model }: { model: AIModel }) => {
+  // Don't show insights for Midjourney models
+  if (model.provider === "midjourney") {
+    return null;
+  }
+  
+  return <ModelInsightsContent model={model} />;
+};
+
+// The actual ModelInsights content component
+const ModelInsightsContent = ({ model }: { model: AIModel }) => {
   const { isVisible } = useSafeAnimation('model-insights');
   const [activeTab, setActiveTab] = useState<'overview' | 'categories' | 'challenges'>('overview');
   const [performanceData, setPerformanceData] = useState<ModelPerformanceData | null>(null);
@@ -109,6 +120,54 @@ const ModelInsights = ({ model }: { model: AIModel }) => {
   const getModelName = React.useCallback((id: string): string => {
     return allModels.get(id)?.name || id;
   }, [allModels]);
+
+  // Memoize colors to prevent recalculation on every render
+  const colors = React.useMemo(() => {
+    if (model.gradientColors && model.gradientColors.length >= 2) {
+      return [model.gradientColors[0], model.gradientColors[1]];
+    }
+    return ['#4F46E5', '#7C3AED'];
+  }, [model.gradientColors]);
+
+  // Memoize chart data preparation functions
+  const winLossData = React.useMemo(() => {
+    if (!performanceData?.duelStats) return [];
+    
+    return [
+      { name: 'Wins', value: performanceData.duelStats.wins, color: colors[0] },
+      { name: 'Losses', value: performanceData.duelStats.losses, color: '#6B7280' }
+    ];
+  }, [performanceData, colors]);
+  
+  const categoryData = React.useMemo(() => {
+    if (!performanceData?.categoryPerformance || performanceData.categoryPerformance.length === 0) {
+      return [];
+    }
+    
+    return performanceData.categoryPerformance
+      .sort((a, b) => b.win_percentage - a.win_percentage)
+      .map(category => ({
+        name: category.category.charAt(0).toUpperCase() + category.category.slice(1),
+        winPct: category.win_percentage,
+        winCount: category.win_count,
+        totalCount: category.total_count,
+        // Use category colors if available, fall back to model colors
+        fill: ChallengeCategoryColors[category.category] || colors[0]
+      }));
+  }, [performanceData, colors]);
+  
+  const challengeData = React.useMemo(() => {
+    if (!performanceData?.topChallenges || performanceData.topChallenges.length === 0) {
+      return [];
+    }
+    
+    return performanceData.topChallenges.map(challenge => ({
+      name: challenge.challenge_name || challenge.challenge_id,
+      percentage: challenge.win_percentage,
+      wins: challenge.wins,
+      total: challenge.wins + challenge.losses
+    }));
+  }, [performanceData]);
 
   // Load models only once on mount
   useEffect(() => {
@@ -187,7 +246,8 @@ const ModelInsights = ({ model }: { model: AIModel }) => {
         promptChallenges.forEach(challenge => {
           challengeMap.set(challenge.id, {
             title: challenge.title,
-            category: challenge.category
+            category: challenge.category,
+            expectedOutputType: challenge.expectedOutputType
           });
         });
         
@@ -195,14 +255,26 @@ const ModelInsights = ({ model }: { model: AIModel }) => {
         const processedVotes = allVotes.map(vote => ({
           ...vote,
           challenge_title: challengeMap.get(vote.challenge_id)?.title || 'Unknown Challenge',
-          challenge_category: challengeMap.get(vote.challenge_id)?.category || 'unknown'
+          challenge_category: challengeMap.get(vote.challenge_id)?.category || 'unknown',
+          expected_output_type: challengeMap.get(vote.challenge_id)?.expectedOutputType || 'unknown'
         }));
+        
+        // Filter out image generation challenges that are not SVG for LLM models
+        const filteredVotes = processedVotes.filter(vote => {
+          // If it's not an image generation challenge, include it
+          if (vote.challenge_category !== 'image-generation') {
+            return true;
+          }
+          
+          // For image generation challenges, only include SVG challenges for LLM models
+          return vote.expected_output_type === 'svg';
+        });
         
         // Calculate overall stats
         let wins = 0;
         let losses = 0;
         
-        processedVotes.forEach(vote => {
+        filteredVotes.forEach(vote => {
           if (vote.winner_id === model.id) {
             wins++;
           } else if (vote.model1_id === model.id || vote.model2_id === model.id) {
@@ -220,7 +292,7 @@ const ModelInsights = ({ model }: { model: AIModel }) => {
         // Calculate category performance
         const categoriesMap = new Map<string, { wins: number, total: number }>();
         
-        processedVotes.forEach(vote => {
+        filteredVotes.forEach(vote => {
           const category = vote.challenge_category;
           if (!categoriesMap.has(category)) {
             categoriesMap.set(category, { wins: 0, total: 0 });
@@ -248,7 +320,7 @@ const ModelInsights = ({ model }: { model: AIModel }) => {
         // Calculate challenge performance
         const challenges_performance = new Map<string, { name: string, wins: number, losses: number }>();
         
-        processedVotes.forEach(vote => {
+        filteredVotes.forEach(vote => {
           const challengeId = vote.challenge_id;
           if (!challenges_performance.has(challengeId)) {
             challenges_performance.set(challengeId, { 
@@ -279,7 +351,7 @@ const ModelInsights = ({ model }: { model: AIModel }) => {
           .slice(0, 5); // Get top 5 challenges
         
         // Get recent duels
-        const recentDuels: RecentDuel[] = processedVotes
+        const recentDuels: RecentDuel[] = filteredVotes
           .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
           .filter(vote => vote.model1_id === model.id || vote.model2_id === model.id)
           .slice(0, 5) // Get 5 most recent duels
@@ -318,54 +390,6 @@ const ModelInsights = ({ model }: { model: AIModel }) => {
     
     fetchVoteData();
   }, [model.id, allModels, calculateWinPercentage, getModelName]);
-
-  // Memoize colors to prevent recalculation on every render
-  const colors = React.useMemo(() => {
-    if (model.gradientColors && model.gradientColors.length >= 2) {
-      return [model.gradientColors[0], model.gradientColors[1]];
-    }
-    return ['#4F46E5', '#7C3AED'];
-  }, [model.gradientColors]);
-
-  // Memoize chart data preparation functions
-  const winLossData = React.useMemo(() => {
-    if (!performanceData?.duelStats) return [];
-    
-    return [
-      { name: 'Wins', value: performanceData.duelStats.wins, color: colors[0] },
-      { name: 'Losses', value: performanceData.duelStats.losses, color: '#6B7280' }
-    ];
-  }, [performanceData, colors]);
-  
-  const categoryData = React.useMemo(() => {
-    if (!performanceData?.categoryPerformance || performanceData.categoryPerformance.length === 0) {
-      return [];
-    }
-    
-    return performanceData.categoryPerformance
-      .sort((a, b) => b.win_percentage - a.win_percentage)
-      .map(category => ({
-        name: category.category.charAt(0).toUpperCase() + category.category.slice(1),
-        winPct: category.win_percentage,
-        winCount: category.win_count,
-        totalCount: category.total_count,
-        // Use category colors if available, fall back to model colors
-        fill: ChallengeCategoryColors[category.category] || colors[0]
-      }));
-  }, [performanceData, colors]);
-  
-  const challengeData = React.useMemo(() => {
-    if (!performanceData?.topChallenges || performanceData.topChallenges.length === 0) {
-      return [];
-    }
-    
-    return performanceData.topChallenges.map(challenge => ({
-      name: challenge.challenge_name || challenge.challenge_id,
-      percentage: challenge.win_percentage,
-      wins: challenge.wins,
-      total: challenge.wins + challenge.losses
-    }));
-  }, [performanceData]);
 
   // If we have no duel data, show a message
   if (!isLoading && (!performanceData?.duelStats || performanceData.duelStats.wins + performanceData.duelStats.losses === 0)) {
@@ -838,4 +862,5 @@ const ModelInsights = ({ model }: { model: AIModel }) => {
   );
 };
 
-export default ModelInsights; 
+// Export the wrapper component
+export default ModelInsightsWrapper; 
