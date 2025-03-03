@@ -3,13 +3,12 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
 import { useSafeAnimation } from "@/hooks/useSafeAnimation";
 import { cn } from "@/lib/utils";
 import SimpleImage from "@/components/ui/SimpleImage";
 import { NewOutputCard } from "@/components/canvas/NewOutputCard";
-import { ModelResponseCard } from "@/components/models/ModelResponseCard";
 import { AIModel, ModelResponse } from "@/types/models";
+import ModelInsights from "@/components/models/ModelInsights";
 
 // Dynamic grid layout with masonry effect for outputs
 function MasonryGrid({ children, className }: { children: React.ReactNode, className?: string }) {
@@ -75,12 +74,10 @@ interface ModelDetailClientProps {
 export function ModelDetailClient({
   model,
   modelResponses,
-  latestResponses,
   relatedModels
 }: ModelDetailClientProps) {
   // Use safe animation to prevent double triggering
   const { isVisible: headerVisible } = useSafeAnimation('model-detail-header');
-  const { isVisible: responsesVisible } = useSafeAnimation('model-detail-responses');
   const { isVisible: outputsVisible } = useSafeAnimation('model-detail-outputs');
   const { isVisible: relatedVisible } = useSafeAnimation('model-detail-related');
 
@@ -207,46 +204,9 @@ export function ModelDetailClient({
         </div>
       </section>
       
-      {/* Latest Responses Section */}
-      {latestResponses.length > 0 && (
-        <section className="py-16">
-          <div className="container">
-            <motion.div 
-              className="flex items-center justify-between mb-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={responsesVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.5 }}
-            >
-              <h2 className="text-3xl font-display">Latest Responses</h2>
-              {modelResponses.length > 3 && (
-                <Link 
-                  href={`/models/${model.id}/responses`} 
-                  className="group flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
-                >
-                  <span>View all responses</span>
-                  <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              )}
-            </motion.div>
-            
-            <motion.div 
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              variants={containerVariants}
-              initial="hidden"
-              animate={responsesVisible ? "visible" : "hidden"}
-            >
-              {latestResponses.map((response) => (
-                <motion.div key={response.id} variants={itemVariants}>
-                  <ModelResponseCard 
-                    response={response}
-                    modelId={model.id}
-                  />
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </section>
-      )}
+      
+      {/* Model Insights Section */}
+      <ModelInsights model={model} />
       
       {/* Example Outputs Section */}
       <section className="py-16 bg-muted/20">
@@ -295,14 +255,14 @@ export function ModelDetailClient({
       {relatedModels.length > 0 && (
         <section className="py-16">
           <div className="container">
-            <motion.h2 
-              className="text-3xl font-display mb-8"
+            <motion.div 
+              className="flex items-center justify-between mb-8"
               initial={{ opacity: 0, y: 20 }}
               animate={relatedVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ duration: 0.5 }}
             >
-              More from {model.provider.charAt(0).toUpperCase() + model.provider.slice(1)}
-            </motion.h2>
+              <h2 className="text-3xl font-display">Related Models</h2>
+            </motion.div>
             
             <motion.div 
               className="grid grid-cols-1 md:grid-cols-3 gap-6"

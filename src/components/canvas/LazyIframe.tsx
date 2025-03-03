@@ -413,7 +413,7 @@ const LazyIframe = memo(({ content, title }: LazyIframeProps) => {
               transformOrigin: 'top left',
               opacity: isLoaded ? 1 : 0
             }}
-            sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-presentation"
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
             srcDoc={processedContent}
             loading="eager"
             onLoad={handleIframeLoad}

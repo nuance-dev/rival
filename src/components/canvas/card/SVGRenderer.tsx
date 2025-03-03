@@ -157,8 +157,10 @@ export const SafeSVGRenderer: React.FC<SafeSVGRendererProps> = ({
     // Return cleanup function
     return () => {
       mountedRef.current = false;
-      if (containerRef.current) {
-        containerRef.current.innerHTML = '';
+      // Capture current ref value for cleanup
+      const currentContainer = containerRef.current;
+      if (currentContainer) {
+        currentContainer.innerHTML = '';
       }
     };
   }, [content, className]);

@@ -1,11 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CardHeader from "./CardHeader";
 import CardContent from "./CardContent";
 import { ModelOutput } from "@/types/models";
-import { ChevronDown, MessageSquare, ExternalLink } from "lucide-react";
+import { ChevronDown, MessageSquare, ExternalLink, Swords } from "lucide-react";
 import ModelIcon from "../ModelIcon";
 import FunFactTooltip from "../FunFactTooltip";
 import { formatModelName } from "@/lib/utils";
+import DuelModal from "./DuelModal";
 
 interface ExpandedCardProps {
   output: ModelOutput & { 
@@ -27,6 +28,8 @@ export const ExpandedCard: React.FC<ExpandedCardProps> = ({
   onNavigateToModel,
   onNavigateToChallenge
 }) => {
+  const [showDuelModal, setShowDuelModal] = useState(false);
+  
   // Ensure body doesn't scroll when modal is open
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -68,6 +71,33 @@ export const ExpandedCard: React.FC<ExpandedCardProps> = ({
     }
   };
 
+  // Whether the duel button should be shown
+  const shouldShowDuelButton = output.challengeId && output.modelId;
+  
+  // Toggle duel modal
+  const handleToggleDuelModal = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowDuelModal(!showDuelModal);
+  };
+  
+  // Enhanced debug output with full output details
+  console.debug('[ExpandedCard] Rendering card with:', { 
+    modelId: output.modelId, 
+    challengeId: output.challengeId,
+    shouldShowDuelButton,
+    fullOutput: {
+      id: output.id,
+      modelId: output.modelId,
+      type: output.type,
+      title: output.title,
+      description: output.description,
+      categories: output.categories,
+      date: output.date,
+      challengeId: output.challengeId,
+      prompt: output.prompt ? "[present]" : "[missing]"
+    }
+  });
+
   return (
     <div className="flex flex-col h-full" onClick={e => e.stopPropagation()}>
       {/* Header */}
@@ -107,17 +137,19 @@ export const ExpandedCard: React.FC<ExpandedCardProps> = ({
         </div>
       )}
       
-      {/* Content section - make sure it's scrollable but doesn't cause the entire card to scroll */}
-      <div className="flex-1 w-full min-h-0 overflow-auto">
-        <CardContent 
-          output={output}
-          displayTitle={displayTitle}
-          expanded={true}
-        />
+      {/* Content section */}
+      <div className="flex-1 flex flex-col overflow-hidden min-h-0">
+        <div className="overflow-auto flex-grow">
+          <CardContent 
+            output={output}
+            displayTitle={displayTitle}
+            expanded={true}
+          />
+        </div>
       </div>
       
       {/* Footer with model and challenge information - ensure it's always visible */}
-      <div className="py-4 flex items-center justify-between border-t bg-muted/40 backdrop-blur mt-auto sticky bottom-0 left-0 right-0 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+      <div className="py-4 px-4 flex items-center justify-between border-t bg-muted/40 backdrop-blur mt-auto sticky bottom-0 left-0 right-0 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <div className="flex items-center">
           {output.modelId && (
             <button 
@@ -134,17 +166,40 @@ export const ExpandedCard: React.FC<ExpandedCardProps> = ({
           )}
         </div>
         
-        {/* Challenge navigation */}
-        {output.challengeId && onNavigateToChallenge && (
-          <button
-            data-challenge-link="true"
-            onClick={handleChallengeClick}
-            className="h-8 px-3 rounded-full flex items-center gap-1.5 text-xs hover:bg-muted/60 transition-colors"
-          >
-            View challenge <ExternalLink className="h-3 w-3 ml-0.5" />
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {/* Duel button */}
+          {shouldShowDuelButton && (
+            <button
+              onClick={handleToggleDuelModal}
+              className="h-8 px-3 rounded-full flex items-center gap-1.5 text-xs hover:bg-primary/10 hover:text-primary transition-colors"
+              title="Compare with another model"
+            >
+              <Swords className="h-3.5 w-3.5 mr-0.5" />
+              <span>Duel</span>
+            </button>
+          )}
+          
+          {/* Challenge navigation */}
+          {output.challengeId && onNavigateToChallenge && (
+            <button
+              data-challenge-link="true"
+              onClick={handleChallengeClick}
+              className="h-8 px-3 rounded-full flex items-center gap-1.5 text-xs hover:bg-muted/60 transition-colors"
+            >
+              View challenge <ExternalLink className="h-3 w-3 ml-0.5" />
+            </button>
+          )}
+        </div>
       </div>
+      
+      {/* Duel Modal */}
+      {showDuelModal && output.challengeId && (
+        <DuelModal
+          currentOutput={output}
+          challengeId={output.challengeId}
+          onClose={() => setShowDuelModal(false)}
+        />
+      )}
     </div>
   );
 };

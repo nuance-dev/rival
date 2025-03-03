@@ -456,9 +456,10 @@ export const NewOutputCard = React.memo(function NewOutputCard({
             // Restore body scroll
             document.body.style.overflow = '';
             
-            // Make sure original card is visible
-            if (cardRef.current) {
-              cardRef.current.style.visibility = "visible";
+            // Copy ref to local variable for safe use in cleanup
+            const currentCardRef = cardRef.current;
+            if (currentCardRef) {
+              currentCardRef.style.visibility = "visible";
             }
           } catch (err) {
             console.error('[NewOutputCard] Error in close handler cleanup:', err);
@@ -541,9 +542,10 @@ export const NewOutputCard = React.memo(function NewOutputCard({
               // Restore body scroll
               document.body.style.overflow = '';
               
-              // Make sure original card is visible
-              if (cardRef.current) {
-                cardRef.current.style.visibility = "visible";
+              // Copy ref to local variable for safe use in cleanup
+              const currentCardRef = cardRef.current;
+              if (currentCardRef) {
+                currentCardRef.style.visibility = "visible";
               }
             } catch (err) {
               console.error('[NewOutputCard] Error in close handler cleanup:', err);
@@ -633,9 +635,10 @@ export const NewOutputCard = React.memo(function NewOutputCard({
           // Re-enable scrolling
           document.body.style.overflow = "";
           
-          // Show the original card
-          if (cardRef.current) {
-            cardRef.current.style.visibility = "visible";
+          // Copy ref to local variable for safe use in cleanup
+          const currentCardRef = cardRef.current;
+          if (currentCardRef) {
+            currentCardRef.style.visibility = "visible";
           }
         } catch (error) {
           console.error("Error cleaning up expanded card:", error);
@@ -654,8 +657,10 @@ export const NewOutputCard = React.memo(function NewOutputCard({
             
             document.body.style.overflow = "";
             
-            if (cardRef.current) {
-              cardRef.current.style.visibility = "visible";
+            // Copy ref to local variable for safe use in cleanup
+            const currentCardRef = cardRef.current;
+            if (currentCardRef) {
+              currentCardRef.style.visibility = "visible";
             }
           } catch (e) {
             console.error("Critical error in cleanup:", e);

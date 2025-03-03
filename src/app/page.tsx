@@ -53,18 +53,58 @@ const convertModelResponseToOutput = (response: ModelResponse): ModelOutput & { 
   // Remove duplicates
   inferredCategories = [...new Set(inferredCategories)];
   
-  // Extract challenge ID from response ID if available
-  // Response IDs are typically formatted as "{modelId}-{challengeId}" where challengeId might contain hyphens
-  const challengeId = response.challengeId || 
-                      (response.id.includes('-') ? 
-                        // If modelId is at the beginning, get everything after the first hyphen
-                        response.id.startsWith(response.modelId) ? 
-                          response.id.substring(response.modelId.length + 1) : 
-                          // Otherwise try to extract from the ID format
-                          response.id.split('-').slice(1).join('-') : 
-                        '');
+  // Enhanced debug logging for challenge ID extraction
+  console.debug(`[Processing Response] ${response.id} - ${response.title}`);
+
+  // Improved challenge ID extraction with multiple strategies
+  let challengeId = '';
   
-  // Debug logging for challenge extraction
+  // Strategy 1: Use explicit challengeId if available (highest priority)
+  if (response.challengeId) {
+    challengeId = response.challengeId;
+  } 
+  // Strategy 2: Extract from ID using common patterns
+  else if (response.id.includes('-')) {
+    // If the ID starts with the model ID (common format)
+    if (response.id.startsWith(response.modelId)) {
+      challengeId = response.id.substring(response.modelId.length + 1);
+    } 
+    // Extract everything after the first hyphen as a fallback
+    else {
+      challengeId = response.id.split('-').slice(1).join('-');
+    }
+    
+    // Clean up potential leading/trailing hyphens
+    challengeId = challengeId.replace(/^-+|-+$/g, '');
+  }
+  // Strategy 3: Use the prompt ID if available (for certain data sources)
+  else if (response.prompt && response.prompt.length > 0 && response.prompt.includes('challenge-')) {
+    // Try to extract challenge ID from the prompt text if it contains a reference
+    const challengeMatch = response.prompt.match(/challenge-([a-zA-Z0-9-]+)/);
+    if (challengeMatch && challengeMatch[1]) {
+      challengeId = challengeMatch[1];
+    }
+  }
+  // Strategy 4: Fallback to normalized title as ID if all else fails
+  else if (response.title) {
+    // Convert title to kebab-case to create a pseudo-challenge ID
+    // Only do this if we are desperate - used for grouping similar responses
+    challengeId = response.title.toLowerCase()
+      .replace(/[^\w\s-]/g, '') // Remove special chars
+      .replace(/\s+/g, '-')     // Replace spaces with hyphens
+      .substring(0, 30);        // Keep it reasonable length
+  }
+  
+  // Enhanced debug logging for challenge extraction
+  console.debug(`[ChallengeID Extraction] Response ID: ${response.id}`, {
+    originalChallengeId: response.challengeId,
+    modelId: response.modelId,
+    extractedChallengeId: challengeId,
+    idStartsWithModelId: response.id.startsWith(response.modelId),
+    idContainsHyphen: response.id.includes('-')
+  });
+  
+  // Keep original ethics debug info
   if (response.title.toLowerCase().includes('ethics') || response.description?.toLowerCase().includes('ethics')) {
     console.log(`[ChallengeID Debug] Title: ${response.title}`);
     console.log(`[ChallengeID Debug] ID: ${response.id}, ModelID: ${response.modelId}`);
@@ -135,7 +175,7 @@ export default function Home() {
     if (sortOption === 'chaotic') {
       setRandomKey(Math.random().toString(36).substring(2, 10));
     }
-  }, []);
+  }, [sortOption]);
   
   // Re-shuffle when manually switching to chaotic mode
   useEffect(() => {
@@ -162,9 +202,11 @@ export default function Home() {
   }, []);
   
   // Apply sorting based on the selected sort option
+  const chaoticSortKey = sortOption === 'chaotic' ? randomKey : undefined;
   const sortedModelOutputs = useMemo(() => {
     return sortOutputs(allModelOutputs, sortOption);
-  }, [allModelOutputs, sortOption, sortOption === 'chaotic' ? randomKey : undefined]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allModelOutputs, sortOption, chaoticSortKey]);
   
   // Filter outputs based on active category
   const filteredModelOutputs = useMemo(() => {
@@ -371,6 +413,19 @@ export default function Home() {
                       Explore results <ArrowDown className="h-4 w-4" />
                     </span>
                   </motion.button>
+                  
+                  <motion.a
+                    href="/challenges"
+                    whileTap={{ scale: 0.98 }}
+                    className="h-10 px-5 flex items-center rounded-md bg-card border border-border hover:border-primary/40 hover:bg-primary/5 transition-all"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                  >
+                    <span className="flex items-center gap-2 text-sm">
+                      Try AI Challenges
+                    </span>
+                  </motion.a>
                   
                   <motion.div
                     initial={{ opacity: 0 }}

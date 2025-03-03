@@ -5,9 +5,8 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Brain, Code, Palette, Lightbulb, Zap } from "lucide-react";
 import Link from "next/link";
 import { ModelCanvas } from "@/components/canvas/ModelCanvas";
-import { ModelComparison } from "@/components/models/ModelComparison";
 import { cn, formatModelName } from "@/lib/utils";
-import { AIModelCapability, ModelOutput, ModelPrompt } from "@/types/models";
+import { AIModelCapability, ModelOutput } from "@/types/models";
 import { PromptChallenge } from "@/lib/prompt-challenges";
 // Import model responses and helper functions
 import { modelResponses } from "@/lib/model-responses";
@@ -45,19 +44,6 @@ export default function ChallengeDetailClient({ challenge }: ChallengeDetailClie
   
   // Get unique model IDs from the responses
   const modelIds = [...new Set(challengeResponses.map(response => response.modelId))];
-  
-  // Get model information for each model that has a response
-  const availableModels = models.filter(model => modelIds.includes(model.id));
-  
-  // Create a prompt object
-  const prompt: ModelPrompt = {
-    id: challenge.id,
-    modelId: "all",
-    title: challenge.title,
-    description: challenge.description,
-    promptText: challenge.prompt,
-    category: challenge.category
-  };
   
   // Map difficulty to color using type-safe approach
   type Difficulty = "easy" | "medium" | "hard";
@@ -213,26 +199,6 @@ export default function ChallengeDetailClient({ challenge }: ChallengeDetailClie
           )}
         </div>
         
-        {/* Model Comparison */}
-        {challengeResponses.length > 0 && (
-          <motion.div 
-            className="mt-16"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            <h2 className="text-2xl font-display font-bold mb-6">Compare Model Responses</h2>
-            <ModelComparison 
-              comparison={{
-                title: challenge.title,
-                description: challenge.description,
-                prompt: prompt,
-                models: availableModels,
-                outputs: outputResponses
-              }}
-            />
-          </motion.div>
-        )}
       </div>
     </ExpansionProvider>
   );

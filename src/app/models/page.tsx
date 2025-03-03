@@ -19,9 +19,7 @@ export default function ModelsPage() {
     return acc;
   }, {} as Record<string, typeof models>);
   
-  // Get providers sorted alphabetically, but with xAI at the end
   const sortedProviders = Object.keys(modelsByProvider).sort((a, b) => {
-    // Always put xAI at the end
     if (a.toLowerCase() === 'xai') return 1;
     if (b.toLowerCase() === 'xai') return -1;
     
