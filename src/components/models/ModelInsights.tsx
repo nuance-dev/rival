@@ -361,7 +361,7 @@ const ModelInsightsContent = ({ model }: { model: AIModel }) => {
             category,
             win_count: data.wins,
             total_count: data.total,
-            win_percentage: calculateWinPercentage(data.wins, data.total)
+            win_percentage: calculateWinPercentage(data.wins, data.total - data.wins)
           }))
           .sort((a, b) => b.win_percentage - a.win_percentage);
         
@@ -760,7 +760,7 @@ const ModelInsightsContent = ({ model }: { model: AIModel }) => {
                                   {category.name}
                                 </h4>
                                 <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-                                  {category.winCount} / {category.totalCount} Duels
+                                  {category.winCount} wins in {category.totalCount} duels
                                 </span>
                               </div>
                               
@@ -841,7 +841,7 @@ const ModelInsightsContent = ({ model }: { model: AIModel }) => {
                                 </div>
                                 
                                 <div className="mt-2 text-xs text-muted-foreground">
-                                  Won {challenge.wins} of {challenge.total} duels
+                                  Won {challenge.wins} of {challenge.total} duels ({challenge.percentage.toFixed(1)}% win rate)
                                 </div>
                               </motion.li>
                             ))}
