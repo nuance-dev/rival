@@ -16,16 +16,18 @@ interface CardContentProps {
   };
   displayTitle?: string;
   expanded?: boolean;
+  className?: string;
 }
 
 export const CardContent: React.FC<CardContentProps> = ({ 
   output, 
   displayTitle,
-  expanded = false
+  expanded = false,
+  className = ""
 }) => {
   if (!output.content) {
     return (
-      <div className="p-4 text-muted-foreground text-sm">
+      <div className={`p-4 text-muted-foreground text-sm ${className}`}>
         No content available for this output.
       </div>
     );
@@ -257,7 +259,11 @@ export const CardContent: React.FC<CardContentProps> = ({
     }
   };
 
-  return expanded ? renderExpandedContent() : renderPreview();
+  return (
+    <div className={className}>
+      {expanded ? renderExpandedContent() : renderPreview()}
+    </div>
+  );
 };
 
 export default CardContent;

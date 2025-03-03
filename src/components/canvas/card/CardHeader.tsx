@@ -21,6 +21,7 @@ interface CardHeaderProps {
   onClose: (e?: React.MouseEvent) => void;
   onNavigateToModel: (e: React.MouseEvent) => void;
   onNavigateToChallenge?: (e: React.MouseEvent) => void;
+  className?: string;
 }
 
 export const CardHeader: React.FC<CardHeaderProps> = ({
@@ -28,7 +29,8 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
   displayTitle,
   onClose,
   onNavigateToModel,
-  onNavigateToChallenge
+  onNavigateToChallenge,
+  className = ""
 }) => {
   const [isCopied, setIsCopied] = useState(false);
   const isMounted = useRef(true);
@@ -110,7 +112,7 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
   };
 
   return (
-    <div className="p-4 flex items-center justify-between border-b bg-muted/20">
+    <div className={`p-4 flex items-center justify-between border-b bg-muted/20 ${className}`}>
       <div className="flex items-center">
         <button
           onClick={handleClose}

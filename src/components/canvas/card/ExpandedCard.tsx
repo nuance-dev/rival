@@ -79,27 +79,16 @@ export const ExpandedCard: React.FC<ExpandedCardProps> = ({
     e.stopPropagation();
     setShowDuelModal(!showDuelModal);
   };
-  
-  // Enhanced debug output with full output details
-  console.debug('[ExpandedCard] Rendering card with:', { 
-    modelId: output.modelId, 
-    challengeId: output.challengeId,
-    shouldShowDuelButton,
-    fullOutput: {
-      id: output.id,
-      modelId: output.modelId,
-      type: output.type,
-      title: output.title,
-      description: output.description,
-      categories: output.categories,
-      date: output.date,
-      challengeId: output.challengeId,
-      prompt: output.prompt ? "[present]" : "[missing]"
-    }
-  });
 
   return (
-    <div className="flex flex-col h-full" onClick={e => e.stopPropagation()}>
+    <div 
+      className="flex flex-col h-full w-full max-h-[calc(100vh-16px)] md:max-h-[calc(100vh-32px)] bg-background shadow-2xl sm:rounded-xl overflow-hidden"
+      onClick={e => e.stopPropagation()}
+      style={{
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+      }}
+    >
       {/* Header */}
       <CardHeader 
         output={output}
@@ -107,13 +96,14 @@ export const ExpandedCard: React.FC<ExpandedCardProps> = ({
         onClose={handleClose}
         onNavigateToModel={handleModelClick}
         onNavigateToChallenge={onNavigateToChallenge}
+        className="sticky top-0 z-20 backdrop-blur-md bg-background/80 border-b border-border/80"
       />
       
       {/* Progressive disclosure of prompt */}
       {output.prompt && (
-        <div className="border-b border-border">
+        <div className="border-b border-border/80">
           <details className="group [&>summary]:list-none">
-            <summary className="p-3 flex items-center justify-between cursor-pointer hover:bg-muted/10 transition-colors" onClick={(e) => {
+            <summary className="p-3 sm:p-4 flex items-center justify-between cursor-pointer hover:bg-muted/10 transition-colors" onClick={(e) => {
               // Prevent the card from closing when clicking on the summary
               e.stopPropagation();
             }}>
@@ -125,11 +115,11 @@ export const ExpandedCard: React.FC<ExpandedCardProps> = ({
                 <ChevronDown className="h-4 w-4 group-open:rotate-180 transition-transform duration-200" />
               </div>
             </summary>
-            <div className="p-4 bg-muted/5 border-t border-border" onClick={(e) => {
+            <div className="p-3 sm:p-4 bg-muted/5" onClick={(e) => {
               // Prevent the card from closing when clicking on the prompt content
               e.stopPropagation();
             }}>
-              <div className="bg-muted/20 rounded-lg p-3 text-sm font-mono">
+              <div className="bg-muted/20 rounded-lg p-3 text-sm font-mono overflow-x-auto">
                 {output.prompt}
               </div>
             </div>
@@ -137,28 +127,29 @@ export const ExpandedCard: React.FC<ExpandedCardProps> = ({
         </div>
       )}
       
-      {/* Content section */}
+      {/* Content section with improved scrolling behavior */}
       <div className="flex-1 flex flex-col overflow-hidden min-h-0">
-        <div className="overflow-auto flex-grow">
+        <div className="overflow-auto flex-grow scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/30 px-1 sm:px-2">
           <CardContent 
             output={output}
             displayTitle={displayTitle}
             expanded={true}
+            className="p-2 sm:p-4"
           />
         </div>
       </div>
       
-      {/* Footer with model and challenge information - ensure it's always visible */}
-      <div className="py-4 px-4 flex items-center justify-between border-t bg-muted/40 backdrop-blur mt-auto sticky bottom-0 left-0 right-0 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+      {/* Footer with model and challenge information - responsive design for mobile */}
+      <div className="py-3 px-3 sm:py-4 sm:px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-border/80 bg-background/80 backdrop-blur-md mt-auto sticky bottom-0 left-0 right-0 z-10 shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.05)]">
         <div className="flex items-center">
           {output.modelId && (
             <button 
               data-model-link="true"
-              className="flex items-center cursor-pointer hover:text-primary transition-colors"
+              className="flex items-center cursor-pointer hover:text-primary transition-all group"
               onClick={handleModelClick}
             >
-              <ModelIcon modelId={output.modelId || ''} className="w-5 h-5 mr-2 inline-flex" />
-              <span className="text-sm inline-flex items-center">
+              <ModelIcon modelId={output.modelId || ''} className="w-5 h-5 mr-2 inline-flex group-hover:scale-110 transition-transform duration-300" />
+              <span className="text-sm inline-flex items-center font-medium">
                 {output.modelName || formatModelName(output.modelId)}
                 {output.funFact && <FunFactTooltip funFact={output.funFact} />}
               </span>
@@ -166,12 +157,12 @@ export const ExpandedCard: React.FC<ExpandedCardProps> = ({
           )}
         </div>
         
-        <div className="flex items-center gap-2">
-          {/* Duel button */}
+        <div className="flex items-center gap-2 self-end sm:self-auto">
+          {/* Duel button with improved styling */}
           {shouldShowDuelButton && (
             <button
               onClick={handleToggleDuelModal}
-              className="h-8 px-3 rounded-full flex items-center gap-1.5 text-xs hover:bg-primary/10 hover:text-primary transition-colors"
+              className="h-8 px-3 rounded-full flex items-center gap-1.5 text-xs font-medium bg-muted/20 hover:bg-primary/10 hover:text-primary transition-all duration-200 border border-border/40 hover:border-primary/40 hover:shadow-sm"
               title="Compare with another model"
             >
               <Swords className="h-3.5 w-3.5 mr-0.5" />
@@ -179,12 +170,12 @@ export const ExpandedCard: React.FC<ExpandedCardProps> = ({
             </button>
           )}
           
-          {/* Challenge navigation */}
+          {/* Challenge navigation with improved button */}
           {output.challengeId && onNavigateToChallenge && (
             <button
               data-challenge-link="true"
               onClick={handleChallengeClick}
-              className="h-8 px-3 rounded-full flex items-center gap-1.5 text-xs hover:bg-muted/60 transition-colors"
+              className="h-8 px-3 rounded-full flex items-center gap-1.5 text-xs font-medium bg-muted/20 hover:bg-muted/40 transition-all duration-200 border border-border/40 hover:shadow-sm"
             >
               View challenge <ExternalLink className="h-3 w-3 ml-0.5" />
             </button>

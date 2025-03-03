@@ -250,73 +250,49 @@ export const NewOutputCard = React.memo(function NewOutputCard({
           position: fixed !important;
           top: 0 !important;
           left: 0 !important;
-          right: 0 !important;
-          bottom: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          z-index: 1000 !important;
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
-          z-index: 9999 !important;
-          pointer-events: none !important;
+          padding: 8px !important;
         }
         
-        .expanded-card-wrapper {
-          position: relative !important;
-          width: calc(100% - 8rem) !important;
-          max-width: 64rem !important;
-          height: calc(100% - 8rem) !important;
-          max-height: 90vh !important;
-          margin: auto !important;
-          overflow: hidden !important;
-          border-radius: 1rem !important;
-          box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important;
-          background-color: var(--card-bg, #ffffff) !important;
-          pointer-events: auto !important;
+        /* Enhanced mobile styles for expanded cards */
+        @media (max-width: 640px) {
+          .expanded-card-container {
+            padding: 0 !important;
+          }
+          
+          /* Scrollbar styling for mobile */
+          .scrollbar-thin {
+            scrollbar-width: thin;
+          }
+          
+          .scrollbar-thin::-webkit-scrollbar {
+            width: 4px;
+          }
+          
+          .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          
+          .scrollbar-thin::-webkit-scrollbar-thumb {
+            background-color: rgba(155, 155, 155, 0.2);
+            border-radius: 20px;
+          }
+          
+          .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(155, 155, 155, 0.3);
+          }
         }
         
-        .expanded-card-fixed {
-          position: fixed !important;
-          top: 4rem !important;
-          left: 4rem !important;
-          right: 4rem !important;
-          bottom: 4rem !important;
-          margin: auto !important;
-          max-width: 64rem !important;
-          max-height: 90vh !important;
-          z-index: 9999 !important;
-          overflow: auto !important;
-          border-radius: 1rem !important;
-          box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important;
-          transform: none !important;
-          transition: none !important;
-        }
-        
-        /* Make backdrop blur stronger for better contrast */
-        .backdrop-blur {
-          backdrop-filter: blur(10px) !important;
-        }
-        
-        /* Modal system - fixed any rendering issues with content */
-        .modal-overlay {
-          position: fixed;
-          inset: 0;
-          background-color: rgba(0, 0, 0, 0.5);
-          z-index: 100;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          backdrop-filter: blur(10px);
-        }
-        
-        .modal-content {
-          position: relative;
-          width: calc(100% - 8rem);
-          max-width: 64rem;
-          height: calc(100% - 8rem);
-          max-height: 90vh;
-          background-color: var(--card-bg, #ffffff);
-          border-radius: 1rem;
-          box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-          overflow: auto;
+        /* Next-gen backdrop for expanded cards */
+        #expansion-backdrop {
+          background: rgba(0, 0, 0, 0.4);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
         }
       `;
       document.head.appendChild(style);
