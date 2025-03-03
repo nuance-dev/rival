@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, ExternalLink, Swords, X, ChevronLeft, ChevronDown } from 'lucide-react';
+import { AlertCircle, ExternalLink, Swords, X, ChevronLeft } from 'lucide-react';
 import { 
   ModelDuelStats, 
   generateVoterId, 
@@ -34,18 +34,17 @@ export const DuelModal: React.FC<DuelModalProps> = ({
   challengeId, 
   onClose 
 }) => {
-  const [stage, setStage] = useState<DuelStage>('select');
+  const [availableModels, setAvailableModels] = useState<ModelResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [selectedModelOutput, setSelectedModelOutput] = useState<ModelOutput | null>(null);
-  const [availableModels, setAvailableModels] = useState<ModelOutput[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [duelStage, setDuelStage] = useState<DuelStage>('select');
+  const [userVote, setUserVote] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [activeTab, setActiveTab] = useState<'model1' | 'model2'>('model1');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [stats, setStats] = useState<ModelDuelStats | null>(null);
-  const [userVote, setUserVote] = useState<string | null>(null);
   const [voterId] = useState(() => generateVoterId());
-  const [voteAnimation, setVoteAnimation] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'model1' | 'model2'>('model1');
-  const [isMobile, setIsMobile] = useState(false);
   
   // Check if we're on mobile
   useEffect(() => {
@@ -111,7 +110,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
     const modelOutput = availableModels.find(model => model.modelId === modelId) || null;
     setSelectedModel(modelId);
     setSelectedModelOutput(modelOutput);
-    setStage('duel');
+    setDuelStage('duel');
     
     // Check for previous votes
     if (modelId && currentOutput.modelId) {
@@ -125,7 +124,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
             const duelStats = await getModelDuelStats(currentOutput.modelId!, modelId, challengeId);
             if (duelStats) {
               setStats(duelStats);
-              setStage('results');
+              setDuelStage('results');
             }
           }
         }
@@ -149,8 +148,6 @@ export const DuelModal: React.FC<DuelModalProps> = ({
       setErrorMessage("Please wait a moment before voting again");
       return;
     }
-    
-    setVoteAnimation(winnerId);
     
     try {
       // Record vote in Supabase
@@ -178,8 +175,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
         setTimeout(async () => {
           const updatedStats = await getModelDuelStats(currentOutput.modelId!, selectedModel, challengeId);
           setStats(updatedStats);
-          setStage('results');
-          setVoteAnimation(null);
+          setDuelStage('results');
         }, 800);
       } else if (error) {
         setErrorMessage("Unable to record your vote. Please try again later.");
@@ -218,7 +214,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
     }
     acc[provider].push(model);
     return acc;
-  }, {} as Record<string, ModelOutput[]>);
+  }, {} as Record<string, ModelResponse[]>);
   
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm" onClick={onClose}>
@@ -235,9 +231,9 @@ export const DuelModal: React.FC<DuelModalProps> = ({
           <div className="flex items-center">
             <Swords className="h-5 w-5 mr-2 text-primary" />
             <h3 className="text-lg font-semibold">AI Duel</h3>
-            {stage !== 'select' && (
+            {duelStage !== 'select' && (
               <button 
-                onClick={() => setStage('select')}
+                onClick={() => setDuelStage('select')}
                 className="ml-4 flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
@@ -256,7 +252,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
         
         {/* Content based on stage */}
         <AnimatePresence mode="wait">
-          {stage === 'select' && (
+          {duelStage === 'select' && (
             <motion.div 
               key="model-selection"
               className="flex-1 overflow-auto p-6"
@@ -314,7 +310,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
             </motion.div>
           )}
           
-          {stage === 'duel' && selectedModelOutput && (
+          {duelStage === 'duel' && selectedModelOutput && (
             <motion.div 
               key="duel-view"
               className="flex-1 flex flex-col overflow-hidden"
@@ -367,8 +363,8 @@ export const DuelModal: React.FC<DuelModalProps> = ({
                       </button>
                     </div>
 
-                    {/* Simple scrollable content - with max height for mobile */}
-                    <div className="h-[60vh] overflow-auto pb-12" style={{ maxHeight: "calc(100vh - 250px)" }}>
+                    {/* Improved scrollable content for mobile */}
+                    <div className="flex-1 overflow-auto pb-16" style={{ maxHeight: "60vh", height: "auto" }}>
                       {activeTab === 'model1' ? (
                         <div className="p-4">
                           <CardContent 
@@ -385,17 +381,10 @@ export const DuelModal: React.FC<DuelModalProps> = ({
                         </div>
                       )}
                     </div>
-                    
-                    {/* Indicator for scrolling */}
-                    <div className="py-2 flex justify-center text-xs text-muted-foreground">
-                      <div className="animate-bounce flex items-center">
-                        Scroll to see more <ChevronDown className="h-3 w-3 ml-1" />
-                      </div>
-                    </div>
                   </div>
                 ) : (
                   <>
-                    {/* Desktop side-by-side view */}
+                    {/* Desktop side-by-side view - fix the height constraint */}
                     <div className="flex flex-col h-full border-b md:border-b-0 md:border-r border-border">
                       <div className="flex items-center justify-center gap-2 p-4 border-b border-border bg-muted/5 sticky top-0 z-10">
                         <ModelIcon modelId={currentOutput.modelId || ''} className="w-5 h-5" />
@@ -403,7 +392,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
                           {formatModelName(currentOutput.modelId || '')}
                         </span>
                       </div>
-                      <div className="overflow-y-auto" style={{ height: "calc(60vh)" }}>
+                      <div className="flex-1 overflow-auto pb-12" style={{ maxHeight: "calc(100vh - 320px)" }}>
                         <div className="p-4">
                           <CardContent 
                             output={currentOutput}
@@ -420,7 +409,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
                           {formatModelName(selectedModel || '')}
                         </span>
                       </div>
-                      <div className="overflow-y-auto" style={{ height: "calc(60vh)" }}>
+                      <div className="flex-1 overflow-auto pb-12" style={{ maxHeight: "calc(100vh - 320px)" }}>
                         <div className="p-4">
                           <CardContent 
                             output={selectedModelOutput}
@@ -433,89 +422,89 @@ export const DuelModal: React.FC<DuelModalProps> = ({
                 )}
               </div>
               
-              {/* Voting footer */}
-              <div className="p-4 border-t border-border bg-muted/5">
+              {/* Vote buttons - make them smaller on mobile */}
+              <div className="p-4 bg-card rounded-md">
                 <div className="text-center mb-4">
-                  <h4 className="text-base font-medium mb-1">Which model performed better?</h4>
+                  <h3 className="text-lg font-medium">Vote for the best response</h3>
                   <p className="text-sm text-muted-foreground">
-                    Vote for the model that gave the best response to this challenge
+                    Which model generated the best response to this prompt?
                   </p>
                 </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <motion.button
-                    className="relative flex flex-col items-center justify-center py-4 px-4 rounded-lg border border-border/50 bg-card/50 hover:bg-primary/5 hover:border-primary/30 transition-colors"
-                    onClick={() => handleVote(currentOutput.modelId!)}
-                    disabled={!!userVote}
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.98 }}
+
+                <div className={`flex gap-3 ${isMobile ? 'flex-col' : ''}`}>
+                  <button
+                    onClick={() => handleVote(currentOutput.modelId || '')}
+                    disabled={!!userVote || isThrottled()}
+                    className={`flex-1 flex items-center justify-center gap-2 rounded-md border ${
+                      userVote === currentOutput.modelId 
+                        ? 'bg-primary/10 border-primary' 
+                        : 'bg-muted/30 border-border hover:bg-muted/50'
+                    } transition-colors ${
+                      isMobile ? 'py-3' : 'py-4'
+                    } px-4 disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
-                    <ModelIcon modelId={currentOutput.modelId || ''} className="w-6 h-6 mb-2" />
-                    <span className="text-sm font-medium mb-1">{formatModelName(currentOutput.modelId || '')}</span>
-                    <span className="text-xs text-muted-foreground">is better</span>
-                    
-                    {voteAnimation === currentOutput.modelId && (
-                      <motion.div
-                        className="absolute inset-0 rounded-lg border-2 border-primary"
-                        initial={{ opacity: 0, scale: 1.1 }}
-                        animate={{ opacity: [0, 1, 0], scale: [1.1, 1.05, 1.2] }}
-                        transition={{ duration: 0.6, ease: "easeOut" }}
-                      />
-                    )}
-                  </motion.button>
-                  
-                  {/* Tie option */}
-                  <motion.button
-                    className="relative flex flex-col items-center justify-center py-4 px-4 rounded-lg border border-border/50 bg-card/50 hover:bg-amber-500/5 hover:border-amber-500/30 transition-colors"
-                    onClick={() => handleVote("tie")}
-                    disabled={!!userVote}
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="flex gap-1 items-center mb-2">
-                      <ModelIcon modelId={currentOutput.modelId || ''} className="w-5 h-5" />
-                      <span className="text-xl font-light">=</span>
-                      <ModelIcon modelId={selectedModel || ''} className="w-5 h-5" />
+                    <ModelIcon modelId={currentOutput.modelId || ''} className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+                    <div className="text-left">
+                      <div className={`font-medium ${isMobile ? 'text-sm' : ''}`}>
+                        {formatModelName(currentOutput.modelId || '')}
+                      </div>
+                      {userVote && stats && (
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {model1Percent}% of votes ({stats.model1_votes})
+                        </div>
+                      )}
                     </div>
-                    <span className="text-sm font-medium mb-1">Tie</span>
-                    <span className="text-xs text-muted-foreground">both performed equally</span>
-                    
-                    {voteAnimation === "tie" && (
-                      <motion.div
-                        className="absolute inset-0 rounded-lg border-2 border-amber-500"
-                        initial={{ opacity: 0, scale: 1.1 }}
-                        animate={{ opacity: [0, 1, 0], scale: [1.1, 1.05, 1.2] }}
-                        transition={{ duration: 0.6, ease: "easeOut" }}
-                      />
-                    )}
-                  </motion.button>
+                  </button>
                   
-                  <motion.button
-                    className="relative flex flex-col items-center justify-center py-4 px-4 rounded-lg border border-border/50 bg-card/50 hover:bg-primary/5 hover:border-primary/30 transition-colors"
-                    onClick={() => handleVote(selectedModel!)}
-                    disabled={!!userVote}
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.98 }}
+                  {/* Add back the tie button */}
+                  <button
+                    onClick={() => handleVote('tie')}
+                    disabled={!!userVote || isThrottled()}
+                    className={`${isMobile ? 'py-2' : 'py-3'} px-4 flex items-center justify-center gap-2 rounded-md border ${
+                      userVote === 'tie' 
+                        ? 'bg-amber-500/10 border-amber-500' 
+                        : 'bg-muted/30 border-border hover:bg-amber-500/5 hover:border-amber-500/30'
+                    } transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
-                    <ModelIcon modelId={selectedModel || ''} className="w-6 h-6 mb-2" />
-                    <span className="text-sm font-medium mb-1">{formatModelName(selectedModel || '')}</span>
-                    <span className="text-xs text-muted-foreground">is better</span>
-                    
-                    {voteAnimation === selectedModel && (
-                      <motion.div
-                        className="absolute inset-0 rounded-lg border-2 border-primary"
-                        initial={{ opacity: 0, scale: 1.1 }}
-                        animate={{ opacity: [0, 1, 0], scale: [1.1, 1.05, 1.2] }}
-                        transition={{ duration: 0.6, ease: "easeOut" }}
-                      />
-                    )}
-                  </motion.button>
+                    <div className="flex items-center">
+                      <span className={`font-medium ${isMobile ? 'text-sm' : ''}`}>Tie</span>
+                      {userVote && stats && (
+                        <span className="text-xs text-muted-foreground ml-2">
+                          ({stats.tie_votes || 0})
+                        </span>
+                      )}
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => handleVote(selectedModel || '')}
+                    disabled={!!userVote || isThrottled()}
+                    className={`flex-1 flex items-center justify-center gap-2 rounded-md border ${
+                      userVote === selectedModel 
+                        ? 'bg-primary/10 border-primary' 
+                        : 'bg-muted/30 border-border hover:bg-muted/50'
+                    } transition-colors ${
+                      isMobile ? 'py-3' : 'py-4'
+                    } px-4 disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    <ModelIcon modelId={selectedModel || ''} className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+                    <div className="text-left">
+                      <div className={`font-medium ${isMobile ? 'text-sm' : ''}`}>
+                        {formatModelName(selectedModel || '')}
+                      </div>
+                      {userVote && stats && (
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {model2Percent}% of votes ({stats.model2_votes})
+                        </div>
+                      )}
+                    </div>
+                  </button>
                 </div>
               </div>
             </motion.div>
           )}
           
-          {stage === 'results' && stats && (
+          {duelStage === 'results' && stats && (
             <motion.div 
               key="results-view"
               className="flex-1 overflow-auto p-6"
@@ -601,7 +590,7 @@ export const DuelModal: React.FC<DuelModalProps> = ({
                   </motion.button>
                   
                   <motion.button
-                    onClick={() => setStage('select')}
+                    onClick={() => setDuelStage('select')}
                     className="flex items-center justify-center gap-2 py-3 px-6 rounded-lg border border-border hover:bg-muted/10 transition-colors"
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.98 }}
