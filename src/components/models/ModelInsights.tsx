@@ -292,14 +292,25 @@ const ModelInsightsContent = ({ model }: { model: AIModel }) => {
         // Calculate category performance
         const categoriesMap = new Map<string, { wins: number, total: number }>();
         
+        // First, make sure each category from the challenge data is initialized
+        promptChallenges.forEach(challenge => {
+          const category = challenge.category;
+          if (!categoriesMap.has(category)) {
+            categoriesMap.set(category, { wins: 0, total: 0 });
+          }
+        });
+        
         filteredVotes.forEach(vote => {
           const category = vote.challenge_category;
+          
+          // Ensure the category exists in our map
           if (!categoriesMap.has(category)) {
             categoriesMap.set(category, { wins: 0, total: 0 });
           }
           
           const categoryData = categoriesMap.get(category)!;
           
+          // Only increase counters if this model participated in the vote
           if (vote.model1_id === model.id || vote.model2_id === model.id) {
             categoryData.total++;
             if (vote.winner_id === model.id) {
@@ -307,6 +318,43 @@ const ModelInsightsContent = ({ model }: { model: AIModel }) => {
             }
           }
         });
+        
+        // Special case: For image-generation category, we might need to separate by challenge type
+        // This ensures models that win all SVG challenges get 100% in the image-generation category
+        // when no other image-generation votes are present
+        if (categoriesMap.has('image-generation')) {
+          // Get SVG-specific stats
+          const svgVotes = filteredVotes.filter(vote => 
+            vote.challenge_category === 'image-generation' && 
+            vote.expected_output_type === 'svg'
+          );
+          
+          // Check if we only have SVG votes for image-generation
+          if (svgVotes.length > 0 && 
+              svgVotes.length === filteredVotes.filter(v => v.challenge_category === 'image-generation').length) {
+            
+            // Count wins for SVG-only image generation challenges
+            let svgWins = 0;
+            let svgTotal = 0;
+            
+            svgVotes.forEach(vote => {
+              if (vote.model1_id === model.id || vote.model2_id === model.id) {
+                svgTotal++;
+                if (vote.winner_id === model.id) {
+                  svgWins++;
+                }
+              }
+            });
+            
+            // Replace the image-generation category stats with SVG-specific stats
+            if (svgTotal > 0) {
+              categoriesMap.set('image-generation', { 
+                wins: svgWins, 
+                total: svgTotal 
+              });
+            }
+          }
+        }
         
         const categoryPerformance: CategoryPerformance[] = Array.from(categoriesMap.entries())
           .map(([category, data]) => ({

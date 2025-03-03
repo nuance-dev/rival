@@ -226,7 +226,8 @@ export function formatModelName(modelId: string): string {
     'o1-preview': 'o1 Preview',
     'o1-mini': 'o1 Mini',
     'o3': 'o3',
-    'o3-mini': 'o3 Mini',
+    'o3-mini': 'o3 Mini', // Ensure o3-mini is correctly shown as o3 Mini
+    'gpt-o3-mini': 'o3 Mini', // Handle the canonical form too
     'r1': 'r1',
     'gpt-4o': 'GPT-4o',
     'gpt4o': 'GPT-4o',
@@ -261,33 +262,38 @@ export function formatModelName(modelId: string): string {
     'mistral-medium': 'Mistral Medium',
     'mistral-small': 'Mistral Small',
   };
-
-  // Check all possible variations of the model ID
-  // This handles cases where the ID might be formatted differently
-  const possibleKeys = [
-    normalizedId,
-    normalizedId.replace(/\./g, ''),       // Remove dots
-    normalizedId.replace(/-/g, ''),        // Remove hyphens
-    normalizedId.replace(/\s+/g, ''),      // Remove spaces
-    normalizedId.replace(/\s+|-|\./g, '')  // Remove spaces, hyphens, and dots
-  ];
   
-  // Try to find a match in our special cases
-  for (const key of possibleKeys) {
-    if (specialCases[key]) {
-      return specialCases[key];
-    }
+  // First, check for exact matches in our special cases
+  if (specialCases[normalizedId]) {
+    return specialCases[normalizedId];
   }
-
-  // If no exact match, try partial matching (more conservative approach)
+  
+  // If no exact match, check for partial matches using normalized ID
   for (const [key, value] of Object.entries(specialCases)) {
-    // Check if the normalized ID contains the special case key or vice versa
-    if (normalizedId.includes(key) || key.includes(normalizedId)) {
-      return value;
+    // For model variants like o1-mini, ensure we prioritize the most specific match
+    // This helps prevent o3-mini being matched as just o3
+    if (normalizedId === key || normalizedId.startsWith(key + '-')) {
+      // If it's an exact match OR it's a variant (with a hyphen), return the value
+      if (normalizedId === key) {
+        return value;
+      }
+      
+      // For variants, extract the suffix and append it
+      const suffix = normalizedId.slice(key.length);
+      if (suffix.startsWith('-') && suffix.length > 1) {
+        // Capitalize the suffix and append it
+        const formattedSuffix = suffix
+          .slice(1) // Remove the hyphen
+          .split('-')
+          .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(' ');
+        
+        return `${value} ${formattedSuffix}`;
+      }
     }
   }
   
-  // If no special case found, apply general formatting
+  // If still no match, apply general formatting
   // Split by hyphens and replace with spaces
   return modelId
     .split('-')
