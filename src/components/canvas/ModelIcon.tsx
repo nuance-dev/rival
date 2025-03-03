@@ -129,14 +129,6 @@ const ModelIcon = React.memo(({ modelId, className }: ModelIconProps) => {
   
   return (
     <div className="relative inline-flex items-center justify-center">
-      {/* Placeholder with improved alignment */}
-      <div className={cn(
-        "w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center text-xs font-medium transition-opacity duration-300",
-        isLoaded && !fallbackTriggered ? "opacity-0" : "opacity-100",
-        className
-      )}>
-        {modelId?.charAt(0)?.toUpperCase() || '?'}
-      </div>
       
       {/* Actual image with improved positioning */}
       {iconSrc && !fallbackTriggered && (
