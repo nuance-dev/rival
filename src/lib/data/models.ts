@@ -371,8 +371,28 @@ export const models: AIModel[] = [
     ]
   },
   {
+    id: "gemini-2-5-pro-exp",
+    name: "Gemini 2.5 Pro Experimental",
+    provider: "google",
+    releaseDate: "August 16, 2024",
+    description: "Gemini 2.5 Pro Experimental is Google's advanced model with improved multimodal reasoning, long context understanding with 1 million tokens, and specialized video comprehension.",
+    capabilities: ["conversation", "reasoning", "code-generation", "analysis"],
+    categories: ["text", "code", "vision", "multimodal"],
+    size: "xlarge",
+    contextWindow: 1000000,
+    parametersCount: "Not disclosed",
+    gradientColors: ["#FF1F1F", "#176BEF"],
+    logoUrl: getModelLogoPath("gemini-2-0-pro-exp"),
+    url: "https://deepmind.google/technologies/gemini",
+    uniqueCapabilities: [
+      "1M Token Context Window: Processes entire books and long document sequences without truncation.",
+      "Multimodal Turn Consistency: Maintains reasoning across mixed-media conversational turns.",
+      "Improved Prompt Adherence: Enhanced faithfulness to complex prompt instructions."
+    ]
+  },
+  {
     id: "gemini-2-0-pro-exp",
-    name: "Gemini 2.0 Pro",
+    name: "Gemini 2.0 Pro Experimental",
     provider: "google",
     releaseDate: "January 2025",
     description: "Gemini 2.0 Pro builds interactive 3D environments from text descriptions and offers hypothetical reasoning for scientific simulations.",

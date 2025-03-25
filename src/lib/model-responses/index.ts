@@ -4,6 +4,7 @@ import { claude_3_5_sonnetResponses } from "./claude-3-5-sonnet";
 import { claude_3_7_sonnetResponses } from "./claude-3-7-sonnet";
 import { claude_3_7_sonnet_thinkingResponses } from "./claude-3-7-sonnet-thinking";
 import { deepseek_r1Responses } from "./deepseek-r1";
+import { gemini_2_5_pro_expResponses } from "./gemini-2-5-pro-exp";
 import { gemini_2_0_pro_expResponses } from "./gemini-2-0-pro-exp";
 import { gemini_2_0_flash_thinking_expResponses } from "./gemini-2-0-flash-thinking-exp";
 import { o1Responses } from "./o1";
@@ -26,6 +27,7 @@ import * as claude_3_5_sonnet from "./claude-3-5-sonnet";
 import * as claude_3_7_sonnet from "./claude-3-7-sonnet";
 import * as claude_3_7_sonnet_thinking from "./claude-3-7-sonnet-thinking";
 import * as deepseek_r1 from "./deepseek-r1";
+import * as gemini_2_5_pro_exp from "./gemini-2-5-pro-exp";
 import * as gemini_2_0_pro_exp from "./gemini-2-0-pro-exp";
 import * as gemini_2_0_flash_thinking_exp from "./gemini-2-0-flash-thinking-exp";
 import * as o1 from "./o1";
@@ -49,6 +51,7 @@ const allRawResponses: ModelResponse[] = [
   ...claude_3_7_sonnetResponses,
   ...claude_3_7_sonnet_thinkingResponses,
   ...deepseek_r1Responses,
+  ...gemini_2_5_pro_expResponses,
   ...gemini_2_0_pro_expResponses,
   ...gemini_2_0_flash_thinking_expResponses,
   ...o1Responses,
@@ -105,6 +108,7 @@ export {
   claude_3_7_sonnet,
   claude_3_7_sonnet_thinking,
   deepseek_r1,
+  gemini_2_5_pro_exp,
   gemini_2_0_pro_exp,
   gemini_2_0_flash_thinking_exp,
   o1,
