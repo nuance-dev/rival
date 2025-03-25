@@ -4,8 +4,8 @@ export const svgUlayoutgemini_2_5_pro_exp: ModelResponse = {
   id: "gemini-2-5-pro-exp-svg-layout",
   modelId: "gemini-2-5-pro-exp",
   prompt: "Generate an SVG of a pelican riding a bicycle.",
-  responseDate: "2025-02-28",
-  type: "text",
+  responseDate: "2025-03-25",
+  type: "svg",
   title: "svg-layout",
   description: "Gemini 2.5 Pro Experimental's response",
   content: `<svg width="250" height="220" viewBox="0 0 250 220" xmlns="http://www.w3.org/2000/svg">

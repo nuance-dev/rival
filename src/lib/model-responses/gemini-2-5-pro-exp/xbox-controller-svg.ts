@@ -5,7 +5,7 @@ export const xboxUcontrollerUsvggemini_2_5_pro_exp: ModelResponse = {
   modelId: "gemini-2-5-pro-exp",
   prompt: "Create an SVG art of an Xbox controller with detailed buttons, joysticks, and d-pad. Use a modern, clean design style with subtle gradients.",
   responseDate: "2025-03-25",
-  type: "text",
+  type: "svg",
   title: "xbox-controller-svg",
   description: "Gemini 2.5 Pro Experimental's response",
   content: `<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">

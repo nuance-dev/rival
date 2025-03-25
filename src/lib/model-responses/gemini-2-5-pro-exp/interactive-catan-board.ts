@@ -6,7 +6,7 @@ export const interactiveUcatanUboardgemini_2_5_pro_exp: ModelResponse = {
   modelId: "gemini-2-5-pro-exp",
   prompt: "Create a web app with an interactive hex grid like Settlers of Catan, where the number of hexes can be adjusted using a slider. In a single-page self-contained HTML.",
   responseDate: "2025-03-25",
-  type: "text",
+  type: "website",
   title: "interactive-catan-board",
   description: "Gemini 2.5 Pro Experimental's response",
   content: sanitizeModelResponseContent(`<!DOCTYPE html>

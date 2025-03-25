@@ -6,7 +6,7 @@ export const minimalistUlandingUpagegemini_2_5_pro_exp: ModelResponse = {
   modelId: "gemini-2-5-pro-exp",
   prompt: "Generate a single-page landing page for a new AI startup that scans your face and tells you your most likely alternate career in another timeline. In a single-page self-contained HTML.",
   responseDate: "2025-03-25",
-  type: "text",
+  type: "website",
   title: "minimalist-landing-page",
   description: "Gemini 2.5 Pro Experimental's response",
   content: sanitizeModelResponseContent(`<!DOCTYPE html>

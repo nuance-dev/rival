@@ -6,7 +6,7 @@ export const linearAppClonegemini_2_5_pro_exp: ModelResponse = {
   modelId: "gemini-2-5-pro-exp",
   prompt: "Recreate the Linear App UI using Tailwind CSS, keeping the layout and animations as close as possible. In a single-page self-contained HTML.",
   responseDate: "2025-03-25",
-  type: "text",
+  type: "website",
   title: "linear-app-clone",
   description: "Gemini 2.5 Pro Experimental's response",
   content: sanitizeModelResponseContent(`<!DOCTYPE html>

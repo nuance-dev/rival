@@ -6,7 +6,7 @@ export const darkUmodeUdashboardgemini_2_5_pro_exp: ModelResponse = {
   modelId: "gemini-2-5-pro-exp",
   prompt: "Design a sleek admin dashboard UI with light and dark mode toggle, featuring an AI analytics graph. In a single-page self-contained HTML.",
   responseDate: "2025-03-25",
-  type: "text",
+  type: "website",
   title: "dark-mode-dashboard",
   description: "Gemini 2.5 Pro Experimental's response",
   content: sanitizeModelResponseContent(`<!DOCTYPE html>

@@ -4,8 +4,8 @@ export const worldUmapUsvggemini_2_5_pro_exp: ModelResponse = {
   id: "gemini-2-5-pro-exp-world-map-svg",
   modelId: "gemini-2-5-pro-exp",
   prompt: "",
-  responseDate: "2025-02-28",
-  type: "text",
+  responseDate: "2025-03-25",
+  type: "svg",
   title: "world-map-svg",
   description: "Gemini 2.5 Pro Experimental's response",
   content: `<svg width="800" height="400" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" style="background-color: #e0f2f7;">
