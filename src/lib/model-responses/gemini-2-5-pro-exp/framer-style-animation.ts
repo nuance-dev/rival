@@ -6,7 +6,7 @@ export const framerUstyleUanimationgemini_2_5_pro_exp: ModelResponse = {
   modelId: "gemini-2-5-pro-exp",
   prompt: "Generate a landing page with smooth Framer-like transitions between sections. In a single-page self-contained HTML.",
   responseDate: "2025-03-25",
-  type: "text",
+  type: "website",
   title: "framer-style-animation",
   description: "Gemini 2.5 Pro Experimental's response",
   content: sanitizeModelResponseContent(`<!DOCTYPE html>
