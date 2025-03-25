@@ -374,7 +374,7 @@ export const models: AIModel[] = [
     id: "gemini-2-5-pro-exp",
     name: "Gemini 2.5 Pro Experimental",
     provider: "google",
-    releaseDate: "August 16, 2024",
+    releaseDate: "March 25, 2025",
     description: "Gemini 2.5 Pro Experimental is Google's advanced model with improved multimodal reasoning, long context understanding with 1 million tokens, and specialized video comprehension.",
     capabilities: ["conversation", "reasoning", "code-generation", "analysis"],
     categories: ["text", "code", "vision", "multimodal"],
