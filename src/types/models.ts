@@ -57,6 +57,15 @@ export interface AIModel {
   gradientColors?: string[];
   url?: string;
   uniqueCapabilities?: string[];
+  benchmarks?: {
+    [key: string]: {
+      score: string;
+      source?: string;
+    };
+  };
+  color?: string;
+  logo?: string;
+  featured?: boolean;
 }
 
 export interface ModelPrompt {

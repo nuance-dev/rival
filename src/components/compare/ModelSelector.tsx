@@ -3,9 +3,14 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ChevronDown, XCircle, Check, Box } from 'lucide-react';
+import { 
+  X, 
+  ArrowRight,
+  ChevronDown
+} from 'lucide-react';
 import { models } from '@/lib/data';
 import { AIModel } from '@/types/models';
+import { cn } from '@/lib/utils';
 
 type ModelSelectorProps = {
   selectedModels: string[];
@@ -171,7 +176,7 @@ export function ModelSelectorModal({
                 className="text-muted-foreground hover:text-foreground"
                 onClick={onClose}
               >
-                <XCircle className="h-5 w-5" />
+                <X className="h-5 w-5" />
               </button>
             </div>
             
@@ -183,57 +188,63 @@ export function ModelSelectorModal({
                   </h4>
                   
                   <div className="space-y-2">
-                    {providerModels.map(model => (
-                      <button
-                        key={model.id}
-                        className={`
-                          w-full flex items-center gap-3 p-3 rounded-lg transition-colors
-                          ${
-                            (selectorPosition === 1 && selectedModels[1] === model.id) || 
-                            (selectorPosition === 2 && selectedModels[0] === model.id)
-                              ? 'opacity-50 cursor-not-allowed bg-muted/30'
-                              : 'hover:bg-primary/5 cursor-pointer'
-                          }
-                        `}
-                        onClick={() => {
-                          if ((selectorPosition === 1 && selectedModels[1] !== model.id) || 
-                              (selectorPosition === 2 && selectedModels[0] !== model.id)) {
-                            onModelSelect(model.id);
-                          }
-                        }}
-                        disabled={
-                          (selectorPosition === 1 && selectedModels[1] === model.id) || 
-                          (selectorPosition === 2 && selectedModels[0] === model.id)
-                        }
-                      >
-                        <div className="w-8 h-8 min-w-[2rem] rounded-full bg-background flex-shrink-0 flex items-center justify-center overflow-hidden p-1 border border-border/30">
-                          {model.logoUrl ? (
-                            <Image 
-                              src={model.logoUrl || '/placeholder.svg'} 
-                              alt={model.name} 
-                              className="h-full w-full object-contain"
-                              width={32}
-                              height={32}
-                              loading="eager"
-                            />
-                          ) : (
-                            <Box className="h-5 w-5 text-muted-foreground" />
+                    {providerModels.map(model => {
+                      const isSelected = model.id === selectedModels[0] || model.id === selectedModels[1];
+                      const isDisabled = (selectedModels[0] && selectedModels[1] && !isSelected) || (model.id === selectedModels[0] && selectedModels[1] === null);
+                      
+                      const mainBenchmark = model.benchmarks ? 
+                        Object.entries(model.benchmarks).find(([name]) => 
+                          name === "MMLU" || name === "GPQA" || name === "MATH"
+                        ) : null;
+                      
+                      return (
+                        <button
+                          key={model.id}
+                          className={cn(
+                            "w-full flex items-center gap-3 p-3 rounded-lg transition-colors",
+                            isSelected ? "bg-primary/10 border-primary" : "border-border/30 bg-card/30",
+                            isDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-primary/5 cursor-pointer"
                           )}
-                        </div>
-                        
-                        <div className="flex-1 text-left">
-                          <p className="font-medium">{model.name}</p>
-                          <p className="text-xs text-muted-foreground truncate">{model.description.substring(0, 60)}...</p>
-                        </div>
-                        
-                        {((selectorPosition === 1 && selectedModels[0] === model.id) || 
-                         (selectorPosition === 2 && selectedModels[1] === model.id)) && (
-                          <div className="text-primary">
-                            <Check className="h-5 w-5" />
+                          onClick={() => {
+                            if (!isDisabled) {
+                              onModelSelect(model.id);
+                            }
+                          }}
+                          disabled={isDisabled}
+                        >
+                          <div className="w-8 h-8 min-w-[2rem] rounded-full bg-background flex-shrink-0 flex items-center justify-center overflow-hidden p-1 border border-border/30">
+                            {model.logoUrl && (
+                              <Image 
+                                src={model.logoUrl} 
+                                alt={model.name}
+                                className="h-full w-full object-contain" 
+                              />
+                            )}
                           </div>
-                        )}
-                      </button>
-                    ))}
+                          
+                          <div className="flex-1 text-left">
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-medium text-sm">{model.name}</h3>
+                              {mainBenchmark && (
+                                <div 
+                                  className="px-1.5 py-0.5 text-xs rounded-full font-mono"
+                                  style={{ 
+                                    backgroundColor: model.gradientColors ? `${model.gradientColors[0]}33` : '#3b82f633',
+                                    color: model.gradientColors ? model.gradientColors[0] : '#3b82f6'
+                                  }}
+                                  title={`${mainBenchmark[0]} benchmark score`}
+                                >
+                                  {mainBenchmark[1].score}
+                                </div>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground line-clamp-1">
+                              {model.provider.charAt(0).toUpperCase() + model.provider.slice(1)}
+                            </p>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               ))}

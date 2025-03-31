@@ -204,6 +204,92 @@ export function ModelDetailClient({
         </div>
       </section>
       
+      {/* Model Benchmark Section */}
+      {model.benchmarks && Object.keys(model.benchmarks).length > 0 && (
+        <section className="py-16 border-b">
+          <div className="container">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={headerVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h2 className="text-3xl font-display mb-3">Benchmark Performance</h2>
+              <p className="text-muted-foreground mb-8 max-w-3xl">
+                Performance metrics on industry standard AI benchmarks that measure capabilities across reasoning, knowledge, and specialized tasks.
+              </p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Object.entries(model.benchmarks).map(([name, data], index) => {
+                  // Extract numeric value from score string for progress bar
+                  const numericScore = parseFloat(data.score.replace(/[^0-9.]/g, ''));
+                  const isValid = !isNaN(numericScore) && numericScore <= 100;
+                  
+                  // Set colors based on score range
+                  let scoreColor = "#10b981"; // Default green
+                  if (numericScore < 70) scoreColor = "#f59e0b"; // Amber
+                  if (numericScore < 50) scoreColor = "#ef4444"; // Red
+                  
+                  // Gradient for background based on model colors
+                  const gradientStyle = model.gradientColors ? {
+                    backgroundImage: `linear-gradient(135deg, ${model.gradientColors[0]}22, ${model.gradientColors[1]}22)`,
+                  } : undefined;
+                  
+                  return (
+                    <motion.div
+                      key={name}
+                      className="bg-card/40 backdrop-blur-sm rounded-xl border border-border/40 overflow-hidden"
+                      style={gradientStyle}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={headerVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                      transition={{ duration: 0.5, delay: 0.1 + (index * 0.05) }}
+                    >
+                      <div className="p-5">
+                        <div className="flex justify-between items-start mb-4">
+                          <h3 className="font-medium text-lg line-clamp-1 mb-1" title={name}>
+                            {name}
+                          </h3>
+                          <div 
+                            className="text-xl font-mono font-semibold"
+                            style={{ color: scoreColor }}
+                          >
+                            {data.score}
+                          </div>
+                        </div>
+                        
+                        {isValid && (
+                          <div className="h-2 bg-muted/60 rounded-full overflow-hidden mt-2">
+                            <motion.div 
+                              className="h-full rounded-full"
+                              style={{ backgroundColor: scoreColor }}
+                              initial={{ width: 0 }}
+                              animate={headerVisible ? { width: `${numericScore}%` } : { width: 0 }}
+                              transition={{ duration: 1, delay: 0.3 + (index * 0.1) }}
+                            />
+                          </div>
+                        )}
+                        
+                        {data.source && (
+                          <div className="mt-4 text-xs text-muted-foreground">
+                            Source: 
+                            <a 
+                              href={data.source}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="ml-1 text-primary hover:underline hover:text-primary/80 transition-colors"
+                            >
+                              {new URL(data.source).hostname}
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      )}
       
       {/* Model Insights Section */}
       <ModelInsights model={model} />

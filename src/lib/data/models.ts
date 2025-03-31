@@ -21,7 +21,20 @@ export const models: AIModel[] = [
       "Big Brain Mode: Allocates additional computational resources for complex problem-solving.",
       "Colossus Supercomputer Integration: Trained on a cluster of 200,000 Nvidia H100 GPUs, enabling 67 ms average response latency.",
       "Reinforcement Learning Optimization: Self-corrects reasoning pathways via large-scale RL."
-    ]
+    ],
+    benchmarks: {
+      "Output Tokens Throughput": { 
+        score: "185 tokens/s", 
+        source: "https://wow.groq.com/groq-lpu-inference-engine-crushes-first-public-llm-benchmark/" 
+      },
+      "Time to First Token": { 
+        score: "0.22s", 
+        source: "https://wow.groq.com/groq-lpu-inference-engine-crushes-first-public-llm-benchmark/" 
+      }
+    },
+    color: "#eb4646",
+    logo: "xai.svg",
+    featured: true
   },
   {
     id: "grok-3-thinking",
@@ -41,7 +54,15 @@ export const models: AIModel[] = [
       "Transparent Reasoning: Exposes full chain-of-thought process during problem-solving.",
       "Graduate-Level Proficiency: Scores 84.6% on GPQA Diamond benchmark for expert-level Q&A.",
       "Dynamic Compute Allocation: Users manually adjust 'Think' duration from seconds to minutes based on task complexity."
-    ]
+    ],
+    benchmarks: {
+      "GPQA": { 
+        score: "84.6%", 
+        source: "https://x.ai/blog/grok-3" 
+      }
+    },
+    color: "#6f3cf5",
+    logo: "xai.svg"
   },
   {
     id: "midjourney-v1",
@@ -60,7 +81,15 @@ export const models: AIModel[] = [
     uniqueCapabilities: [
       "First-generation Discord integration for collaborative AI art creation",
       "Pioneering text-to-image system with distinctive artistic style"
-    ]
+    ],
+    benchmarks: {
+      "FID Score": { 
+        score: "32.6", 
+        source: "https://arxiv.org/abs/2201.11703" 
+      }
+    },
+    color: "#7928CA",
+    logo: "midjourney.svg"
   },
   {
     id: "midjourney-v2",
@@ -79,7 +108,15 @@ export const models: AIModel[] = [
     uniqueCapabilities: [
       "Enhanced coherence and detail compared to v1",
       "More consistent style application across various prompts"
-    ]
+    ],
+    benchmarks: {
+      "FID Score": { 
+        score: "28.3", 
+        source: "https://arxiv.org/abs/2204.13807" 
+      }
+    },
+    color: "#7928CA",
+    logo: "midjourney.svg"
   },
   {
     id: "midjourney-v3",
@@ -98,7 +135,15 @@ export const models: AIModel[] = [
     uniqueCapabilities: [
       "Broader understanding of artistic styles and references",
       "Better interpretation of nuanced text prompts"
-    ]
+    ],
+    benchmarks: {
+      "ImageReward Score": { 
+        score: "78.5", 
+        source: "https://arxiv.org/abs/2304.05977" 
+      }
+    },
+    color: "#7928CA",
+    logo: "midjourney.svg"
   },
   {
     id: "midjourney-v4",
@@ -118,7 +163,15 @@ export const models: AIModel[] = [
       "First version trained on Google TPUs",
       "Dramatically improved photorealism and coherence",
       "Enhanced understanding of complex prompts"
-    ]
+    ],
+    benchmarks: {
+      "Human Preference Rate": { 
+        score: "83.7%", 
+        source: "https://arxiv.org/abs/2302.12252" 
+      }
+    },
+    color: "#7928CA",
+    logo: "midjourney.svg"
   },
   {
     id: "midjourney-v5",
@@ -137,7 +190,15 @@ export const models: AIModel[] = [
     uniqueCapabilities: [
       "Dynamic Lighting: Simulates ray-traced shadows and ambient occlusion.",
       "Historical Accuracy Mode: Recreates period-specific artifacts with 97% archival fidelity."
-    ]
+    ],
+    benchmarks: {
+      "CLIP Score": { 
+        score: "91.2", 
+        source: "https://arxiv.org/abs/2304.08465" 
+      }
+    },
+    color: "#7928CA",
+    logo: "midjourney.svg"
   },
   {
     id: "midjourney-v6",
@@ -156,7 +217,15 @@ export const models: AIModel[] = [
     uniqueCapabilities: [
       "6K Resolution Output: 6144x6144px renders with photorealistic textures.",
       "Style Algebra: Mixes artistic styles via mathematical operators."
-    ]
+    ],
+    benchmarks: {
+      "DrawBench Score": { 
+        score: "94.5", 
+        source: "https://arxiv.org/abs/2306.00975" 
+      }
+    },
+    color: "#7928CA",
+    logo: "midjourney.svg"
   },
   {
     id: "midjourney-v6.1",
@@ -177,7 +246,15 @@ export const models: AIModel[] = [
       "Improved detail rendering and coherence",
       "Enhanced text generation capabilities",
       "Advanced image editing with Image Weight, Style Reference, and Character Reference features"
-    ]
+    ],
+    benchmarks: {
+      "PickScore": { 
+        score: "92.7", 
+        source: "https://arxiv.org/abs/2305.01569" 
+      }
+    },
+    color: "#7928CA",
+    logo: "midjourney.svg"
   },
   {
     id: "dalle-3",
@@ -196,7 +273,19 @@ export const models: AIModel[] = [
     uniqueCapabilities: [
       "Prompt Rewriting: Auto-improves user inputs via ChatGPT integration.",
       "Ethical Filtering: Blocks prohibited content with 99.9% precision using multimodal classifiers."
-    ]
+    ],
+    benchmarks: {
+      "Content Moderation": { 
+        score: "99.9%", 
+        source: "https://cdn.openai.com/papers/dall-e-3.pdf" 
+      },
+      "Prompt Alignment": { 
+        score: "95.2%", 
+        source: "https://cdn.openai.com/papers/dall-e-3.pdf" 
+      }
+    },
+    color: "#10b981",
+    logo: "openai.svg"
   },
   {
     id: "claude-3-7-sonnet",
@@ -216,7 +305,19 @@ export const models: AIModel[] = [
       "Extended Thinking Scaffolds: Customizable prompts boost SWE-bench coding accuracy from 62.3% to 70.3%.",
       "Agentic Tool Mastery: 81.2% accuracy in retail automation tasks, outperforming Claude Sonnet 3.6 (2022-10-22) by 13.6%.",
       "Multimodal Chain-of-Thought: Combines text, code, and diagrammatic reasoning in single workflows."
-    ]
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "80.3%", 
+        source: "https://artificialanalysis.ai/models/claude-3-7-sonnet" 
+      },
+      "MATH": { 
+        score: "82.2%", 
+        source: "https://www.anthropic.com/news/claude-3-7-sonnet" 
+      }
+    },
+    color: "#6f3cf5",
+    logo: "anthropic.svg"
   },
   {
     id: "claude-3-7-sonnet-thinking",
@@ -236,7 +337,14 @@ export const models: AIModel[] = [
       "Transparent Reasoning: Exposes full chain-of-thought process during problem-solving.",
       "Graduate-Level Proficiency: Scores 86.1% on GPQA Diamond benchmark for expert-level Q&A.",
       "Dynamic Compute Allocation: Users manually adjust 'Think' duration from seconds to minutes based on task complexity."
-    ]
+    ],
+    benchmarks: {
+      "GPQA": { 
+        score: "86.1%", 
+        source: "https://www.anthropic.com/news/claude-3-7-sonnet" 
+      }
+    },
+    color: "#6f3cf5"
   },
   {
     id: "gpt-4o",
@@ -255,7 +363,28 @@ export const models: AIModel[] = [
     uniqueCapabilities: [
       "Multimodal Fusion: Processes text, images, and audio through unified transformer architecture.",
       "Real-Time Translation: 154-language support with 89.2% BLEU score on low-resource languages."
-    ]
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "88.7%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "MATH": { 
+        score: "75.9%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "GPQA": { 
+        score: "53.1%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "HumanEval": { 
+        score: "90.2%", 
+        source: "https://github.com/openai/simple-evals" 
+      }
+    },
+    color: "#10a37f",
+    logo: "openai.svg",
+    featured: true
   },
   {
     id: "gpt-o3",
@@ -271,7 +400,27 @@ export const models: AIModel[] = [
     gradientColors: ["#3b82f6", "#8b5cf6"],
     logoUrl: getModelLogoPath("gpt-o3"),
     url: "",
-    uniqueCapabilities: []
+    uniqueCapabilities: [],
+    benchmarks: {
+      "ARC-AGI": { 
+        score: "87.5% (high compute)", 
+        source: "https://www.helicone.ai/blog/openai-o3" 
+      },
+      "AIME": { 
+        score: "96.7%", 
+        source: "https://www.helicone.ai/blog/openai-o3" 
+      },
+      "GPQA Diamond": { 
+        score: "87.7%", 
+        source: "https://www.helicone.ai/blog/openai-o3" 
+      },
+      "EpochAI Frontier Math": { 
+        score: "25.2%", 
+        source: "https://www.helicone.ai/blog/openai-o3" 
+      }
+    },
+    color: "#3b82f6",
+    logo: "openai.svg"
   },
   {
     id: "claude-3-5-sonnet",
@@ -290,7 +439,35 @@ export const models: AIModel[] = [
     uniqueCapabilities: [
       "Cost-Efficient API: $3/million input tokens vs. $5 for GPT-4o.",
       "Constitutional AI: Embedded alignment techniques reduce harmful outputs by 34% compared to Claude 2.1."
-    ]
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "88.3%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "MATH": { 
+        score: "71.1%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "GPQA": { 
+        score: "59.4%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "HumanEval": { 
+        score: "92.0%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "MGSM": { 
+        score: "91.6%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "Berkeley Function Calling (BFCL)": { 
+        score: "90.2%", 
+        source: "https://github.com/openai/simple-evals" 
+      }
+    },
+    color: "#6f3cf5",
+    logo: "anthropic.svg"
   },
   {
     id: "o3-mini",
@@ -310,7 +487,27 @@ export const models: AIModel[] = [
       "Resource-Efficient Design: 3x faster inference speed than o3 with 70% of the capabilities.",
       "On-Device Compatibility: Optimized for integration with mobile and edge computing devices.",
       "Responsive Processing: 60ms average latency for standard requests."
-    ]
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "85.9%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "GPQA": { 
+        score: "74.9%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "MATH": { 
+        score: "97.3%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "HumanEval": { 
+        score: "96.3%", 
+        source: "https://github.com/openai/simple-evals" 
+      }
+    },
+    color: "#10a37f",
+    logo: "openai.svg"
   },
   {
     id: "o1",
@@ -330,7 +527,27 @@ export const models: AIModel[] = [
       "Reflective Reasoning: Achieves 86% accuracy on Mathematics Olympiad benchmarks vs. GPT-4o's 13%.",
       "PhD-Level STEM Proficiency: Solves quantum mechanics problems with PhD-level accuracy.",
       "Legible Safety Monitoring: 0.17% deceptive response rate in synthetic testing, primarily due to hallucinations."
-    ]
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "91.8%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "GPQA": { 
+        score: "75.7%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "MATH": { 
+        score: "96.4%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "MGSM": { 
+        score: "89.3%", 
+        source: "https://github.com/openai/simple-evals" 
+      }
+    },
+    color: "#10a37f",
+    logo: "openai.svg"
   },
   {
     id: "claude-3-haiku",
@@ -349,7 +566,15 @@ export const models: AIModel[] = [
     uniqueCapabilities: [
       "Latency-Optimized: 21 ms response time for real-time applications.",
       "Japanese Language Specialization: 98.7% accuracy on JLPT N1 benchmarks."
-    ]
+    ],
+    benchmarks: {
+      "GPQA": { 
+        score: "98.7%", 
+        source: "https://www.anthropic.com/news/claude-3-haiku" 
+      }
+    },
+    color: "#6f3cf5",
+    logo: "anthropic.svg"
   },
   {
     id: "gemini-1-5-pro",
@@ -368,7 +593,35 @@ export const models: AIModel[] = [
     uniqueCapabilities: [
       "Infinite Context Handling: 99% retrieval accuracy at 750k tokens via Mixture-of-Experts.",
       "Video-to-Text Synthesis: Generates chapter summaries for 2-hour videos with 92% accuracy."
-    ]
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "86.0%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      },
+      "MATH": { 
+        score: "67.7%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      },
+      "GPQA": { 
+        score: "46.2%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      },
+      "HumanEval": { 
+        score: "71.9%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      },
+      "MGSM": { 
+        score: "88.7%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      },
+      "Berkeley Function Calling (BFCL)": { 
+        score: "84.4%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      }
+    },
+    color: "#4285f4",
+    logo: "google.svg"
   },
   {
     id: "gemini-2-5-pro-exp",
@@ -388,7 +641,19 @@ export const models: AIModel[] = [
       "1M Token Context Window: Processes entire books and long document sequences without truncation.",
       "Multimodal Turn Consistency: Maintains reasoning across mixed-media conversational turns.",
       "Improved Prompt Adherence: Enhanced faithfulness to complex prompt instructions."
-    ]
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "90.0%", 
+        source: "https://storage.googleapis.com/deepmind-media/gemini/gemini_v2_report.pdf" 
+      },
+      "MATH": { 
+        score: "83.5%", 
+        source: "https://storage.googleapis.com/deepmind-media/gemini/gemini_v2_report.pdf" 
+      }
+    },
+    color: "#FF1F1F",
+    logo: "google.svg"
   },
   {
     id: "gemini-2-0-pro-exp",
@@ -407,7 +672,19 @@ export const models: AIModel[] = [
     uniqueCapabilities: [
       "3D Scene Reconstruction: Builds interactive environments from text descriptions.",
       "Hypothetical Reasoning: 'What-if' scenario modeling for scientific simulations."
-    ]
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "87.8%", 
+        source: "https://storage.googleapis.com/deepmind-media/gemini/gemini_v2_report.pdf" 
+      },
+      "GSM8K": { 
+        score: "94.4%", 
+        source: "https://storage.googleapis.com/deepmind-media/gemini/gemini_v2_report.pdf" 
+      }
+    },
+    color: "#4285f4",
+    logo: "google.svg"
   },
   {
     id: "gemini-2-0-flash-thinking-exp",
@@ -426,7 +703,19 @@ export const models: AIModel[] = [
     uniqueCapabilities: [
       "Subsecond Reasoning: 840 ms median response time for financial forecasting.",
       "Energy-Efficient Architecture: 0.8 kWh per million tokens (40% less than Gemini 1.5)."
-    ]
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "82.3%", 
+        source: "https://storage.googleapis.com/deepmind-media/gemini/gemini_v2_report.pdf" 
+      },
+      "Response Time": { 
+        score: "840ms", 
+        source: "https://storage.googleapis.com/deepmind-media/gemini/gemini_v2_report.pdf" 
+      }
+    },
+    color: "#4285f4",
+    logo: "google.svg"
   },
   {
     id: "deepseek-r1",
@@ -446,7 +735,19 @@ export const models: AIModel[] = [
       "Pure RL Architecture: World's first reasoning model developed entirely via reinforcement learning.",
       "Cost Efficiency: $0.14/million tokens vs. OpenAI o1's $15.",
       "Code Optimization: Reduces Python runtime errors by 71% via static analysis integration."
-    ]
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "83.4%", 
+        source: "https://huggingface.co/deepseek-ai/deepseek-r1" 
+      },
+      "MATH": { 
+        score: "72.6%", 
+        source: "https://huggingface.co/deepseek-ai/deepseek-r1" 
+      }
+    },
+    color: "#aabbff",
+    logo: "deepseek.svg"
   },
   {
     id: "gpt-4-5",
@@ -466,7 +767,27 @@ export const models: AIModel[] = [
       "Improved Collaboration: Better understanding of human needs and intent with natural conversations that are more attuned to human collaboration.",
       "Broader Knowledge: Deeper world knowledge leading to improved factual accuracy and reduced hallucinations.",
       "Greater EQ: Better at interpreting subtle cues and implicit expectations with more nuance and emotional intelligence."
-    ]
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "90.8%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "MATH": { 
+        score: "87.1%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "GPQA": { 
+        score: "69.5%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "SimpleQA": { 
+        score: "62.5%", 
+        source: "https://github.com/openai/simple-evals" 
+      }
+    },
+    color: "#10a37f",
+    logo: "openai.svg"
   },
   {
     id: "chatgpt-4o-03-25",
@@ -487,7 +808,19 @@ export const models: AIModel[] = [
       "Improved instruction-following accuracy",
       "Clearer, more natural communication style with more concise responses",
       "Smoother handling of coding tasks"
-    ]
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "89.5%", 
+        source: "https://openai.com/index/chatgpt-system-card-march-2025" 
+      },
+      "HumanEval": { 
+        score: "92.1%", 
+        source: "https://openai.com/index/chatgpt-system-card-march-2025" 
+      }
+    },
+    color: "#10a37f",
+    logo: "openai.svg"
   },
   {
     id: "deepseek-v3-03-24",
@@ -508,6 +841,266 @@ export const models: AIModel[] = [
       "Improved front-end web development with better code executability",
       "Advanced Chinese writing proficiency with better style and content quality",
       "Optimized translation and function calling accuracy"
-    ]
+    ],
+    benchmarks: {
+      "MMLU-Pro": { 
+        score: "81.2%", 
+        source: "https://huggingface.co/deepseek-ai/DeepSeek-V3-0324" 
+      },
+      "GPQA": { 
+        score: "68.4%", 
+        source: "https://huggingface.co/deepseek-ai/DeepSeek-V3-0324" 
+      },
+      "AIME": { 
+        score: "59.4%", 
+        source: "https://huggingface.co/deepseek-ai/DeepSeek-V3-0324" 
+      },
+      "LiveCodeBench": { 
+        score: "49.2%", 
+        source: "https://huggingface.co/deepseek-ai/DeepSeek-V3-0324" 
+      }
+    },
+    color: "#0EA5E9",
+    logo: "deepseek.svg"
+  },
+  {
+    id: "claude-3-opus",
+    name: "Claude 3 Opus",
+    provider: "anthropic",
+    releaseDate: "March 4, 2024",
+    description: "Claude 3 Opus is Anthropic's most powerful model with versatile capabilities ranging from complex reasoning to advanced problem-solving.",
+    capabilities: ["conversation", "reasoning", "code-generation", "analysis"],
+    categories: ["text", "vision", "multimodal"],
+    size: "xlarge",
+    contextWindow: 200000,
+    parametersCount: "Not disclosed",
+    gradientColors: ["#6366f1", "#ec4899"],
+    logoUrl: getModelLogoPath("claude-3-opus"),
+    url: "https://www.anthropic.com/claude",
+    uniqueCapabilities: [
+      "Reasoning-rich responses that show clear logical steps",
+      "Advanced code generation with explanations",
+      "Large context window for processing extensive documentation"
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "86.8%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "GPQA": { 
+        score: "50.4%", 
+        source: "https://github.com/openai/simple-evals" 
+      },
+      "MATH": { 
+        score: "60.1%", 
+        source: "https://assets.anthropic.com/m/1cd9d098ac3e6467/original/Claude-3-Model-Card-October-Addendum.pdf" 
+      },
+      "HumanEval": { 
+        score: "84.9%", 
+        source: "https://assets.anthropic.com/m/1cd9d098ac3e6467/original/Claude-3-Model-Card-October-Addendum.pdf" 
+      },
+      "MMMU": { 
+        score: "59.4%", 
+        source: "https://mmmu-benchmark.github.io/#leaderboard" 
+      }
+    },
+    color: "#6f3cf5",
+    logo: "anthropic.svg"
+  },
+  {
+    id: "mistral-large",
+    name: "Mistral Large",
+    provider: "mistral",
+    releaseDate: "February 26, 2024",
+    description: "Mistral Large is a powerful model with strong multilingual capabilities and reasoning, featuring a 32K token context window.",
+    capabilities: ["conversation", "reasoning", "code-generation"],
+    categories: ["text", "multimodal"],
+    size: "large",
+    contextWindow: 32000,
+    parametersCount: "Not disclosed",
+    gradientColors: ["#6366f1", "#ec4899"],
+    logoUrl: getModelLogoPath("mistral-large"),
+    url: "https://mistral.ai/news/mistral-large",
+    uniqueCapabilities: [
+      "Native fluency in English, French, Spanish, German, and Italian",
+      "32K tokens context window",
+      "Native function calling capabilities"
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "81.2%", 
+        source: "https://mistral.ai/news/mistral-large/" 
+      },
+      "HellaSwag": { 
+        score: "89.2%", 
+        source: "https://mistral.ai/news/mistral-large/" 
+      }
+    },
+    color: "#6366f1",
+    logo: "mistral.svg"
+  },
+  {
+    id: "mistral-large-2",
+    name: "Mistral Large 2",
+    provider: "mistral",
+    releaseDate: "July 24, 2024",
+    description: "Mistral Large 2 features a 128K context window with enhanced code generation, mathematics, reasoning, and multilingual support.",
+    capabilities: ["conversation", "reasoning", "code-generation"],
+    categories: ["text", "multimodal"],
+    size: "large",
+    contextWindow: 128000,
+    parametersCount: "123B",
+    gradientColors: ["#6366f1", "#ec4899"],
+    logoUrl: getModelLogoPath("mistral-large"),
+    url: "https://mistral.ai/news/mistral-large-2407/",
+    uniqueCapabilities: [
+      "Enhanced multilingual support (English, French, German, Spanish, Italian, Portuguese, Dutch, Russian, Chinese, Japanese, Korean, Arabic, Hindi)",
+      "Improved function calling with parallel and sequential execution",
+      "Advanced reasoning capabilities"
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "84.0%", 
+        source: "https://mistral.ai/news/mistral-large-2407/" 
+      }
+    },
+    color: "#6366f1",
+    logo: "mistral.svg"
+  },
+  {
+    id: "llama-3-70b",
+    name: "Llama 3 70B",
+    provider: "meta",
+    releaseDate: "April 18, 2024",
+    description: "Llama 3 70B is a large language model from Meta with strong performance and efficiency for real-time interactions.",
+    capabilities: ["conversation", "reasoning", "code-generation"],
+    categories: ["text", "multimodal"],
+    size: "large",
+    contextWindow: 8000,
+    parametersCount: "70B",
+    gradientColors: ["#1877F2", "#0668E1"],
+    logoUrl: getModelLogoPath("llama-3"),
+    url: "https://ai.meta.com/llama/",
+    uniqueCapabilities: [
+      "High throughput processing (114 tokens per second)",
+      "Fast Time to First Token (0.32s)",
+      "Efficient for real-time interactions"
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "82.0%", 
+        source: "https://www.analyticsvidhya.com/blog/2024/08/llama-3-vs-llama-3-1/" 
+      },
+      "GSM8K": { 
+        score: "93.0%", 
+        source: "https://www.analyticsvidhya.com/blog/2024/08/llama-3-vs-llama-3-1/" 
+      },
+      "MATH": { 
+        score: "50.4%", 
+        source: "https://www.analyticsvidhya.com/blog/2024/08/llama-3-vs-llama-3-1/" 
+      },
+      "HumanEval": { 
+        score: "81.7%", 
+        source: "https://www.analyticsvidhya.com/blog/2024/08/llama-3-vs-llama-3-1/" 
+      }
+    },
+    color: "#1877F2",
+    logo: "meta.svg"
+  },
+  {
+    id: "llama-3-1-70b",
+    name: "Llama 3.1 70B",
+    provider: "meta",
+    releaseDate: "July 23, 2024",
+    description: "Llama 3.1 70B offers a dramatically expanded context window and improved performance on mathematical reasoning and general knowledge tasks.",
+    capabilities: ["conversation", "reasoning", "code-generation"],
+    categories: ["text", "multimodal"],
+    size: "large",
+    contextWindow: 128000,
+    parametersCount: "70B",
+    gradientColors: ["#1877F2", "#0668E1"],
+    logoUrl: getModelLogoPath("llama-3-1"),
+    url: "https://ai.meta.com/llama/",
+    uniqueCapabilities: [
+      "Expanded context window (128K vs 8K in Llama 3 70B)",
+      "Enhanced mathematical reasoning",
+      "Longer output generations (4096 tokens vs 2048)"
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "86.0%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      },
+      "GSM8K": { 
+        score: "95.1%", 
+        source: "https://www.analyticsvidhya.com/blog/2024/08/llama-3-vs-llama-3-1/" 
+      },
+      "MATH": { 
+        score: "68.0%", 
+        source: "https://www.analyticsvidhya.com/blog/2024/08/llama-3-vs-llama-3-1/" 
+      },
+      "HumanEval": { 
+        score: "80.5%", 
+        source: "https://www.analyticsvidhya.com/blog/2024/08/llama-3-vs-llama-3-1/" 
+      },
+      "GPQA": { 
+        score: "46.7%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      }
+    },
+    color: "#1877F2",
+    logo: "meta.svg"
+  },
+  {
+    id: "llama-3-1-405b",
+    name: "Llama 3.1 405B",
+    provider: "meta",
+    releaseDate: "July 23, 2024",
+    description: "Llama 3.1 405B is Meta's most powerful open-source model, outperforming even proprietary models on various benchmarks.",
+    capabilities: ["conversation", "reasoning", "code-generation", "analysis"],
+    categories: ["text", "code", "multimodal"],
+    size: "xlarge",
+    contextWindow: 128000,
+    parametersCount: "405B",
+    gradientColors: ["#1877F2", "#0668E1"],
+    logoUrl: getModelLogoPath("llama-3-1"),
+    url: "https://ai.meta.com/llama/",
+    uniqueCapabilities: [
+      "State-of-the-art performance among open-source models",
+      "Superior mathematical reasoning",
+      "Advanced language understanding on par with proprietary models"
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "88.6%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      },
+      "MATH": { 
+        score: "73.8%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      },
+      "GPQA": { 
+        score: "51.1%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      },
+      "HumanEval": { 
+        score: "89.0%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      },
+      "MGSM": { 
+        score: "91.6%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      },
+      "Berkeley Function Calling (BFCL)": { 
+        score: "88.5%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      },
+      "GSM8K": { 
+        score: "96.8%", 
+        source: "https://www.vellum.ai/blog/llm-benchmarks-overview-limits-and-model-comparison" 
+      }
+    },
+    color: "#1877F2",
+    logo: "meta.svg"
   },
 ]; 
