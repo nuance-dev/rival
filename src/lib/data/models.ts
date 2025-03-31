@@ -468,4 +468,46 @@ export const models: AIModel[] = [
       "Greater EQ: Better at interpreting subtle cues and implicit expectations with more nuance and emotional intelligence."
     ]
   },
+  {
+    id: "chatgpt-4o-03-25",
+    name: "ChatGPT-4o (March 2025)",
+    provider: "openai",
+    releaseDate: "March 27, 2025",
+    description: "An updated version of GPT-4o that feels more intuitive, creative, and collaborative. Follows instructions more accurately, handles coding tasks more smoothly, and communicates in a clearer, more natural way with more concise responses and fewer markdown levels.",
+    capabilities: ["conversation", "reasoning", "analysis", "code-generation"],
+    categories: ["text", "vision", "multimodal"],
+    size: "xlarge",
+    contextWindow: 128000,
+    parametersCount: "Not disclosed",
+    gradientColors: ["#10b981", "#3b82f6"],
+    logoUrl: getModelLogoPath("gpt-4o"),
+    url: "https://help.openai.com/en/articles/6825453-chatgpt-release-notes",
+    uniqueCapabilities: [
+      "More intuitive and creative collaboration capabilities",
+      "Improved instruction-following accuracy",
+      "Clearer, more natural communication style with more concise responses",
+      "Smoother handling of coding tasks"
+    ]
+  },
+  {
+    id: "deepseek-v3-03-24",
+    name: "DeepSeek V3 (March 2024)",
+    provider: "deepseek",
+    releaseDate: "March 24, 2025",
+    description: "DeepSeek V3 (March 2024) shows significant improvements in reasoning capabilities with enhanced MMLU-Pro (81.2%), GPQA (68.4%), AIME (59.4%), and LiveCodeBench (49.2%) scores. Features improved front-end web development, Chinese writing proficiency, and function calling accuracy.",
+    capabilities: ["conversation", "reasoning", "web-design", "code-generation", "analysis"],
+    categories: ["text", "code", "multimodal"],
+    size: "xlarge",
+    contextWindow: 128000,
+    parametersCount: "Not disclosed",
+    gradientColors: ["#0EA5E9", "#22D3EE"],
+    logoUrl: getModelLogoPath("deepseek-r1"),
+    url: "https://huggingface.co/deepseek-ai/DeepSeek-V3-0324",
+    uniqueCapabilities: [
+      "Enhanced reasoning capabilities with major benchmark improvements",
+      "Improved front-end web development with better code executability",
+      "Advanced Chinese writing proficiency with better style and content quality",
+      "Optimized translation and function calling accuracy"
+    ]
+  },
 ]; 

@@ -20,6 +20,8 @@ import { dalle_3Responses } from "./dalle-3";
 import { grok_3Responses } from "./grok-3";
 import { grok_3_thinkingResponses } from "./grok-3-thinking";
 import { gpt_4_5Responses } from "./gpt-4-5";
+import { chatgpt_4o_03_25Responses } from "./chatgpt-4o-03-25";
+import { deepseek_v3_03_24Responses } from "./deepseek-v3-03-24";
 
 // Import individual model responses to avoid naming conflicts
 import * as gpt_4o from "./gpt-4o";
@@ -43,6 +45,8 @@ import * as dalle_3 from "./dalle-3";
 import * as grok_3 from "./grok-3";
 import * as grok_3_thinking from "./grok-3-thinking";
 import * as gpt_4_5 from "./gpt-4-5";
+import * as chatgpt_4o_03_25 from "./chatgpt-4o-03-25";
+import * as deepseek_v3_03_24 from "./deepseek-v3-03-24";
 
 // Combined array of all raw responses
 const allRawResponses: ModelResponse[] = [
@@ -66,7 +70,9 @@ const allRawResponses: ModelResponse[] = [
   ...dalle_3Responses,
   ...grok_3Responses,
   ...grok_3_thinkingResponses,
-  ...gpt_4_5Responses
+  ...gpt_4_5Responses,
+  ...chatgpt_4o_03_25Responses,
+  ...deepseek_v3_03_24Responses
 ];
 
 // Update Midjourney and DALL-E response dates to a specific date
@@ -123,5 +129,7 @@ export {
   dalle_3,
   grok_3,
   grok_3_thinking,
-  gpt_4_5
+  gpt_4_5,
+  chatgpt_4o_03_25,
+  deepseek_v3_03_24
 }
