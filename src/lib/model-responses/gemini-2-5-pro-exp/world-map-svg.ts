@@ -3,7 +3,7 @@ import { ModelResponse } from "@/types/models";
 export const worldUmapUsvggemini_2_5_pro_exp: ModelResponse = {
   id: "gemini-2-5-pro-exp-world-map-svg",
   modelId: "gemini-2-5-pro-exp",
-  prompt: "",
+  prompt: "Create a simplified world map as an SVG showing major continents with different colors. Add labels for at least 5 major countries.",
   responseDate: "2025-03-25",
   type: "svg",
   title: "world-map-svg",

@@ -56,9 +56,9 @@ export const SafeSVGRenderer: React.FC<SafeSVGRendererProps> = ({
   const processingRef = useRef(false);
   const mountedRef = useRef(true);
   
-  // Add custom CSS for SVG scaling
+  // Add custom CSS for SVG scaling and gradient handling
   useEffect(() => {
-    // Add styling to help SVGs fill the container
+    // Add styling to help SVGs fill the container and properly display gradients
     if (!document.getElementById('svg-container-styles')) {
       const styleEl = document.createElement('style');
       styleEl.id = 'svg-container-styles';
@@ -70,6 +70,24 @@ export const SafeSVGRenderer: React.FC<SafeSVGRendererProps> = ({
           max-height: 100%;
           object-fit: contain;
           display: block;
+        }
+        
+        /* Fix for gradient rendering issues across browsers */
+        [data-svg-renderer="true"] svg defs {
+          position: absolute;
+        }
+        
+        /* Ensure proper opacity for gradient stops */
+        [data-svg-renderer="true"] svg stop {
+          stop-opacity: 1;
+        }
+        
+        /* Fix for Firefox gradient rendering */
+        @-moz-document url-prefix() {
+          [data-svg-renderer="true"] svg linearGradient,
+          [data-svg-renderer="true"] svg radialGradient {
+            transform: translateZ(0);
+          }
         }
       `;
       document.head.appendChild(styleEl);
@@ -127,9 +145,19 @@ export const SafeSVGRenderer: React.FC<SafeSVGRendererProps> = ({
               setRenderError(false);
               setErrorMessage('');
               
-              // Ensure the container is updated with the sanitized content
+              // Use a safer method to insert the sanitized content
               if (containerRef.current) {
-                containerRef.current.innerHTML = sanitized;
+                // Clear any existing content first
+                containerRef.current.innerHTML = '';
+                
+                // Create a temporary div to safely parse the content
+                const tempContainer = document.createElement('div');
+                tempContainer.innerHTML = sanitized;
+                
+                // Append the parsed content to the container
+                while (tempContainer.firstChild) {
+                  containerRef.current.appendChild(tempContainer.firstChild);
+                }
               }
             }
           } catch (error) {

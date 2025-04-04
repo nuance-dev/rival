@@ -3,6 +3,74 @@
  */
 
 /**
+ * Creates a unique ID prefix for SVG elements to prevent ID conflicts
+ * when multiple SVGs are rendered on the same page
+ */
+const generateUniqueIdPrefix = (): string => {
+  return `svg-${Math.random().toString(36).substring(2, 9)}-`;
+};
+
+/**
+ * Ensures all IDs in SVG content are unique by prepending a random prefix.
+ * This prevents conflicts with gradient definitions, masks, etc. when
+ * multiple SVGs are rendered on the same page.
+ */
+const ensureUniqueIds = (content: string): string => {
+  // If no content or no IDs to replace, return as is
+  if (!content || typeof content !== 'string' || !content.includes('id="')) {
+    return content;
+  }
+
+  const idPrefix = generateUniqueIdPrefix();
+  const idRegex = /id=["']([^"']*)["']/g;
+  const hrefRegex = /href=["']#([^"']*)["']/g;
+  const xlinkHrefRegex = /xlink:href=["']#([^"']*)["']/g;
+  const urlRegex = /url\(#([^)]*)\)/g;
+  
+  // First, collect all the IDs to create a mapping
+  const idMap: {[key: string]: string} = {};
+  let match;
+  
+  // Find all IDs and create mapping
+  while ((match = idRegex.exec(content)) !== null) {
+    const originalId = match[1];
+    idMap[originalId] = `${idPrefix}${originalId}`;
+  }
+  
+  // Replace all ID declarations
+  let result = content.replace(idRegex, (match, id) => {
+    return `id="${idMap[id] || id}"`;
+  });
+  
+  // Replace all href="#id" references
+  result = result.replace(hrefRegex, (match, id) => {
+    return `href="#${idMap[id] || id}"`;
+  });
+  
+  // Replace all xlink:href="#id" references (crucial for gradient references)
+  result = result.replace(xlinkHrefRegex, (match, id) => {
+    return `xlink:href="#${idMap[id] || id}"`;
+  });
+  
+  // Replace all url(#id) references in style attributes and presentations
+  result = result.replace(urlRegex, (match, id) => {
+    return `url(#${idMap[id] || id})`;
+  });
+  
+  return result;
+};
+
+/**
+ * Ensures the SVG includes the xlink namespace which is required for proper gradient functionality
+ */
+const ensureXlinkNamespace = (content: string): string => {
+  if (!content.includes('xmlns:xlink=')) {
+    return content.replace(/<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+  }
+  return content;
+};
+
+/**
  * Sanitizes SVG content by removing CSS-style comments, HTML comments,
  * normalizing whitespace, and fixing various SVG path issues.
  */
@@ -24,6 +92,9 @@ export const sanitizeSvgContent = (content: string): string => {
     if (!sanitized.includes('xmlns=')) {
       sanitized = sanitized.replace(/<svg/i, '<svg xmlns="http://www.w3.org/2000/svg"');
     }
+    
+    // Ensure SVG has xlink namespace for proper gradient references
+    sanitized = ensureXlinkNamespace(sanitized);
     
     // Add viewBox if missing
     if (!sanitized.includes('viewBox') && !sanitized.includes('viewbox')) {
@@ -83,62 +154,37 @@ export const sanitizeSvgContent = (content: string): string => {
       }
     });
     
-    // Fix common issues with specific SVG types
-    
-    // World Map SVG detection and special handling
-    if (
-      (sanitized.includes('North America') || sanitized.includes('Antarctica')) &&
-      sanitized.includes('<path') && 
-      (sanitized.includes('map') || sanitized.includes('Map') || 
-       sanitized.includes('world') || sanitized.includes('World'))
-    ) {
-      console.debug('Detected world map SVG with potential issues, applying enhanced cleaning');
+    // Fix gradient definitions to ensure proper rendering
+    sanitized = sanitized.replace(/<(linearGradient|radialGradient)([^>]*)>/g, (match, gradientType, attributes) => {
+      // Ensure gradientUnits attribute is present for consistent gradient rendering
+      if (!attributes.includes('gradientUnits=')) {
+        attributes += ' gradientUnits="objectBoundingBox"';
+      }
       
-      // More aggressively sanitize path data for known problematic regions
-      sanitized = sanitized.replace(/<path[^>]*?North America[^>]*?>/gi, 
-        '<path d="M 50 30 C 30 30 20 40 20 50 C 20 60 30 70 50 70" fill="#cccccc" stroke="#666666"/>');
+      // Handle spreadMethod for consistent gradient spread behavior
+      if (!attributes.includes('spreadMethod=')) {
+        attributes += ' spreadMethod="pad"';
+      }
       
-      sanitized = sanitized.replace(/<path[^>]*?Antarctica[^>]*?>/gi, 
-        '<path d="M 30 80 C 40 85 60 85 70 80" fill="#cccccc" stroke="#666666"/>');
-    }
+      return `<${gradientType}${attributes}>`;
+    });
     
-    // Emergency fix for specific bird SVG causing issues (matches both with and without spaces)
-    if (
-      sanitized.includes('<path d="M 50') && 
-      sanitized.includes('C 80') && 
-      (sanitized.includes('bird') || sanitized.includes('Bird'))
-    ) {
-      return `<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <path d="M50 20 C80 20, 80 50, 50 50 C20 50, 20 80, 50 80" stroke="currentColor" fill="none" stroke-width="2"/>
-      </svg>`;
-    }
-    
-    // Xbox controller SVG detection and special handling
-    if (
-      sanitized.includes('controller') && 
-      sanitized.includes('<path') &&
-      (sanitized.includes('xbox') || sanitized.includes('Xbox') || sanitized.includes('XBOX'))
-    ) {
-      console.debug('Detected Xbox controller SVG with potential issues, applying enhanced cleaning');
+    // Fix stop elements in gradients to ensure proper color format
+    sanitized = sanitized.replace(/<stop([^>]*)>/g, (match, attributes) => {
+      let attrStr = attributes;
       
-      // Apply additional cleaning for SVG paths in Xbox controller
-      sanitized = sanitized.replace(/<path[^>]*?d="[^"]*?(\/\/|\/\*|for)[^"]*?"/gi, 
-        '<path d="M 40 30 C 30 40 30 60 40 70 C 50 80 70 80 80 70 C 90 60 90 40 80 30 C 70 20 50 20 40 30" fill="#333333" stroke="#000000"/>');
-    }
-    
-    // Fix SVGs with excessive number of points that can crash the browser
-    const pathPointCount = (sanitized.match(/[0-9]+(\.[0-9]+)? [0-9]+(\.[0-9]+)?/g) || []).length;
-    if (pathPointCount > 5000) {
-      console.debug(`Detected SVG with excessive points (${pathPointCount}), simplifying`);
+      // Ensure stop-opacity is present if missing
+      if (!attrStr.includes('stop-opacity') && !attrStr.includes('style=')) {
+        attrStr += ' stop-opacity="1"';
+      }
       
-      // Create a simplified version with basic shapes
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
-        <rect x="10" y="10" width="80" height="80" fill="#f0f0f0" stroke="#cccccc" />
-        <text x="50" y="50" text-anchor="middle" dominant-baseline="middle" font-size="10">
-          SVG simplified (too complex)
-        </text>
-      </svg>`;
-    }
+      // Fix stop-color format when it's missing or malformed
+      if (!attrStr.includes('stop-color')) {
+        attrStr += ' stop-color="#000000"';
+      }
+      
+      return `<stop${attrStr}>`;
+    });
     
     // Fix SVGs with invalid transform attributes
     sanitized = sanitized.replace(/transform=["']([^"']*)["']/g, (match, transform) => {
@@ -177,6 +223,9 @@ export const sanitizeSvgContent = (content: string): string => {
         return '';
       }
     });
+    
+    // Ensure all IDs are unique to prevent conflicts with gradient definitions, masks, etc.
+    sanitized = ensureUniqueIds(sanitized);
     
     // Add safety wrapper
     return `<div data-sanitized-svg="true">${sanitized}</div>`;

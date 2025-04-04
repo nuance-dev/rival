@@ -1187,4 +1187,21 @@ export const models: AIModel[] = [
     color: "#1877F2",
     logo: "meta.svg"
   },
+  {
+    id: "quasar-alpha",
+    name: "Quasar Alpha",
+    provider: "openrouter",
+    releaseDate: "April 2, 2025",
+    description: "This is a cloaked model provided to the community to gather feedback. It's a powerful, all-purpose model supporting long-context tasks, including code generation. All prompts and completions for this model are logged by the provider as well as OpenRouter.",
+    capabilities: ["conversation", "web-design", "code-generation", "reasoning"],
+    categories: ["text", "multimodal"],
+    size: "large",
+    contextWindow: 1000000,
+    parametersCount: "Unknown",
+    gradientColors: ["#0ea5e9", "#6366f1"],
+    logoUrl: getModelLogoPath("quasar-alpha"),
+    url: "https://openrouter.ai/models/quasar-alpha",
+    uniqueCapabilities: ["All-purpose model supporting long-context tasks", "Powerful code generation capabilities", "1,000,000 context window"],
+    logo: "openrouter.svg"
+  },
 ]; 

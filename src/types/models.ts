@@ -11,7 +11,8 @@ export type AIModelProvider =
   | "mistral"
   | "midjourney"
   | "xai"
-  | "deepseek";
+  | "deepseek"
+  | "openrouter";
 
 export type AIModelCategory = 
   | "text" 
