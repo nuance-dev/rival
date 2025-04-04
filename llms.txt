@@ -1,0 +1,26 @@
+# RIVAL
+
+> RIVAL is a next-generation web application built with Next.js and Tailwind CSS v4 that displays AI model capabilities through interactive comparisons. The application showcases various AI models (Grok 3, Claude Sonnet 3.7/3.5, GPT-4o, GPT-o3, GPT-o1, Anthropic Claude 3 Haiku/Opus, etc.) with their responses to one-shot prompts, displayed in dynamic, expandable canvases.
+
+RIVAL allows users to compare different AI models' responses to the same prompts, with focus on a content-forward design that displays actual AI outputs directly. The application features a voting system for model comparisons, performance analytics, and a responsive design with subtle retro-inspired animations.
+
+## Core Features
+
+- [Interactive Model Showcase](/app/page.md): Dynamic display of AI model responses to one-shot prompts
+- [AI Models Integration](/app/models/page.md): Information on various AI models' capabilities and specifications
+- [Prompt Challenges Gallery](/app/challenges/page.md): Curated collection of challenging AI prompts organized by category and difficulty
+- [Model Comparison](/app/compare/page.md): Interactive side-by-side comparison of two selected AI models
+- [AI Duels Voting System](/app/api/votes/route.md): Supabase-powered voting system for model comparisons
+
+## Project Structure
+
+- [Components](/components/README.md): React components including UI elements, canvas system, and cards
+- [Data](/lib/data/README.md): AI model definitions, challenge prompts, and comparison data
+- [Model Responses](/lib/model-responses/README.md): Individual AI model responses to various challenges
+- [Supabase Integration](/lib/supabase/README.md): Database schema and client configuration
+
+## Optional
+
+- [Technical Specifications](/specs/project_specs.md): Detailed project specifications and implementation plan
+- [Animation Strategy](/components/canvas/README.md): Information about animation principles and implementation
+- [Database Schema](/lib/supabase/schema.md): Supabase database structure for the voting system 

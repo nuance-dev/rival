@@ -23,6 +23,18 @@ export const models: AIModel[] = [
       "Reinforcement Learning Optimization: Self-corrects reasoning pathways via large-scale RL."
     ],
     benchmarks: {
+      "MMLU": { 
+        score: "83.1%", 
+        source: "https://x.ai/blog/grok-3" 
+      },
+      "MATH": { 
+        score: "69.7%", 
+        source: "https://x.ai/blog/grok-3" 
+      },
+      "GPQA": { 
+        score: "51.9%", 
+        source: "https://x.ai/blog/grok-3" 
+      },
       "Output Tokens Throughput": { 
         score: "185 tokens/s", 
         source: "https://wow.groq.com/groq-lpu-inference-engine-crushes-first-public-llm-benchmark/" 
@@ -30,6 +42,10 @@ export const models: AIModel[] = [
       "Time to First Token": { 
         score: "0.22s", 
         source: "https://wow.groq.com/groq-lpu-inference-engine-crushes-first-public-llm-benchmark/" 
+      },
+      "AIME": {
+        score: "93.3%",
+        source: "https://x.ai/blog/grok-3"
       }
     },
     color: "#eb4646",
@@ -56,8 +72,16 @@ export const models: AIModel[] = [
       "Dynamic Compute Allocation: Users manually adjust 'Think' duration from seconds to minutes based on task complexity."
     ],
     benchmarks: {
-      "GPQA": { 
+      "MMLU": { 
+        score: "86.2%", 
+        source: "https://x.ai/blog/grok-3" 
+      },
+      "GPQA Diamond": { 
         score: "84.6%", 
+        source: "https://x.ai/blog/grok-3" 
+      },
+      "MATH": { 
+        score: "80.5%", 
         source: "https://x.ai/blog/grok-3" 
       }
     },
@@ -314,6 +338,22 @@ export const models: AIModel[] = [
       "MATH": { 
         score: "82.2%", 
         source: "https://www.anthropic.com/news/claude-3-7-sonnet" 
+      },
+      "GPQA Diamond": { 
+        score: "68.0%", 
+        source: "https://www.pageon.ai/blog/sonnet-3-7" 
+      },
+      "SWE-Bench Verified": {
+        score: "62.3%",
+        source: "https://www.pageon.ai/blog/sonnet-3-7"
+      },
+      "Retail Task Accuracy": {
+        score: "81.2%",
+        source: "https://www.pageon.ai/blog/sonnet-3-7"
+      },
+      "Airline Task Accuracy": {
+        score: "58.4%",
+        source: "https://www.pageon.ai/blog/sonnet-3-7"
       }
     },
     color: "#6f3cf5",
@@ -339,9 +379,25 @@ export const models: AIModel[] = [
       "Dynamic Compute Allocation: Users manually adjust 'Think' duration from seconds to minutes based on task complexity."
     ],
     benchmarks: {
-      "GPQA": { 
-        score: "86.1%", 
-        source: "https://www.anthropic.com/news/claude-3-7-sonnet" 
+      "MMLU": { 
+        score: "77.1%", 
+        source: "https://www.pageon.ai/blog/sonnet-3-7" 
+      },
+      "GPQA Diamond": { 
+        score: "84.8%", 
+        source: "https://www.pageon.ai/blog/sonnet-3-7" 
+      },
+      "MATH": { 
+        score: "96.2%", 
+        source: "https://www.pageon.ai/blog/sonnet-3-7" 
+      },
+      "AIME": {
+        score: "80.0%",
+        source: "https://www.pageon.ai/blog/sonnet-3-7"
+      },
+      "HellaSwag (10-shot)": {
+        score: "89.0%",
+        source: "https://www.pageon.ai/blog/sonnet-3-7"
       }
     },
     color: "#6f3cf5"
@@ -464,6 +520,14 @@ export const models: AIModel[] = [
       "Berkeley Function Calling (BFCL)": { 
         score: "90.2%", 
         source: "https://github.com/openai/simple-evals" 
+      },
+      "MMLU Pro": { 
+        score: "78.0%", 
+        source: "https://www.keywordsai.co/blog/claude-3-5-sonnet-vs-claude-3-5-haiku" 
+      },
+      "GPQA Diamond": { 
+        score: "65.0%", 
+        source: "https://www.keywordsai.co/blog/claude-3-5-sonnet-vs-claude-3-5-haiku" 
       }
     },
     color: "#6f3cf5",
@@ -568,9 +632,29 @@ export const models: AIModel[] = [
       "Japanese Language Specialization: 98.7% accuracy on JLPT N1 benchmarks."
     ],
     benchmarks: {
-      "GPQA": { 
-        score: "98.7%", 
-        source: "https://www.anthropic.com/news/claude-3-haiku" 
+      "MMLU Pro": { 
+        score: "65.0%", 
+        source: "https://www.keywordsai.co/blog/claude-3-5-sonnet-vs-claude-3-5-haiku" 
+      },
+      "GPQA Diamond": { 
+        score: "41.6%", 
+        source: "https://www.keywordsai.co/blog/claude-3-5-sonnet-vs-claude-3-5-haiku" 
+      },
+      "MATH": { 
+        score: "69.4%", 
+        source: "https://www.keywordsai.co/blog/claude-3-5-sonnet-vs-claude-3-5-haiku" 
+      },
+      "HumanEval": { 
+        score: "88.1%", 
+        source: "https://www.keywordsai.co/blog/claude-3-5-sonnet-vs-claude-3-5-haiku" 
+      },
+      "Time to First Token": {
+        score: "0.36s",
+        source: "https://www.keywordsai.co/blog/claude-3-5-sonnet-vs-claude-3-5-haiku"
+      },
+      "Tokens per Second": {
+        score: "52.54",
+        source: "https://www.keywordsai.co/blog/claude-3-5-sonnet-vs-claude-3-5-haiku"
       }
     },
     color: "#6f3cf5",
