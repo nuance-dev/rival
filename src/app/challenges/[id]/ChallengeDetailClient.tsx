@@ -24,7 +24,8 @@ const categoryIcons: Record<AIModelCapability, React.ReactNode> = {
   "code-generation": <Code className="h-4 w-4" />,
   "translation": <Lightbulb className="h-4 w-4" />,
   "3d-modeling": <Palette className="h-4 w-4" />,
-  "financial-modeling": <Zap className="h-4 w-4" />
+  "financial-modeling": <Zap className="h-4 w-4" />,
+  "planning": <Brain className="h-4 w-4" />
 };
 
 // Import model data
