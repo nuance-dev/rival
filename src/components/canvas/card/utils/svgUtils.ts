@@ -125,45 +125,28 @@ export const sanitizeSvgContent = (content: string): string => {
       }
     }
     
-    // Fix malformed path data that can crash React
+    // Restore a minimal and safer version of the path data cleaning 
     sanitized = sanitized.replace(/d=["']([^"']*)["']/g, (match, pathData) => {
       try {
-        // Remove comments from path data (including any custom format comments)
-        let cleanPathData = pathData
+        // Only do essential path data cleaning to fix common issues
+        let cleanPathData = pathData;
+        
+        // Remove comments from path data
+        cleanPathData = cleanPathData
           .replace(/\/\*[\s\S]*?\*\//g, '')  // Remove CSS comments
-          .replace(/\/\/.*$/gm, '')          // Remove single-line comments
-          .replace(/for\s+.*$/gm, '')        // Remove "for" annotations sometimes found in AI-generated SVGs
-          .replace(/path\s+for\s+.*$/gm, '') // Remove "path for [region]" annotations
-          .replace(/\([^)]*\)/g, '')         // Remove parenthetical notes/annotations
-          
-        // Fix trailing commas in path data which can cause SVG parse errors
+          .replace(/\/\/.*$/gm, '');          // Remove single-line comments
+        
+        // Fix trailing commas which can cause parse errors
         cleanPathData = cleanPathData.replace(/,\s*([A-Za-z])/g, ' $1');
         
-        // Fix spaces between path commands and coordinates
-        cleanPathData = cleanPathData.replace(/([A-Za-z])\s+/g, '$1');
-        
-        // Remove any remaining invalid characters that could break path rendering
-        cleanPathData = cleanPathData.replace(/[^\d\s,\.MLHVCSQTAZ\-]/gi, '');
-        
-        // Fix missing spaces after commands
-        cleanPathData = cleanPathData.replace(/([A-Za-z])(\d)/g, '$1 $2');
-        
-        // Fix multiple consecutive commands without coordinates
-        cleanPathData = cleanPathData.replace(/([A-Za-z])([A-Za-z])/g, '$1 $2');
-        
-        // Ensure no double spaces
-        cleanPathData = cleanPathData.replace(/\s{2,}/g, ' ').trim();
-        
-        // Ensure path data starts with a valid command
-        if (!/^[MLHVCSQTAZmlhvcsqtaz]/.test(cleanPathData)) {
-          cleanPathData = 'M ' + cleanPathData;
-        }
+        // Ensure minimum cleaning but avoid overprocessing
+        cleanPathData = cleanPathData.trim();
         
         return `d="${cleanPathData}"`;
       } catch (pathError) {
         console.error('Error cleaning SVG path data:', pathError);
-        // Return a simple path as fallback if parsing fails
-        return 'd="M 10 10 L 90 90"';
+        // Return the original path data instead of breaking it
+        return match;
       }
     });
     
@@ -199,42 +182,12 @@ export const sanitizeSvgContent = (content: string): string => {
       return `<stop${attrStr}>`;
     });
     
-    // Fix SVGs with invalid transform attributes
+    // Minimal transform cleaning - only handle empty transforms
     sanitized = sanitized.replace(/transform=["']([^"']*)["']/g, (match, transform) => {
-      try {
-        // Clean up transform attribute
-        const cleanTransform = transform
-          .replace(/[^\s\d\.,\-()matrix translate scale rotate skew]/gi, '')
-          .replace(/,\s*\)/g, ')')
-          .replace(/\(\s*,/g, '(')
-          .trim();
-        
-        if (!cleanTransform) {
-          return '';
-        }
-        
-        return `transform="${cleanTransform}"`;
-      } catch (transformError) {
-        console.error('Error cleaning SVG transform:', transformError);
-        return '';
+      if (!transform.trim()) {
+        return ''; // Remove empty transform attributes
       }
-    });
-    
-    // Fix SVGs with invalid style attributes
-    sanitized = sanitized.replace(/style=["']([^"']*)["']/g, (match, style) => {
-      try {
-        // Clean up style attribute
-        const cleanStyle = style
-          .replace(/[<>]/g, '')
-          .replace(/javascript:/gi, '')
-          .replace(/expression\(/gi, '')
-          .trim();
-        
-        return `style="${cleanStyle}"`;
-      } catch (styleError) {
-        console.error('Error cleaning SVG style:', styleError);
-        return '';
-      }
+      return match; // Keep valid transforms intact
     });
     
     // Ensure all IDs are unique to prevent conflicts with gradient definitions, masks, etc.

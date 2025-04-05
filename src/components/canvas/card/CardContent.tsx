@@ -38,42 +38,18 @@ export const CardContent: React.FC<CardContentProps> = ({
       switch (output.type.toLowerCase()) {
         case "website":
         case "html":
-          // Enhanced website/HTML rendering that handles Linear app clones better
-          const isLinearAppClone = typeof output.content === 'string' && (
-            output.content.toLowerCase().includes('linear') ||
-            output.content.toLowerCase().includes('issue tracking') ||
-            output.content.toLowerCase().includes('kanban') ||
-            output.title?.toLowerCase().includes('linear')
-          );
-
-          // For Linear app clones, use a similar approach to expanded view
-          if (isLinearAppClone) {
-            return (
-              <div className="w-full h-full flex-1 min-h-[280px] overflow-hidden relative rounded-xl bg-white">
-                <iframe
-                  title="HTML Preview"
-                  className="w-full h-full min-h-[280px] bg-white hide-scrollbar border-0"
-                  style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}
-                  sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-                  srcDoc={output.content || "<div>No content available</div>"}
-                  loading="lazy"
-                />
-              </div>
-            );
-          }
-          
-          // For other HTML content, use the LazyIframe component
+          // Render HTML/Website content
+          // Apply aspect-ratio and overflow-hidden to the container
           return (
-            <div className="w-full h-full flex-1 min-h-[280px] relative">
-              <div className="absolute inset-0">
-                <LazyIframe content={output.content} title={displayTitle || "HTML Output"} />
-              </div>
+            <div className="w-full h-auto aspect-[16/10] overflow-hidden rounded-xl bg-muted/10 relative">
+              <LazyIframe content={output.content} title={displayTitle || "HTML Output"} />
             </div>
           );
         
         case "svg":
+          // Keep SVG rendering as is for now, assuming sanitization fix helps
           return (
-            <div className="h-full w-full flex-1 min-h-[280px] flex items-center justify-center bg-white dark:bg-gray-800 p-4 rounded-xl">
+            <div className="h-full w-full flex-1 min-h-[280px] flex items-center justify-center bg-white dark:bg-gray-800 p-4 rounded-xl aspect-[16/10] overflow-hidden">
               <div className="w-full h-full flex items-center justify-center overflow-hidden">
                 <SafeSVGRenderer content={output.content} className="w-full h-full" />
               </div>
@@ -200,7 +176,9 @@ export const CardContent: React.FC<CardContentProps> = ({
         case "svg":
           return (
             <div className="w-full h-full flex-1 flex items-center justify-center bg-white dark:bg-gray-800 p-4 min-h-[calc(90vh-130px)] overflow-hidden">
-              <SafeSVGRenderer content={output.content} className="w-full h-full" />
+              <div className="w-full h-full max-w-[90%] max-h-[90%]">
+                <SafeSVGRenderer content={output.content} className="w-full h-full" />
+              </div>
             </div>
           );
         
