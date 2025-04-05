@@ -143,7 +143,6 @@ const ModelIcon = React.memo(({ modelId, className }: ModelIconProps) => {
             isLoaded ? "opacity-100" : "opacity-0",
             className
           )}
-          priority={true}
           loading="eager"
           onLoad={() => {
             if (mountedRef.current) {
