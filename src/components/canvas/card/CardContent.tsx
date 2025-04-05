@@ -39,17 +39,17 @@ export const CardContent: React.FC<CardContentProps> = ({
         case "website":
         case "html":
           // Render HTML/Website content
-          // Apply aspect-ratio and overflow-hidden to the container
+          // Remove fixed aspect-ratio to allow filling height
           return (
-            <div className="w-full h-auto aspect-[16/10] overflow-hidden rounded-xl bg-muted/10 relative">
+            <div className="w-full h-full bg-muted/10 relative rounded-xl overflow-hidden"> 
               <LazyIframe content={output.content} title={displayTitle || "HTML Output"} />
             </div>
           );
         
         case "svg":
-          // Keep SVG rendering as is for now, assuming sanitization fix helps
+          // Remove fixed aspect-ratio and min-height to let SVG fill container
           return (
-            <div className="h-full w-full flex-1 min-h-[280px] flex items-center justify-center bg-white dark:bg-gray-800 p-4 rounded-xl aspect-[16/10] overflow-hidden">
+            <div className="h-full w-full flex-1 flex items-center justify-center bg-white dark:bg-gray-800 p-4 rounded-xl overflow-hidden">
               <div className="w-full h-full flex items-center justify-center overflow-hidden">
                 <SafeSVGRenderer 
                   content={output.content} 

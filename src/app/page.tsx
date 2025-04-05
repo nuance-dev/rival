@@ -399,7 +399,7 @@ export default function Home() {
                     transition={{ duration: 0.4 }}
                   >
                     <span className="flex items-center gap-2">
-                      Explore results <ArrowDown className="h-4 w-4" />
+                      Explore <ArrowDown className="h-4 w-4" />
                     </span>
                   </motion.button>
                   
@@ -412,7 +412,7 @@ export default function Home() {
                     transition={{ duration: 0.4, delay: 0.1 }}
                   >
                     <span className="flex items-center gap-2 text-sm">
-                      Try AI Challenges
+                      AI Challenges
                     </span>
                   </motion.a>
                   
@@ -424,7 +424,7 @@ export default function Home() {
                   >
                     <span className="flex items-center gap-2">
                       <span className="inline-block h-1 w-1 rounded-full bg-[hsl(var(--retro-primary))]"></span>
-                      {filteredModelOutputs.length} responses available
+                      {filteredModelOutputs.length} responses
                     </span>
                   </motion.div>
                 </div>

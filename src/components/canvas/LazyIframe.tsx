@@ -10,7 +10,6 @@ interface LazyIframeProps {
 
 const LazyIframe = memo(({ content, title }: LazyIframeProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [scale, setScale] = useState(0.5); // Default scale
   const [processedContent, setProcessedContent] = useState<string | null>(null);
   const [hasError, setHasError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
@@ -59,17 +58,6 @@ const LazyIframe = memo(({ content, title }: LazyIframeProps) => {
       mountedRef.current = false;
     };
   }, [content]);
-  
-  // Analyze content to determine optimal scale factor
-  useEffect(() => {
-    if (!content || hasError) return;
-    const contentLength = content.length;
-    let newScale = 0.5; // Default
-    if (contentLength > 20000) newScale = 0.4;
-    else if (contentLength > 10000) newScale = 0.45;
-    else if (contentLength < 5000) newScale = 0.55;
-    setScale(newScale);
-  }, [content, hasError]);
   
   // Handle iframe load events
   const handleIframeLoad = () => {
@@ -139,12 +127,9 @@ const LazyIframe = memo(({ content, title }: LazyIframeProps) => {
           key={retryCount} // Force re-render on retry
           ref={contentRef}
           title={title}
-          className="absolute border-0"
+          className="absolute border-0 w-full h-full" // Use w-full h-full
           style={{
-            width: `${100 / scale}%`,
-            height: `${100 / scale}%`,
-            transform: `scale(${scale})`,
-            transformOrigin: 'top left',
+            // Remove width, height, transform, transformOrigin
             opacity: isLoaded ? 1 : 0,
             transition: 'opacity 0.5s ease-in-out',
           }}

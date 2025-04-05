@@ -130,7 +130,7 @@ export function MobileFilterDropdown({
               
               {/* Sorting Section */}
               <div>
-                <h3 className="text-sm font-semibold mb-2">Sort By</h3>
+                <h3 className="text-sm font-semibold mb-2">Sort</h3>
                 <SortingControl 
                   currentSort={sortOption} 
                   onSortChange={handleSortChange}

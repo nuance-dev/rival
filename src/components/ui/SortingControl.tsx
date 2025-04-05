@@ -38,7 +38,7 @@ export function SortingControl({ currentSort, onSortChange, className = '' }: So
 
   return (
     <div className={cn('flex items-center gap-2 w-full md:w-auto', className)}>
-      <span className="text-xs text-muted-foreground mr-1 hidden md:inline">Sort by:</span>
+      <span className="text-xs text-muted-foreground mr-1 hidden md:inline">Sort:</span>
       
       <div className="flex gap-1.5 items-center w-full md:w-auto justify-between md:justify-start">
         {sortOptions.map((option) => (
