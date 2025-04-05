@@ -139,7 +139,7 @@ const LazyIframe = memo(({ content, title }: LazyIframeProps) => {
           key={retryCount} // Force re-render on retry
           ref={contentRef}
           title={title}
-          className="absolute border-0"
+          className="absolute border-0 inset-0"
           style={{
             width: `${100 / scale}%`,
             height: `${100 / scale}%`,
