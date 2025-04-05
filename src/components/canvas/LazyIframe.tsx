@@ -78,10 +78,11 @@ const LazyIframe = memo(({ content, title }: LazyIframeProps) => {
       try {
         const iframeDocument = contentRef.current.contentDocument || contentRef.current.contentWindow?.document;
         if (iframeDocument) {
-          // Prevent clicks from navigating the main page
-          iframeDocument.body.addEventListener('click', (e) => {
-            let target = e.target as HTMLElement | null;
+          // Add click listener to prevent navigation away from the iframe
+          iframeDocument.addEventListener('click', (e) => {
+            let target = e.target as Node;
             while (target && !(target instanceof HTMLAnchorElement)) {
+              if (!(target.parentElement)) break;
               target = target.parentElement;
             }
             if (target instanceof HTMLAnchorElement) {
@@ -91,9 +92,8 @@ const LazyIframe = memo(({ content, title }: LazyIframeProps) => {
             }
           }, true); // Use capture phase
         }
-      } catch (e) {
+      } catch {
         // Catch potential cross-origin errors silently
-        // console.warn('Could not add click listener to iframe:', e);
       }
     }
   };
