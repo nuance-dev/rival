@@ -146,6 +146,9 @@ export function getModelLogoPath(modelId: string, provider?: string): string {
     'gemma-1-5': '/models/gemma-color.svg',
     'mistral-large': '/models/mistral-color.svg',
     'llama-3': '/models/meta-color.svg',
+    'llama-4-scout': '/models/meta-color.svg',
+    'llama-4-maverick': '/models/meta-color.svg',
+    'llama-4-behemoth': '/models/meta-color.svg',
     'quasar-alpha': '/models/openrouter.svg',
   };
 
@@ -249,6 +252,11 @@ export function formatModelName(modelId: string): string {
     "llama-2-70b": "Llama 2 (70B)",
     "llama-3-8b": "Llama 3 (8B)",
     "llama-3-70b": "Llama 3 (70B)",
+    "llama-3-1-70b": "Llama 3.1 (70B)",
+    "llama-3-1-405b": "Llama 3.1 (405B)",
+    "llama-4-scout": "Llama 4 Scout",
+    "llama-4-maverick": "Llama 4 Maverick",
+    "llama-4-behemoth": "Llama 4 Behemoth",
     "mistral-7b": "Mistral (7B)",
     "mixtral-8x7b": "Mixtral (8x7B)",
     "command-r": "Command R",

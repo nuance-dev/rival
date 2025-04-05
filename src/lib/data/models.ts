@@ -1188,6 +1188,139 @@ export const models: AIModel[] = [
     logo: "meta.svg"
   },
   {
+    id: "llama-4-scout",
+    name: "Llama 4 Scout",
+    provider: "meta",
+    releaseDate: "April 5, 2025",
+    description: "Llama 4 Scout is a multimodal MoE model with 17B active parameters and 16 experts (109B total parameters), offering state-of-the-art performance for its class with an industry-leading 10 million token context window.",
+    capabilities: ["conversation", "reasoning", "code-generation", "analysis"],
+    categories: ["text", "code", "multimodal", "vision"],
+    size: "large",
+    contextWindow: 10000000,
+    parametersCount: "17B active (109B total)",
+    gradientColors: ["#1877F2", "#0668E1"],
+    logoUrl: getModelLogoPath("llama-4"),
+    url: "https://llama.com",
+    uniqueCapabilities: [
+      "Industry-leading 10M token context window",
+      "Native multimodality with early fusion architecture",
+      "Mixture-of-Experts (MoE) with 16 experts",
+      "Superior image grounding capabilities"
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "85.2%", 
+        source: "https://llama.com" 
+      },
+      "MATH": { 
+        score: "65.7%", 
+        source: "https://llama.com" 
+      },
+      "HumanEval": { 
+        score: "83.5%", 
+        source: "https://llama.com" 
+      },
+      "GPQA": { 
+        score: "48.3%", 
+        source: "https://llama.com" 
+      },
+      "Long Context Retrieval": { 
+        score: "96.5%", 
+        source: "https://llama.com" 
+      }
+    },
+    color: "#1877F2",
+    logo: "meta.svg",
+    featured: true
+  },
+  {
+    id: "llama-4-maverick",
+    name: "Llama 4 Maverick",
+    provider: "meta",
+    releaseDate: "April 5, 2025",
+    description: "Llama 4 Maverick is Meta's multimodal MoE model with 17B active parameters and 128 experts (400B total parameters), beating GPT-4o and Gemini 2.0 Flash across a broad range of benchmarks while offering a best-in-class performance to cost ratio.",
+    capabilities: ["conversation", "reasoning", "code-generation", "analysis"],
+    categories: ["text", "code", "multimodal", "vision"],
+    size: "xlarge",
+    contextWindow: 128000,
+    parametersCount: "17B active (400B total)",
+    gradientColors: ["#1877F2", "#0668E1"],
+    logoUrl: getModelLogoPath("llama-4"),
+    url: "https://llama.com",
+    uniqueCapabilities: [
+      "Native multimodality with early fusion architecture",
+      "Mixture-of-Experts (MoE) with 128 experts",
+      "Industry-leading performance in image and text understanding",
+      "Best-in-class performance to cost ratio with ELO of 1417 on LMArena"
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "87.8%", 
+        source: "https://llama.com" 
+      },
+      "MATH": { 
+        score: "72.4%", 
+        source: "https://llama.com" 
+      },
+      "HumanEval": { 
+        score: "87.2%", 
+        source: "https://llama.com" 
+      },
+      "GPQA": { 
+        score: "53.9%", 
+        source: "https://llama.com" 
+      },
+      "LMArena ELO": { 
+        score: "1417", 
+        source: "https://llama.com" 
+      }
+    },
+    color: "#1877F2",
+    logo: "meta.svg",
+    featured: true
+  },
+  {
+    id: "llama-4-behemoth",
+    name: "Llama 4 Behemoth",
+    provider: "meta",
+    releaseDate: "Coming Soon (In Training)",
+    description: "Llama 4 Behemoth is Meta's most powerful model yet with 288B active parameters and 16 experts (nearly 2T total parameters), outperforming GPT-4.5, Claude Sonnet 3.7, and Gemini 2.0 Pro on several STEM benchmarks.",
+    capabilities: ["conversation", "reasoning", "code-generation", "analysis"],
+    categories: ["text", "code", "multimodal", "vision"],
+    size: "xlarge",
+    contextWindow: 128000,
+    parametersCount: "288B active (2T total)",
+    gradientColors: ["#1877F2", "#0668E1"],
+    logoUrl: getModelLogoPath("llama-4"),
+    url: "https://llama.com",
+    uniqueCapabilities: [
+      "Teacher model for Llama 4 Scout and Maverick",
+      "Among the world's smartest LLMs",
+      "Mixture-of-Experts (MoE) architecture with 16 experts",
+      "State-of-the-art performance on STEM benchmarks"
+    ],
+    benchmarks: {
+      "MMLU": { 
+        score: "90.5%", 
+        source: "https://llama.com" 
+      },
+      "MATH-500": { 
+        score: "83.7%", 
+        source: "https://llama.com" 
+      },
+      "GPQA Diamond": { 
+        score: "87.2%", 
+        source: "https://llama.com" 
+      },
+      "HumanEval": { 
+        score: "92.1%", 
+        source: "https://llama.com" 
+      }
+    },
+    color: "#1877F2",
+    logo: "meta.svg"
+  },
+  {
     id: "quasar-alpha",
     name: "Quasar Alpha",
     provider: "openrouter",
