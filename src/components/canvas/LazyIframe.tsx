@@ -381,7 +381,7 @@ const LazyIframe = memo(({ content, title }: LazyIframeProps) => {
   }, [content]);
   
   return (
-    <div ref={iframeRef} className="h-72 sm:h-80 w-full overflow-hidden rounded-xl relative">
+    <div ref={iframeRef} className="h-full w-full overflow-hidden rounded-xl relative">
       {/* Always show the placeholder until content loads */}
       <div 
         className={`absolute inset-0 bg-muted/10 flex items-center justify-center z-10 transition-opacity duration-500 ${

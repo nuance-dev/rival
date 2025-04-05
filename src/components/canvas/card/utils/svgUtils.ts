@@ -96,6 +96,19 @@ export const sanitizeSvgContent = (content: string): string => {
     // Ensure SVG has xlink namespace for proper gradient references
     sanitized = ensureXlinkNamespace(sanitized);
     
+    // Ensure width and height are set to 100% to fill container
+    if (!sanitized.includes('width=')) {
+      sanitized = sanitized.replace(/<svg/, '<svg width="100%"');
+    } else {
+      sanitized = sanitized.replace(/width=["']([^"']*)["']/g, 'width="100%"');
+    }
+    
+    if (!sanitized.includes('height=')) {
+      sanitized = sanitized.replace(/<svg/, '<svg height="100%"');
+    } else {
+      sanitized = sanitized.replace(/height=["']([^"']*)["']/g, 'height="100%"');
+    }
+    
     // Add viewBox if missing
     if (!sanitized.includes('viewBox') && !sanitized.includes('viewbox')) {
       // Extract width and height if available

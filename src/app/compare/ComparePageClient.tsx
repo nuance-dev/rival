@@ -262,6 +262,49 @@ export default function ComparePageClient() {
     return challenge || null;
   }, [selectedChallenge]);
 
+  // Effect to automatically show all challenges when both models are selected
+  useEffect(() => {
+    if (selectedModels.length === 2 && selectedModels[0] && selectedModels[1]) {
+      // Short timeout to allow for models to be loaded properly
+      setTimeout(() => {
+        setShowAllChallenges(true);
+        setShowChallengeSelection(false);
+        setIsLoading(true);
+        
+        // Reset loaded challenges
+        setLoadedChallenges([]);
+        
+        // Load challenges progressively
+        setTimeout(() => {
+          setIsLoading(false);
+          
+          // Load challenges progressively
+          const chunkSize = 3; // Load 3 challenges at a time
+          const totalChallenges = availableChallenges.length;
+          let loadedCount = 0;
+          
+          function loadNextChunk() {
+            if (loadedCount < totalChallenges) {
+              const endIndex = Math.min(loadedCount + chunkSize, totalChallenges);
+              const newChunk = availableChallenges.slice(loadedCount, endIndex).map(c => c.id);
+              
+              setLoadedChallenges(prev => [...prev, ...newChunk]);
+              loadedCount = endIndex;
+              
+              // Load the next chunk after a short delay
+              if (loadedCount < totalChallenges) {
+                setTimeout(loadNextChunk, 300);
+              }
+            }
+          }
+          
+          // Start loading the first chunk
+          loadNextChunk();
+        }, 300);
+      }, 500);
+    }
+  }, [selectedModels, availableChallenges]);
+
   // Clear animation states when changing models or challenges
   useEffect(() => {
     if (typeof window !== 'undefined') {

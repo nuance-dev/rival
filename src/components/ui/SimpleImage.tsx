@@ -68,7 +68,7 @@ export default function SimpleImage({
   height,
   aspectRatio,
   blurEffect = true,
-  fill = false,
+  fill = true,
   objectFit = 'cover',
   className = '',
   onError,
@@ -144,6 +144,8 @@ export default function SimpleImage({
           objectPosition: 'center',
           transition: 'opacity 500ms',
           opacity: isLoaded ? 1 : 0,
+          width: '100%',
+          height: '100%',
         }}
         fill={fill}
         priority={priority}

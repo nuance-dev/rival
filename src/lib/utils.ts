@@ -146,6 +146,7 @@ export function getModelLogoPath(modelId: string, provider?: string): string {
     'gemma-1-5': '/models/gemma-color.svg',
     'mistral-large': '/models/mistral-color.svg',
     'llama-3': '/models/meta-color.svg',
+    'quasar-alpha': '/models/openrouter.svg',
   };
 
   // Provider-based logos (fallbacks)
@@ -168,6 +169,7 @@ export function getModelLogoPath(modelId: string, provider?: string): string {
     'kling': '/models/kling-color.svg',
     'ollama': '/models/ollama.svg',
     'gpt': '/models/openai.svg',
+    'openrouter': '/models/openrouter.svg',
   };
 
   // Check if the modelId already includes the full path

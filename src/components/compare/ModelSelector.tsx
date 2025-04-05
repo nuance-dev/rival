@@ -224,16 +224,17 @@ export function ModelSelectorModal({
                           
                           <div className="flex-1 text-left">
                             <div className="flex items-center gap-2">
-                              <h3 className="font-medium text-sm">{model.name}</h3>
+                              <h3 className="font-semibold text-sm font-display">{model.name}</h3>
                               {mainBenchmark && (
                                 <div 
-                                  className="px-1.5 py-0.5 text-xs rounded-full font-mono"
+                                  className="px-1.5 py-0.5 text-xs rounded-full font-mono flex flex-col items-center"
                                   style={{ 
                                     backgroundColor: model.gradientColors ? `${model.gradientColors[0]}33` : '#3b82f633',
                                     color: model.gradientColors ? model.gradientColors[0] : '#3b82f6'
                                   }}
                                   title={`${mainBenchmark[0]} benchmark score`}
                                 >
+                                  <span className="text-[8px] opacity-70">{mainBenchmark[0]}</span>
                                   {mainBenchmark[1].score}
                                 </div>
                               )}

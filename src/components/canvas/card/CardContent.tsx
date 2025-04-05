@@ -53,7 +53,7 @@ export const CardContent: React.FC<CardContentProps> = ({
                 <iframe
                   title="HTML Preview"
                   className="w-full h-full min-h-[280px] bg-white hide-scrollbar border-0"
-                  style={{ width: '100%', height: '100%' }}
+                  style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}
                   sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
                   srcDoc={output.content || "<div>No content available</div>"}
                   loading="lazy"
@@ -64,8 +64,10 @@ export const CardContent: React.FC<CardContentProps> = ({
           
           // For other HTML content, use the LazyIframe component
           return (
-            <div className="w-full h-full flex-1 min-h-[280px]">
-              <LazyIframe content={output.content} title={displayTitle || "HTML Output"} />
+            <div className="w-full h-full flex-1 min-h-[280px] relative">
+              <div className="absolute inset-0">
+                <LazyIframe content={output.content} title={displayTitle || "HTML Output"} />
+              </div>
             </div>
           );
         
@@ -73,7 +75,7 @@ export const CardContent: React.FC<CardContentProps> = ({
           return (
             <div className="h-full w-full flex-1 min-h-[280px] flex items-center justify-center bg-white dark:bg-gray-800 p-4 rounded-xl">
               <div className="w-full h-full flex items-center justify-center overflow-hidden">
-                <SafeSVGRenderer content={output.content} className="min-w-[70%] min-h-[70%] max-w-full max-h-full" />
+                <SafeSVGRenderer content={output.content} className="w-full h-full" />
               </div>
             </div>
           );
@@ -86,8 +88,10 @@ export const CardContent: React.FC<CardContentProps> = ({
               output.content.startsWith("/")
             )) {
             return (
-              <div className="w-full h-full flex-1 min-h-[280px]">
-                <LazyImage src={output.content} alt={displayTitle || "AI Generated Image"} />
+              <div className="w-full h-full flex-1 min-h-[280px] relative">
+                <div className="absolute inset-0">
+                  <LazyImage src={output.content} alt={displayTitle || "AI Generated Image"} />
+                </div>
               </div>
             );
           } else {
@@ -181,11 +185,11 @@ export const CardContent: React.FC<CardContentProps> = ({
         case "html":
         case "website":
           return (
-            <div className="w-full h-full flex-1 min-h-[500px]">
+            <div className="w-full h-full flex-1 min-h-[500px] relative">
               <iframe
                 title="HTML Preview"
-                className="w-full h-full min-h-[500px] bg-white hide-scrollbar border-0"
-                style={{ width: 'calc(100% + 1px)' }}
+                className="w-full h-full min-h-[500px] bg-white hide-scrollbar border-0 absolute inset-0"
+                style={{ width: '100%', height: '100%' }}
                 sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
                 srcDoc={output.content || "<div>No content available</div>"}
                 loading="lazy"
@@ -196,7 +200,7 @@ export const CardContent: React.FC<CardContentProps> = ({
         case "svg":
           return (
             <div className="w-full h-full flex-1 flex items-center justify-center bg-white dark:bg-gray-800 p-4 min-h-[calc(90vh-130px)] overflow-hidden">
-              <SafeSVGRenderer content={output.content} className="w-full h-full flex items-center justify-center overflow-hidden" />
+              <SafeSVGRenderer content={output.content} className="w-full h-full" />
             </div>
           );
         
@@ -210,7 +214,7 @@ export const CardContent: React.FC<CardContentProps> = ({
                   <img 
                     src={output.content} 
                     alt={displayTitle || "Generated image"}
-                    className="max-w-full max-h-[75vh] object-contain rounded-md"
+                    className="max-w-full max-h-[75vh] w-full h-full object-contain rounded-md"
                     loading="eager"
                   />
                 ) : (
@@ -218,7 +222,7 @@ export const CardContent: React.FC<CardContentProps> = ({
                   <Image 
                     src={output.content} 
                     alt={displayTitle || "Generated image"}
-                    className="max-w-full max-h-[75vh] object-contain rounded-md"
+                    className="max-w-full max-h-[75vh] w-full h-full object-contain rounded-md"
                     width={800}
                     height={600}
                     priority

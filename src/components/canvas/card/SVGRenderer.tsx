@@ -64,10 +64,12 @@ export const SafeSVGRenderer: React.FC<SafeSVGRendererProps> = ({
       styleEl.id = 'svg-container-styles';
       styleEl.textContent = `
         [data-svg-renderer="true"] svg {
-          width: 100%;
-          height: 100%;
-          max-width: 100%;
-          max-height: 100%;
+          width: 100% !important;
+          height: 100% !important;
+          min-width: 100% !important;
+          min-height: 100% !important;
+          max-width: 100% !important;
+          max-height: 100% !important;
           object-fit: contain;
           display: block;
         }
@@ -267,7 +269,9 @@ export const SafeSVGRenderer: React.FC<SafeSVGRendererProps> = ({
           display: "flex", 
           alignItems: "center", 
           justifyContent: "center",
-          overflow: "hidden"
+          overflow: "hidden",
+          minWidth: "100%",
+          minHeight: "100%"
         }}
         data-svg-renderer="true"
       />

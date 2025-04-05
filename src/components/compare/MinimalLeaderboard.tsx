@@ -13,6 +13,7 @@ type LeaderboardEntry = {
   wins: number;
   losses: number;
   winRate: number;
+  rank?: number;
 };
 
 export function MinimalLeaderboard() {
@@ -44,6 +45,9 @@ export function MinimalLeaderboard() {
         
         // Count wins and losses
         data?.forEach((vote: { winner_id: string; model1_id: string; model2_id: string }) => {
+          // Skip votes where winner_id is 'tie' as they shouldn't count as wins or losses
+          if (vote.winner_id === 'tie') return;
+          
           const winnerId = vote.winner_id;
           const loserId = vote.model1_id === winnerId ? vote.model2_id : vote.model1_id;
           
@@ -112,9 +116,25 @@ export function MinimalLeaderboard() {
     );
   }
 
+  // Calculate proper ranks with tie handling
+  const rankedData = leaderboardData.map((entry, idx, array) => {
+    let rank = idx + 1;
+    
+    // Check if current model has the same win rate as the previous model (tie)
+    if (idx > 0 && Math.abs(entry.winRate - array[idx - 1].winRate) < 0.01) {
+      // If tied, use the same rank as the previous entry
+      rank = array[idx - 1].rank || idx;
+    }
+    
+    return {
+      ...entry,
+      rank
+    };
+  });
+  
   // Display only top 3 in the minimal view
-  const minimalData = leaderboardData.slice(0, 3);
-  const restData = leaderboardData.slice(3);
+  const minimalData = rankedData.slice(0, 3);
+  const restData = rankedData.slice(3);
   
   return (
     <div className="y-4">
@@ -128,7 +148,7 @@ export function MinimalLeaderboard() {
       
       {/* Top 3 models always shown */}
       <div className="space-y-2">
-        {minimalData.map((entry, index) => {
+        {minimalData.map((entry) => {
           // Find model to get its logo
           const model = models.find(m => m.id === entry.modelId);
           
@@ -141,11 +161,11 @@ export function MinimalLeaderboard() {
                 {/* Rank indicator */}
                 <div className={`
                   text-xs w-5 h-5 flex items-center justify-center rounded-full 
-                  ${index === 0 ? 'bg-yellow-500/10 text-yellow-500' : 
-                    index === 1 ? 'bg-gray-300/10 text-gray-400' : 
+                  ${entry.rank === 1 ? 'bg-yellow-500/10 text-yellow-500' : 
+                    entry.rank === 2 ? 'bg-gray-300/10 text-gray-400' : 
                     'bg-amber-700/10 text-amber-700'}
                 `}>
-                  {index + 1}
+                  {entry.rank}
                 </div>
                 
                 {/* Model info */}
@@ -182,10 +202,9 @@ export function MinimalLeaderboard() {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            {restData.map((entry, index) => {
+            {restData.map((entry) => {
               // Find model to get its logo
               const model = models.find(m => m.id === entry.modelId);
-              const rank = index + 4; // Starting from 4th place
               
               return (
                 <div 
@@ -195,7 +214,7 @@ export function MinimalLeaderboard() {
                   <div className="flex items-center gap-2">
                     {/* Rank number */}
                     <div className="text-xs text-muted-foreground w-5 h-5 flex items-center justify-center">
-                      {rank}
+                      {entry.rank}
                     </div>
                     
                     {/* Model info */}
