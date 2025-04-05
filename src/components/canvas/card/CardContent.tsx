@@ -38,10 +38,9 @@ export const CardContent: React.FC<CardContentProps> = ({
       switch (output.type.toLowerCase()) {
         case "website":
         case "html":
-          // Render HTML/Website content
-          // Remove fixed aspect-ratio to allow filling height
+          // Restore aspect-ratio for predictable website rendering
           return (
-            <div className="w-full h-full bg-muted/10 relative rounded-xl overflow-hidden"> 
+            <div className="w-full h-auto aspect-[16/10] overflow-hidden rounded-xl bg-muted/10 relative">
               <LazyIframe content={output.content} title={displayTitle || "HTML Output"} />
             </div>
           );
