@@ -38,20 +38,18 @@ export const CardContent: React.FC<CardContentProps> = ({
       switch (output.type.toLowerCase()) {
         case "website":
         case "html":
-          // Use flex-1 and h-full to fill the entire card height without fixed aspect ratio
+          // Restore aspect-ratio for predictable website rendering
           return (
-            <div className="w-full h-full flex-1 overflow-hidden rounded-xl bg-muted/10 relative flex flex-col">
-              <div className="absolute inset-0">
-                <LazyIframe content={output.content} title={displayTitle || "HTML Output"} />
-              </div>
+            <div className="w-full h-auto aspect-[16/10] overflow-hidden rounded-xl bg-muted/10 relative">
+              <LazyIframe content={output.content} title={displayTitle || "HTML Output"} />
             </div>
           );
         
         case "svg":
-          // Fill the entire card space with absolute positioning
+          // Remove fixed aspect-ratio and min-height to let SVG fill container
           return (
-            <div className="h-full w-full flex-1 bg-white dark:bg-gray-800 rounded-xl overflow-hidden relative">
-              <div className="absolute inset-0 flex items-center justify-center p-4">
+            <div className="h-full w-full flex-1 flex items-center justify-center bg-white dark:bg-gray-800 p-4 rounded-xl overflow-hidden">
+              <div className="w-full h-full flex items-center justify-center overflow-hidden">
                 <SafeSVGRenderer 
                   content={output.content} 
                   className="w-full h-full" 
@@ -166,10 +164,10 @@ export const CardContent: React.FC<CardContentProps> = ({
         case "html":
         case "website":
           return (
-            <div className="w-full h-full flex-1 relative" style={{ height: 'calc(90vh - 130px)' }}>
+            <div className="w-full h-full flex-1 min-h-[500px] relative">
               <iframe
                 title="HTML Preview"
-                className="w-full h-full bg-white hide-scrollbar border-0 absolute inset-0"
+                className="w-full h-full min-h-[500px] bg-white hide-scrollbar border-0 absolute inset-0"
                 style={{ width: '100%', height: '100%' }}
                 sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
                 srcDoc={output.content || "<div>No content available</div>"}
@@ -180,16 +178,13 @@ export const CardContent: React.FC<CardContentProps> = ({
         
         case "svg":
           return (
-            <div className="w-full h-full flex-1 bg-white dark:bg-gray-800 p-4 overflow-hidden relative" 
-                 style={{ height: 'calc(90vh - 130px)' }}>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-full h-full max-w-[90%] max-h-[90%] flex items-center justify-center">
-                  <SafeSVGRenderer 
-                    content={output.content} 
-                    className="w-full h-full" 
-                    isModelGenerated={true} 
-                  />
-                </div>
+            <div className="w-full h-full flex-1 flex items-center justify-center bg-white dark:bg-gray-800 p-4 min-h-[calc(90vh-130px)] overflow-hidden">
+              <div className="w-full h-full max-w-[90%] max-h-[90%]">
+                <SafeSVGRenderer 
+                  content={output.content} 
+                  className="w-full h-full" 
+                  isModelGenerated={true} 
+                />
               </div>
             </div>
           );
