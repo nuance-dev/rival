@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 
 export type SimpleImageProps = {
   /**
@@ -52,14 +51,10 @@ export type SimpleImageProps = {
    * Custom load handler function
    */
   onLoad?: () => void;
-  /**
-   * Priority for loading the image
-   */
-  priority?: boolean;
 };
 
 /**
- * Simple image component using standard HTML img tag without Next.js optimizations
+ * Simple image component using standard HTML img tag
  */
 export default function SimpleImage({
   src,
@@ -71,9 +66,9 @@ export default function SimpleImage({
   fill = true,
   objectFit = 'cover',
   className = '',
+  loading = 'lazy',
   onError,
   onLoad,
-  priority = false,
 }: SimpleImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
@@ -131,14 +126,13 @@ export default function SimpleImage({
       className={`relative overflow-hidden ${className}`}
       style={containerStyle}
     >
-
-      {/* Next.js Image component for optimized images */}
-      <Image
+      {/* Standard img tag */}
+      <img
         key={imageKey}
         src={src}
         alt={alt}
-        width={width || 1200}  // Default width if not provided
-        height={height || (width ? width * (aspectRatio ? eval(aspectRatio) : 9/16) : 675)}  // Calculate height from width and aspect ratio
+        width={width}
+        height={height}
         style={{
           objectFit,
           objectPosition: 'center',
@@ -147,12 +141,9 @@ export default function SimpleImage({
           width: '100%',
           height: '100%',
         }}
-        fill={fill}
-        priority={priority}
-        quality={85}
+        loading={loading} 
         onLoad={handleImageLoad}
         onError={handleImageError}
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
 
       {/* Error state */}

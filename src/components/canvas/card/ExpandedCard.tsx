@@ -82,7 +82,7 @@ export const ExpandedCard: React.FC<ExpandedCardProps> = ({
 
   return (
     <div 
-      className="flex flex-col h-full w-full max-h-[calc(100vh-16px)] md:max-h-[calc(100vh-32px)] bg-background shadow-2xl sm:rounded-xl overflow-hidden"
+      className="flex flex-col w-full bg-background shadow-2xl sm:rounded-xl overflow-hidden max-h-[90vh]"
       onClick={e => e.stopPropagation()}
       style={{
         backdropFilter: 'blur(12px)',
@@ -128,8 +128,8 @@ export const ExpandedCard: React.FC<ExpandedCardProps> = ({
       )}
       
       {/* Content section with improved scrolling behavior */}
-      <div className="flex-1 flex flex-col overflow-hidden min-h-0">
-        <div className="overflow-auto flex-grow scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/30 px-1 sm:px-2">
+      <div className="flex-1 overflow-auto">
+        <div className="px-1 sm:px-2">
           <CardContent 
             output={output}
             displayTitle={displayTitle}

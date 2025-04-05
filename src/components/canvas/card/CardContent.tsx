@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { ModelOutput } from "@/types/models";
@@ -25,6 +25,9 @@ export const CardContent: React.FC<CardContentProps> = ({
   expanded = false,
   className = ""
 }) => {
+  const iframeHeight = "800px";
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
   if (!output.content) {
     return (
       <div className={`p-4 text-muted-foreground text-sm ${className}`}>
@@ -38,7 +41,6 @@ export const CardContent: React.FC<CardContentProps> = ({
       switch (output.type.toLowerCase()) {
         case "website":
         case "html":
-          // Restore aspect-ratio for predictable website rendering
           return (
             <div className="w-full h-auto aspect-[16/10] overflow-hidden rounded-xl bg-muted/10 relative">
               <LazyIframe content={output.content} title={displayTitle || "HTML Output"} />
@@ -46,7 +48,6 @@ export const CardContent: React.FC<CardContentProps> = ({
           );
         
         case "svg":
-          // Remove fixed aspect-ratio and min-height to let SVG fill container
           return (
             <div className="h-full w-full flex-1 flex items-center justify-center bg-white dark:bg-gray-800 p-4 rounded-xl overflow-hidden">
               <div className="w-full h-full flex items-center justify-center overflow-hidden">
@@ -60,7 +61,6 @@ export const CardContent: React.FC<CardContentProps> = ({
           );
 
         case "image":
-          // More robust validation for image format with proper null/undefined checks
           if (typeof output.content === 'string' && output.content && (
               output.content.startsWith("http") || 
               output.content.startsWith("data:image") || 
@@ -74,7 +74,6 @@ export const CardContent: React.FC<CardContentProps> = ({
               </div>
             );
           } else {
-            // Handle invalid image formats more gracefully - fallback to text display without logging error
             return (
               <div className="h-full w-full flex-1 min-h-[280px] flex flex-col items-center justify-center bg-muted/10 rounded-xl text-muted-foreground p-4">
                 <div className="mb-2">Text Content (Image Format)</div>
@@ -90,7 +89,6 @@ export const CardContent: React.FC<CardContentProps> = ({
           }
 
         case "text":
-          // Improved text display with better height consistency
           const isShortText = typeof output.content === 'string' && output.content.length < 300;
           const wordCount = typeof output.content === 'string' ? output.content.split(/\s+/).length : 0;
           const isVeryShortText = wordCount < 30;
@@ -118,7 +116,6 @@ export const CardContent: React.FC<CardContentProps> = ({
           );
 
         case "code":
-          // Improved code display with better height consistency
           const isShortCode = typeof output.content === 'string' && output.content.split(/\n/).length < 10;
           return (
             <div className="p-4 h-full w-full flex-1 min-h-[280px] overflow-hidden relative rounded-xl bg-[#0d1117] text-[#e6edf3] flex flex-col">
@@ -164,11 +161,16 @@ export const CardContent: React.FC<CardContentProps> = ({
         case "html":
         case "website":
           return (
-            <div className="w-full h-full flex-1 min-h-[500px] relative">
+            <div className="w-full relative bg-white dark:bg-gray-800"> 
               <iframe
+                ref={iframeRef}
                 title="HTML Preview"
-                className="w-full h-full min-h-[500px] bg-white hide-scrollbar border-0 absolute inset-0"
-                style={{ width: '100%', height: '100%' }}
+                className="w-full bg-white hide-scrollbar border-0 block"
+                style={{ 
+                  width: '100%',
+                  height: iframeHeight,
+                  minHeight: "800px",
+                }}
                 sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
                 srcDoc={output.content || "<div>No content available</div>"}
                 loading="lazy"
@@ -195,7 +197,6 @@ export const CardContent: React.FC<CardContentProps> = ({
                 data-expanded-image={output.id}>
               {typeof output.content === 'string' && output.content && (
                 output.content.startsWith('data:') ? (
-                  // For data URLs, we still need to use img tag
                   <img 
                     src={output.content} 
                     alt={displayTitle || "Generated image"}
@@ -203,7 +204,6 @@ export const CardContent: React.FC<CardContentProps> = ({
                     loading="eager"
                   />
                 ) : (
-                  // For regular URLs, use Next.js Image
                   <Image 
                     src={output.content} 
                     alt={displayTitle || "Generated image"}
@@ -248,11 +248,9 @@ export const CardContent: React.FC<CardContentProps> = ({
     }
   };
 
-  return (
-    <div className={className}>
-      {expanded ? renderExpandedContent() : renderPreview()}
-    </div>
-  );
+  const ContentRenderer = expanded ? renderExpandedContent : renderPreview;
+
+  return <div className={className}><ContentRenderer /></div>;
 };
 
 export default CardContent;
