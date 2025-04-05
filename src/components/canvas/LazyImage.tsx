@@ -45,6 +45,7 @@ const LazyImage = React.memo(({ src, alt }: LazyImageProps) => {
         <SimpleImage 
           src={src}
           alt={alt}
+          fill={false}
           className="w-full h-full object-cover transition-opacity duration-500"
           loading="eager" 
           blurEffect={false}
