@@ -40,7 +40,8 @@ export type AIModelCapability =
   | "code-generation" 
   | "translation"
   | "3d-modeling"
-  | "financial-modeling";
+  | "financial-modeling"
+  | "planning";
 
 export interface AIModel {
   id: string;

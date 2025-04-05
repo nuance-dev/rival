@@ -1188,45 +1188,29 @@ export const models: AIModel[] = [
     logo: "meta.svg"
   },
   {
-    id: "llama-4-scout",
-    name: "Llama 4 Scout",
+    id: "llama-4-maverick",
+    name: "Llama 4 Maverick",
     provider: "meta",
     releaseDate: "April 5, 2025",
-    description: "Llama 4 Scout is a multimodal MoE model with 17B active parameters and 16 experts (109B total parameters), offering state-of-the-art performance for its class with an industry-leading 10 million token context window.",
-    capabilities: ["conversation", "reasoning", "code-generation", "analysis"],
+    description: "Llama 4 Maverick is Meta's multimodal expert model with 17B active parameters and 128 experts (400B total parameters). It outperforms GPT-4o and Gemini 2.0 Flash across various benchmarks, achieving an ELO of 1417 on LMArena. Designed for sophisticated AI applications with excellent image understanding and creative writing.",
+    capabilities: ["conversation", "reasoning", "code-generation", "analysis", "planning"],
     categories: ["text", "code", "multimodal", "vision"],
-    size: "large",
-    contextWindow: 10000000,
-    parametersCount: "17B active (109B total)",
-    gradientColors: ["#1877F2", "#0668E1"],
-    logoUrl: getModelLogoPath("llama-4"),
+    size: "xlarge",
+    contextWindow: 1000000,
+    parametersCount: "17B active (400B total)",
+    gradientColors: ["#1877F2", "#00B5D8"],
+    logoUrl: getModelLogoPath("meta-color"),
     url: "https://llama.com",
     uniqueCapabilities: [
-      "Industry-leading 10M token context window",
-      "Native multimodality with early fusion architecture",
-      "Mixture-of-Experts (MoE) with 16 experts",
-      "Superior image grounding capabilities"
+      "Industry-leading multimodal understanding of text and images",
+      "Best-in-class performance to cost ratio",
+      "Supports multi-image inputs with up to 8 images during inference",
+      "Interleaved attention architecture (iRoPE) for context length generalization"
     ],
     benchmarks: {
-      "MMLU": { 
-        score: "85.2%", 
-        source: "https://llama.com" 
-      },
-      "MATH": { 
-        score: "65.7%", 
-        source: "https://llama.com" 
-      },
-      "HumanEval": { 
-        score: "83.5%", 
-        source: "https://llama.com" 
-      },
-      "GPQA": { 
-        score: "48.3%", 
-        source: "https://llama.com" 
-      },
-      "Long Context Retrieval": { 
-        score: "96.5%", 
-        source: "https://llama.com" 
+      "LMArena ELO (experimental chat)": { 
+        score: "1417", 
+        source: "https://meta.com/llama" 
       }
     },
     color: "#1877F2",
@@ -1234,50 +1218,33 @@ export const models: AIModel[] = [
     featured: true
   },
   {
-    id: "llama-4-maverick",
-    name: "Llama 4 Maverick",
+    id: "llama-4-scout",
+    name: "Llama 4 Scout",
     provider: "meta",
     releaseDate: "April 5, 2025",
-    description: "Llama 4 Maverick is Meta's multimodal MoE model with 17B active parameters and 128 experts (400B total parameters), beating GPT-4o and Gemini 2.0 Flash across a broad range of benchmarks while offering a best-in-class performance to cost ratio.",
+    description: "Llama 4 Scout is Meta's compact yet powerful multimodal model with 17B active parameters and 16 experts (109B total parameters). It fits on a single H100 GPU with Int4 quantization and offers an industry-leading 10M token context window, outperforming Gemma 3, Gemini 2.0 Flash-Lite, and Mistral 3.1 across various benchmarks.",
     capabilities: ["conversation", "reasoning", "code-generation", "analysis"],
     categories: ["text", "code", "multimodal", "vision"],
-    size: "xlarge",
-    contextWindow: 128000,
-    parametersCount: "17B active (400B total)",
-    gradientColors: ["#1877F2", "#0668E1"],
-    logoUrl: getModelLogoPath("llama-4"),
-    url: "https://llama.com",
+    size: "medium",
+    contextWindow: 10000000,
+    parametersCount: "17B active (109B total)",
+    gradientColors: ["#1877F2", "#4267B2"],
+    logoUrl: getModelLogoPath("meta-color"),
+    url: "https://meta.com/llama",
     uniqueCapabilities: [
-      "Native multimodality with early fusion architecture",
-      "Mixture-of-Experts (MoE) with 128 experts",
-      "Industry-leading performance in image and text understanding",
-      "Best-in-class performance to cost ratio with ELO of 1417 on LMArena"
+      "Industry-leading 10M token context window",
+      "Single H100 GPU deployment with Int4 quantization",
+      "Best-in-class image grounding capabilities",
+      "Interleaved attention architecture (iRoPE) for context length generalization"
     ],
     benchmarks: {
-      "MMLU": { 
-        score: "87.8%", 
-        source: "https://llama.com" 
-      },
-      "MATH": { 
-        score: "72.4%", 
-        source: "https://llama.com" 
-      },
-      "HumanEval": { 
-        score: "87.2%", 
-        source: "https://llama.com" 
-      },
-      "GPQA": { 
-        score: "53.9%", 
-        source: "https://llama.com" 
-      },
-      "LMArena ELO": { 
-        score: "1417", 
-        source: "https://llama.com" 
+      "Context Length": { 
+        score: "10M tokens", 
+        source: "https://meta.com/llama" 
       }
     },
-    color: "#1877F2",
-    logo: "meta.svg",
-    featured: true
+    color: "#4267B2",
+    logo: "meta.svg"
   },
   {
     id: "llama-4-behemoth",
