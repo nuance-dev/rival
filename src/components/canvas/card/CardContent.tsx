@@ -51,7 +51,11 @@ export const CardContent: React.FC<CardContentProps> = ({
           return (
             <div className="h-full w-full flex-1 min-h-[280px] flex items-center justify-center bg-white dark:bg-gray-800 p-4 rounded-xl aspect-[16/10] overflow-hidden">
               <div className="w-full h-full flex items-center justify-center overflow-hidden">
-                <SafeSVGRenderer content={output.content} className="w-full h-full" />
+                <SafeSVGRenderer 
+                  content={output.content} 
+                  className="w-full h-full" 
+                  isModelGenerated={true} 
+                />
               </div>
             </div>
           );
@@ -177,7 +181,11 @@ export const CardContent: React.FC<CardContentProps> = ({
           return (
             <div className="w-full h-full flex-1 flex items-center justify-center bg-white dark:bg-gray-800 p-4 min-h-[calc(90vh-130px)] overflow-hidden">
               <div className="w-full h-full max-w-[90%] max-h-[90%]">
-                <SafeSVGRenderer content={output.content} className="w-full h-full" />
+                <SafeSVGRenderer 
+                  content={output.content} 
+                  className="w-full h-full" 
+                  isModelGenerated={true} 
+                />
               </div>
             </div>
           );

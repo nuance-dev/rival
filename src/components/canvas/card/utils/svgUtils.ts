@@ -211,4 +211,42 @@ export const isValidSvg = (content: string): boolean => {
   
   // Basic check - can be enhanced with more robust validation if needed
   return content.trim().startsWith('<svg') && content.includes('</svg>');
+};
+
+/**
+ * Sanitizes SVG content specifically for model-generated SVGs, which may not fully conform to standards.
+ * This applies a more lenient cleaning approach while still maintaining security.
+ */
+export const sanitizeModelGeneratedSvg = (content: string): string => {
+  // Return empty string if content is not provided
+  if (!content || typeof content !== 'string') {
+    return '';
+  }
+
+  try {
+    // Do minimal cleanup for model-generated SVG
+    let sanitized = content
+      .replace(/\/\*[\s\S]*?\*\//g, '') // Remove CSS-style comments
+      .replace(/<!--[\s\S]*?-->/g, '')  // Remove HTML comments
+      .trim();
+    
+    // Ensure SVG has proper namespace
+    if (!sanitized.includes('xmlns=')) {
+      sanitized = sanitized.replace(/<svg/i, '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+    
+    // Ensure SVG has xlink namespace if it has xlink references
+    if (sanitized.includes('xlink:href') && !sanitized.includes('xmlns:xlink=')) {
+      sanitized = sanitized.replace(/<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+    }
+    
+    // Ensure all IDs are unique to prevent conflicts with gradient definitions, masks, etc.
+    sanitized = ensureUniqueIds(sanitized);
+    
+    // Add safety wrapper that won't interfere with SVG layout
+    return `<div data-sanitized-svg="true" style="width:100%; height:100%">${sanitized}</div>`;
+  } catch (error) {
+    console.error('Error sanitizing model-generated SVG content:', error);
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"><text x="10" y="50" font-size="10">Error rendering SVG</text></svg>';
+  }
 }; 

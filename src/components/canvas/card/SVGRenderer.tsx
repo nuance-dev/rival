@@ -1,6 +1,6 @@
 import React, { Component, ErrorInfo, useState, useEffect, useRef } from "react";
 import { Brush } from "lucide-react";
-import { sanitizeSvgContent } from "./utils/svgUtils";
+import { sanitizeSvgContent, sanitizeModelGeneratedSvg } from "./utils/svgUtils";
 
 // Error boundary component to catch and handle SVG rendering errors
 class SVGErrorBoundary extends Component<{ children: React.ReactNode }> {
@@ -42,12 +42,14 @@ class SVGErrorBoundary extends Component<{ children: React.ReactNode }> {
 interface SafeSVGRendererProps {
   content: string;
   className?: string;
+  isModelGenerated?: boolean;
 }
 
 // Component for safely rendering SVG content
 export const SafeSVGRenderer: React.FC<SafeSVGRendererProps> = ({ 
   content,
-  className = "w-full h-full flex items-center justify-center"
+  className = "w-full h-full flex items-center justify-center",
+  isModelGenerated = false
 }) => {
   const [renderError, setRenderError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -138,8 +140,10 @@ export const SafeSVGRenderer: React.FC<SafeSVGRendererProps> = ({
         // Use a try-catch inside a setTimeout to prevent blocking the main thread
         setTimeout(() => {
           try {
-            // Directly sanitize the SVG content
-            const sanitized = sanitizeSvgContent(content);
+            // Choose the appropriate sanitization function based on the isModelGenerated prop
+            const sanitized = isModelGenerated 
+              ? sanitizeModelGeneratedSvg(content)
+              : sanitizeSvgContent(content);
             
             // Only update state if component is still mounted
             if (mountedRef.current) {
@@ -193,7 +197,7 @@ export const SafeSVGRenderer: React.FC<SafeSVGRendererProps> = ({
         currentContainer.innerHTML = '';
       }
     };
-  }, [content, className]);
+  }, [content, className, isModelGenerated]);
   
   // Monitor for post-render errors
   useEffect(() => {
