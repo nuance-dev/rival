@@ -115,6 +115,5 @@ export const interactiveCatanBoardllama_4_maverick: ModelResponse = {
 </script>
 
 </body>
-</html>
-`)
+</html>`)
 }; 
