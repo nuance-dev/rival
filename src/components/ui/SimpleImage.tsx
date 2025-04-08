@@ -44,6 +44,10 @@ export type SimpleImageProps = {
    */
   loading?: 'lazy' | 'eager';
   /**
+   * Priority loading for LCP images
+   */
+  priority?: boolean;
+  /**
    * Custom error handler function
    */
   onError?: () => void;
@@ -67,6 +71,7 @@ export default function SimpleImage({
   objectFit = 'cover',
   className = '',
   loading = 'lazy',
+  priority = false,
   onError,
   onLoad,
 }: SimpleImageProps) {
@@ -141,7 +146,7 @@ export default function SimpleImage({
           width: '100%',
           height: '100%',
         }}
-        loading={loading} 
+        loading={priority ? 'eager' : loading} 
         onLoad={handleImageLoad}
         onError={handleImageError}
       />
