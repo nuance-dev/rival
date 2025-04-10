@@ -1304,4 +1304,21 @@ export const models: AIModel[] = [
     uniqueCapabilities: ["All-purpose model supporting long-context tasks", "Powerful code generation capabilities", "1,000,000 context window"],
     logo: "openrouter.svg"
   },
+  {
+    id: "optimus-alpha",
+    name: "Optimus Alpha",
+    provider: "openrouter",
+    releaseDate: "April 10, 2025",
+    description: "A stealth, powerful, all-purpose model supporting long-context tasks, including code generation. Based on community feedback.",
+    capabilities: ["conversation", "web-design", "code-generation", "reasoning"],
+    categories: ["text", "multimodal"],
+    size: "large",
+    contextWindow: 1000000,
+    parametersCount: "Unknown",
+    gradientColors: ["#10b981", "#06b6d4"],
+    logoUrl: getModelLogoPath("openrouter"),
+    url: "#",
+    uniqueCapabilities: ["Stealth model for feedback gathering", "Powerful code generation capabilities", "1,000,000 context window"],
+    logo: "openrouter.svg"
+  },
 ]; 
