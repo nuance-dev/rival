@@ -3,7 +3,6 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { ModelOutput } from "@/types/models";
 import LazyImage from "../LazyImage";
-import LazyIframe from "../LazyIframe";
 import SafeSVGRenderer from "./SVGRenderer";
 import Image from "next/image";
 
