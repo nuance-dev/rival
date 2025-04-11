@@ -19,6 +19,9 @@ import { estimateComplexityGpt4oMini } from './estimate-complexity';
 import { darkModeDashboardGpt4oMini } from './dark-mode-dashboard';
 import { countLettersGpt4oMini } from './count-letters';
 import { aiGeneratedManifestoGpt4oMini } from './ai-generated-manifesto';
+import { characterVoiceTestGpt4oMini } from './character-voice-test';
+import { aiEthicsDilemmaGpt4oMini } from './ai-ethics-dilemma';
+import { aiBoardGameLogicGpt4oMini } from './ai-board-game-logic';
 
 // Define the array of model responses for gpt-4o-mini
 export const gpt4oMiniResponses: ModelResponse[] = [
@@ -42,6 +45,9 @@ export const gpt4oMiniResponses: ModelResponse[] = [
   darkModeDashboardGpt4oMini,
   countLettersGpt4oMini,
   aiGeneratedManifestoGpt4oMini,
+  characterVoiceTestGpt4oMini,
+  aiEthicsDilemmaGpt4oMini,
+  aiBoardGameLogicGpt4oMini,
 ];
 
 // Optional: You can add helper maps or functions here if needed for this model
