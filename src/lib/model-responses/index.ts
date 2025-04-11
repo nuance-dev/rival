@@ -27,6 +27,7 @@ import { llama_4_maverickResponses } from "./llama-4-maverick";
 import { llama_4_scoutResponses } from "./llama-4-scout";
 import { optimusAlphaResponses } from "./optimus-alpha";
 import { grok_3_mini_betaResponses } from "./grok-3-mini-beta";
+import { gpt4oMiniResponses } from "./gpt-4o-mini";
 
 // Import individual model responses to avoid naming conflicts
 import * as gpt_4o from "./gpt-4o";
@@ -57,6 +58,7 @@ import * as llama_4_maverick from "./llama-4-maverick";
 import * as llama_4_scout from "./llama-4-scout";
 import * as optimus_alpha from "./optimus-alpha";
 import * as grok_3_mini_beta from "./grok-3-mini-beta";
+import * as gpt_4o_mini from "./gpt-4o-mini";
 
 // Combined array of all raw responses
 const allRawResponses: ModelResponse[] = [
@@ -87,7 +89,8 @@ const allRawResponses: ModelResponse[] = [
   ...llama_4_maverickResponses,
   ...llama_4_scoutResponses,
   ...optimusAlphaResponses,
-  ...grok_3_mini_betaResponses
+  ...grok_3_mini_betaResponses,
+  ...gpt4oMiniResponses
 ];
 
 // Update Midjourney and DALL-E response dates to a specific date
@@ -151,5 +154,6 @@ export {
   llama_4_maverick,
   llama_4_scout,
   optimus_alpha,
-  grok_3_mini_beta
+  grok_3_mini_beta,
+  gpt_4o_mini
 }
