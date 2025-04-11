@@ -6,6 +6,7 @@ import { interactiveCatanBoardResponse } from "./interactive-catan-board";
 import { linearAppCloneResponse } from "./linear-app-clone";
 import { svgLayoutResponse } from "./svg-layout";
 import { standupRoutineOptimusAlpha } from './standup-routine';
+import { framerStyleAnimationOptimusAlpha } from './framer-style-animation';
 
 export const optimusAlphaResponses: ModelResponse[] = [
   minimalistLandingPageResponse,
@@ -15,6 +16,7 @@ export const optimusAlphaResponses: ModelResponse[] = [
   linearAppCloneResponse,
   svgLayoutResponse,
   standupRoutineOptimusAlpha,
+  framerStyleAnimationOptimusAlpha,
 ];
 
 export const allOptimusAlphaResponsesMap: Map<string, ModelResponse> = new Map(
