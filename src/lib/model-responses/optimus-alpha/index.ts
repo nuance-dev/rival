@@ -16,6 +16,7 @@ import { mathMisconceptionOptimusAlpha } from './math-misconception';
 import { logicPuzzleOptimusAlpha } from './logic-puzzle';
 import { futuristicPredictionOptimusAlpha } from './futuristic-prediction';
 import { estimateComplexityOptimusAlpha } from './estimate-complexity';
+import { darkModeDashboardOptimusAlpha } from './dark-mode-dashboard';
 
 export const optimusAlphaResponses: ModelResponse[] = [
   minimalistLandingPageResponse,
@@ -35,6 +36,7 @@ export const optimusAlphaResponses: ModelResponse[] = [
   logicPuzzleOptimusAlpha,
   futuristicPredictionOptimusAlpha,
   estimateComplexityOptimusAlpha,
+  darkModeDashboardOptimusAlpha,
 ];
 
 export const allOptimusAlphaResponsesMap: Map<string, ModelResponse> = new Map(
