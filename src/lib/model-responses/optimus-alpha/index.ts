@@ -10,6 +10,12 @@ import { framerStyleAnimationOptimusAlpha } from './framer-style-animation';
 import { websiteLandingPageOptimusAlpha } from './website-landing-page';
 import { stochasticConsistencyOptimusAlpha } from './stochastic-consistency';
 import { sentienceTestOptimusAlpha } from './sentience-test';
+import { satiricalFakeNewsOptimusAlpha } from './satirical-fake-news';
+import { realisticAiInterviewOptimusAlpha } from './realistic-ai-interview';
+import { mathMisconceptionOptimusAlpha } from './math-misconception';
+import { logicPuzzleOptimusAlpha } from './logic-puzzle';
+import { futuristicPredictionOptimusAlpha } from './futuristic-prediction';
+import { estimateComplexityOptimusAlpha } from './estimate-complexity';
 
 export const optimusAlphaResponses: ModelResponse[] = [
   minimalistLandingPageResponse,
@@ -23,6 +29,12 @@ export const optimusAlphaResponses: ModelResponse[] = [
   websiteLandingPageOptimusAlpha,
   stochasticConsistencyOptimusAlpha,
   sentienceTestOptimusAlpha,
+  satiricalFakeNewsOptimusAlpha,
+  realisticAiInterviewOptimusAlpha,
+  mathMisconceptionOptimusAlpha,
+  logicPuzzleOptimusAlpha,
+  futuristicPredictionOptimusAlpha,
+  estimateComplexityOptimusAlpha,
 ];
 
 export const allOptimusAlphaResponsesMap: Map<string, ModelResponse> = new Map(
