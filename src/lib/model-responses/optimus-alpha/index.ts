@@ -5,6 +5,7 @@ import { xboxControllerSvgResponse } from "./xbox-controller-svg";
 import { interactiveCatanBoardResponse } from "./interactive-catan-board";
 import { linearAppCloneResponse } from "./linear-app-clone";
 import { svgLayoutResponse } from "./svg-layout";
+import { standupRoutineOptimusAlpha } from './standup-routine';
 
 export const optimusAlphaResponses: ModelResponse[] = [
   minimalistLandingPageResponse,
@@ -13,6 +14,7 @@ export const optimusAlphaResponses: ModelResponse[] = [
   interactiveCatanBoardResponse,
   linearAppCloneResponse,
   svgLayoutResponse,
+  standupRoutineOptimusAlpha,
 ];
 
 export const allOptimusAlphaResponsesMap: Map<string, ModelResponse> = new Map(
