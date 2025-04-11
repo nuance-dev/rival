@@ -7,6 +7,9 @@ import { linearAppCloneResponse } from "./linear-app-clone";
 import { svgLayoutResponse } from "./svg-layout";
 import { standupRoutineOptimusAlpha } from './standup-routine';
 import { framerStyleAnimationOptimusAlpha } from './framer-style-animation';
+import { websiteLandingPageOptimusAlpha } from './website-landing-page';
+import { stochasticConsistencyOptimusAlpha } from './stochastic-consistency';
+import { sentienceTestOptimusAlpha } from './sentience-test';
 
 export const optimusAlphaResponses: ModelResponse[] = [
   minimalistLandingPageResponse,
@@ -17,6 +20,9 @@ export const optimusAlphaResponses: ModelResponse[] = [
   svgLayoutResponse,
   standupRoutineOptimusAlpha,
   framerStyleAnimationOptimusAlpha,
+  websiteLandingPageOptimusAlpha,
+  stochasticConsistencyOptimusAlpha,
+  sentienceTestOptimusAlpha,
 ];
 
 export const allOptimusAlphaResponsesMap: Map<string, ModelResponse> = new Map(
