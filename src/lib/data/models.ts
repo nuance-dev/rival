@@ -89,6 +89,33 @@ export const models: AIModel[] = [
     logo: "xai.svg"
   },
   {
+    id: "grok-3-mini-beta",
+    name: "Grok 3 Mini Beta",
+    provider: "xai",
+    releaseDate: "April 9, 2025",
+    description: "Grok 3 Mini is a lightweight, smaller thinking model ideal for reasoning-heavy tasks that don't demand extensive domain knowledge. It shines in math-specific and quantitative use cases. Transparent 'thinking' traces accessible.",
+    capabilities: ["conversation", "reasoning", "analysis"],
+    categories: ["text", "code"],
+    size: "small",
+    contextWindow: 131072,
+    parametersCount: "Not disclosed",
+    gradientColors: ["#EC6EAD", "#946E34"],
+    logoUrl: getModelLogoPath("grok-3"),
+    url: "https://openrouter.ai/models/x-ai/grok-3-mini-beta",
+    uniqueCapabilities: [
+      "Lightweight thinking model for reasoning tasks.",
+      "Strong in math and quantitative use cases.",
+      "Transparent 'thinking' traces available.",
+      "Optional high reasoning effort setting.",
+      "Optional fast endpoint routing."
+    ],
+    benchmarks: {
+      // Add benchmarks if available later
+    },
+    color: "#eb4646",
+    logo: "xai.svg"
+  },
+  {
     id: "midjourney-v1",
     name: "Midjourney v1",
     provider: "midjourney",
