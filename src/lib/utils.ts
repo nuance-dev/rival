@@ -150,6 +150,7 @@ export function getModelLogoPath(modelId: string, provider?: string): string {
     'llama-4-maverick': '/models/meta-color.svg',
     'llama-4-behemoth': '/models/meta-color.svg',
     'quasar-alpha': '/models/openrouter.svg',
+    'optimus-alpha': '/models/openrouter.svg',
   };
 
   // Provider-based logos (fallbacks)

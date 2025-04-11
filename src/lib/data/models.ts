@@ -1316,7 +1316,7 @@ export const models: AIModel[] = [
     contextWindow: 1000000,
     parametersCount: "Unknown",
     gradientColors: ["#10b981", "#06b6d4"],
-    logoUrl: getModelLogoPath("openrouter"),
+    logoUrl: getModelLogoPath("optimus-alpha"),
     url: "#",
     uniqueCapabilities: ["Stealth model for feedback gathering", "Powerful code generation capabilities", "1,000,000 context window"],
     logo: "openrouter.svg"
