@@ -17,6 +17,7 @@ import { logicPuzzleOptimusAlpha } from './logic-puzzle';
 import { futuristicPredictionOptimusAlpha } from './futuristic-prediction';
 import { estimateComplexityOptimusAlpha } from './estimate-complexity';
 import { darkModeDashboardOptimusAlpha } from './dark-mode-dashboard';
+import { countLettersOptimusAlpha } from './count-letters';
 
 export const optimusAlphaResponses: ModelResponse[] = [
   minimalistLandingPageResponse,
@@ -37,6 +38,7 @@ export const optimusAlphaResponses: ModelResponse[] = [
   futuristicPredictionOptimusAlpha,
   estimateComplexityOptimusAlpha,
   darkModeDashboardOptimusAlpha,
+  countLettersOptimusAlpha,
 ];
 
 export const allOptimusAlphaResponsesMap: Map<string, ModelResponse> = new Map(
