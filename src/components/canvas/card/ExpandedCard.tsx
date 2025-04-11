@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
+import Link from 'next/link';
 import CardHeader from "./CardHeader";
 import CardContent from "./CardContent";
 import { ModelOutput } from "@/types/models";
-import { ChevronDown, MessageSquare, ExternalLink, Swords } from "lucide-react";
+import { ChevronDown, MessageSquare, ExternalLink, Swords, Link as LinkIcon } from "lucide-react";
 import ModelIcon from "@/components/canvas/ModelIcon";
 import FunFactTooltip from "@/components/canvas/FunFactTooltip";
 import { formatModelName } from "@/lib/utils";
@@ -179,6 +180,25 @@ export const ExpandedCard: React.FC<ExpandedCardProps> = ({
             >
               View challenge <ExternalLink className="h-3 w-3 ml-0.5" />
             </button>
+          )}
+
+          {/* Link to dedicated response page */}
+          {output.modelId && output.id && (
+            <Link
+              href={`/models/${output.modelId}/responses/${output.id}`}
+              passHref
+              legacyBehavior
+            >
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="h-8 w-8 rounded-full flex items-center justify-center text-xs font-medium bg-muted/20 hover:bg-muted/40 transition-all duration-200 border border-border/40 hover:shadow-sm"
+                title="View dedicated response page"
+              >
+                <LinkIcon className="h-3.5 w-3.5" />
+              </a>
+            </Link>
           )}
         </div>
       </div>

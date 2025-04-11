@@ -1,7 +1,7 @@
 # RIVAL - Project Specification
 
 ## Project Overview
-"RIVAL" is a next-generation web application built with Next.js and Tailwind CSS v4 that displays AI model capabilities through interactive comparisons. The application showcases various AI models (Grok 3, Claude Sonnet 3.7/3.5, GPT-4o, GPT-o3, GPT-o1, Anthropic Claude 3 Haiku/Opus, Optimus Alpha, etc.) with their responses to one-shot prompts, displayed in dynamic, expandable canvases.
+"RIVAL" is a next-generation web application built with Next.js and Tailwind CSS v4 that displays AI model capabilities through interactive comparisons. The application showcases various AI models (Grok 3, Claude Sonnet 3.7/3.5, GPT-4o, GPT-4o mini, GPT-o3, GPT-o1, Anthropic Claude 3 Haiku/Opus, Optimus Alpha, etc.) with their responses to one-shot prompts, displayed in dynamic, expandable canvases.
 
 ## Design Philosophy
 - **Aesthetic**: Minimalist yet distinctive design with subtle retro-inspired elements, drawing from industry leaders like Framer, Rive, Vercel, Linear, Supabase, Webflow, Valorant, Arc, Raycast, and Spline

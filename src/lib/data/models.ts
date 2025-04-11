@@ -1348,4 +1348,33 @@ export const models: AIModel[] = [
     uniqueCapabilities: ["Stealth model for feedback gathering", "Powerful code generation capabilities", "1,000,000 context window"],
     logo: "openrouter.svg"
   },
+  {
+    id: "gpt-4o-mini",
+    name: "GPT-4o mini",
+    provider: "openai",
+    releaseDate: "July 18, 2024",
+    description: "GPT-4o mini is OpenAI's newest model after GPT-4 Omni, supporting both text and image inputs with text outputs. As their most advanced small model, it is many multiples more affordable than other recent frontier models, and more than 60% cheaper than GPT-3.5 Turbo. It maintains SOTA intelligence, while being significantly more cost-effective.",
+    capabilities: ["conversation", "reasoning", "code-generation", "analysis"],
+    categories: ["text", "code", "image", "multimodal"],
+    size: "small",
+    contextWindow: 128000,
+    parametersCount: "Not disclosed",
+    gradientColors: ["#10A37F", "#4CAF50"], // OpenAI Green + Light Green
+    logoUrl: getModelLogoPath("gpt-4o"), // Assuming logo will be added
+    url: "https://openrouter.ai/models/openai/gpt-4o-mini",
+    uniqueCapabilities: [
+      "Significantly more cost-effective than other frontier models (60% cheaper than GPT-3.5 Turbo).",
+      "Supports both text and image inputs.",
+      "Maintains State-of-the-Art (SOTA) intelligence despite smaller size."
+    ],
+    benchmarks: {
+      "MMLU": {
+        score: "82%",
+        source: "https://openrouter.ai/models/openai/gpt-4o-mini"
+      }
+    },
+    color: "#10A37F", // OpenAI Green
+    logo: "openai.svg", // Standard OpenAI logo
+    featured: false
+  },
 ]; 
