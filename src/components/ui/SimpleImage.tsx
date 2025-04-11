@@ -143,8 +143,13 @@ export default function SimpleImage({
           objectPosition: 'center',
           transition: 'opacity 500ms',
           opacity: isLoaded ? 1 : 0,
-          width: '100%',
-          height: '100%',
+          width: fill ? '100%' : width ? `${width}px` : '100%',
+          height: fill ? '100%' : height ? `${height}px` : '100%',
+          position: fill ? 'absolute' : 'relative',
+          top: fill ? 0 : undefined,
+          left: fill ? 0 : undefined,
+          bottom: fill ? 0 : undefined,
+          right: fill ? 0 : undefined,
         }}
         loading={priority ? 'eager' : loading} 
         onLoad={handleImageLoad}

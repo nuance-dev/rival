@@ -9,8 +9,8 @@ interface LazyIframeProps {
 }
 
 const LazyIframe = memo(({ content, title }: LazyIframeProps) => {
+  console.debug(`[LazyIframe] Rendering for title: ${title}. Has content: ${!!content}`);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [scale, setScale] = useState(0.5); // Restore scale state
   const [processedContent, setProcessedContent] = useState<string | null>(null);
   const [hasError, setHasError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
@@ -42,11 +42,12 @@ const LazyIframe = memo(({ content, title }: LazyIframeProps) => {
       // processed = processed.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '<!-- Script removed -->');
 
       if (mountedRef.current) {
+        console.debug(`[LazyIframe] Setting processedContent for: ${title}`);
         setProcessedContent(processed);
         setHasError(false);
       }
     } catch (error) {
-      console.error("Error processing iframe content minimally:", error);
+      console.error(`[LazyIframe] Error processing iframe content for ${title}:`, error);
       if (mountedRef.current) {
         setProcessedContent("<div>Error processing content</div>");
         setHasError(true);
@@ -59,17 +60,6 @@ const LazyIframe = memo(({ content, title }: LazyIframeProps) => {
       mountedRef.current = false;
     };
   }, [content]);
-  
-  // Restore scaling logic
-  useEffect(() => {
-    if (!content || hasError) return;
-    const contentLength = content.length;
-    let newScale = 0.5; // Default
-    if (contentLength > 20000) newScale = 0.4;
-    else if (contentLength > 10000) newScale = 0.45;
-    else if (contentLength < 5000) newScale = 0.55;
-    setScale(newScale);
-  }, [content, hasError]);
   
   // Handle iframe load events
   const handleIframeLoad = () => {
@@ -100,7 +90,7 @@ const LazyIframe = memo(({ content, title }: LazyIframeProps) => {
   
   // Handle iframe errors
   const handleIframeError = () => {
-    console.error(`Error loading iframe content for title: ${title}`);
+    console.error(`[LazyIframe] Error loading iframe content via onError for title: ${title}`);
     setIsLoaded(true);
     setHasError(true);
     if (retryCount < MAX_RETRIES) {
@@ -118,7 +108,7 @@ const LazyIframe = memo(({ content, title }: LazyIframeProps) => {
   
   return (
     <div ref={iframeRef} className="w-full h-full overflow-hidden relative bg-white dark:bg-gray-800 rounded-xl">
-      {/* Loading Placeholder */}
+      {/* Loading Placeholder (simplified) */}
       {!isLoaded && !hasError && (
         <div className="absolute inset-0 bg-muted/10 flex items-center justify-center z-10">
           <Globe className="h-8 w-8 text-muted-foreground/30 animate-pulse" />
@@ -133,20 +123,17 @@ const LazyIframe = memo(({ content, title }: LazyIframeProps) => {
         </div>
       )}
       
-      {/* Iframe Content */}
+      {/* Iframe Content (simplified) */}
       {processedContent !== null && !hasError && (
         <iframe
           key={retryCount} // Force re-render on retry
           ref={contentRef}
           title={title}
-          className="absolute border-0"
+          className="absolute border-0 inset-0"
           style={{
-            width: `${100 / scale}%`,
-            height: `${100 / scale}%`,
-            transform: `scale(${scale})`,
-            transformOrigin: 'top left',
-            opacity: isLoaded ? 1 : 0,
-            transition: 'opacity 0.5s ease-in-out',
+            width: '100%', // Simplified width
+            height: '100%', // Simplified height
+            opacity: 1, // Force visible
           }}
           sandbox="allow-same-origin allow-scripts allow-popups allow-forms" // Essential security
           srcDoc={processedContent}

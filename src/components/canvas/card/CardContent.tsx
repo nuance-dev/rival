@@ -42,8 +42,15 @@ export const CardContent: React.FC<CardContentProps> = ({
         case "website":
         case "html":
           return (
-            <div className="w-full h-auto aspect-[16/10] overflow-hidden rounded-xl bg-muted/10 relative">
-              <LazyIframe content={output.content} title={displayTitle || "HTML Output"} />
+            <div className="w-full h-full min-h-[280px] bg-muted/5 rounded-xl relative flex flex-col">
+              <iframe 
+                srcDoc={output.content}
+                title={displayTitle || "HTML Output"}
+                className="w-full h-full min-h-[280px] border-0 flex-1"
+                style={{ height: '100%' }}
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                loading="lazy"
+              />
             </div>
           );
         
@@ -68,7 +75,7 @@ export const CardContent: React.FC<CardContentProps> = ({
             )) {
             return (
               <div className="w-full h-full flex-1 min-h-[280px] relative">
-                <div className="absolute inset-0">
+                <div className="absolute inset-0 h-full w-full">
                   <LazyImage src={output.content} alt={displayTitle || "AI Generated Image"} />
                 </div>
               </div>
@@ -96,15 +103,15 @@ export const CardContent: React.FC<CardContentProps> = ({
           return (
             <div className="p-6 h-full w-full flex-1 min-h-[280px] overflow-hidden relative rounded-xl bg-card/80 flex flex-col">
               <div className={`
-                ${isShortText ? 'flex flex-grow h-full' : 'line-clamp-[18]'}
+                ${isShortText ? 'flex h-full flex-grow' : 'line-clamp-[18]'}
                 text-sm text-card-foreground/90 font-light prose prose-sm dark:prose-invert max-w-none
                 ${isVeryShortText ? 'items-center justify-center' : ''}
-                flex-1 flex flex-col 
+                flex-1 flex flex-col h-full
               `}>
                 <div className={`
                   ${isVeryShortText ? 'text-center text-base md:text-lg font-medium max-w-[90%] my-auto' : ''}
                   ${isShortText && !isVeryShortText ? 'py-4 h-full flex flex-col justify-center' : ''}
-                  flex-1
+                  flex-1 h-full
                 `}>
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {output.content}
@@ -121,9 +128,9 @@ export const CardContent: React.FC<CardContentProps> = ({
             <div className="p-4 h-full w-full flex-1 min-h-[280px] overflow-hidden relative rounded-xl bg-[#0d1117] text-[#e6edf3] flex flex-col">
               <pre className={`
                 ${isShortCode ? 'flex items-center justify-center h-full text-center' : 'line-clamp-[18]'} 
-                text-xs overflow-hidden flex-1 flex flex-col
+                text-xs overflow-hidden flex-1 flex flex-col h-full
               `}>
-                <code className={isShortCode ? 'my-auto' : ''}>{output.content}</code>
+                <code className={isShortCode ? 'my-auto h-full' : 'h-full'}>{output.content}</code>
               </pre>
               {!isShortCode && <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#0d1117] to-transparent" />}
             </div>
@@ -161,11 +168,11 @@ export const CardContent: React.FC<CardContentProps> = ({
         case "html":
         case "website":
           return (
-            <div className="w-full relative bg-white dark:bg-gray-800"> 
+            <div className="w-full h-full relative bg-white dark:bg-gray-800"> 
               <iframe
                 ref={iframeRef}
                 title="HTML Preview"
-                className="w-full bg-white hide-scrollbar border-0 block"
+                className="w-full h-full bg-white hide-scrollbar border-0 block"
                 style={{ 
                   width: '100%',
                   height: iframeHeight,
@@ -250,7 +257,7 @@ export const CardContent: React.FC<CardContentProps> = ({
 
   const ContentRenderer = expanded ? renderExpandedContent : renderPreview;
 
-  return <div className={className}><ContentRenderer /></div>;
+  return <div className={`${className} h-full`}><ContentRenderer /></div>;
 };
 
 export default CardContent;
