@@ -6,8 +6,10 @@ import { darkUmodeUdashboardgemini_2_5_pro_exp } from "./dark-mode-dashboard";
 import { framerUstyleUanimationgemini_2_5_pro_exp } from "./framer-style-animation";
 import { interactiveUcatanUboardgemini_2_5_pro_exp } from "./interactive-catan-board";
 import { linearAppClonegemini_2_5_pro_exp } from "./linear-app-clone";
+import { mathMisconceptionGemini_2_5_pro_exp } from "./math-misconception";
 import { minimalistUlandingUpagegemini_2_5_pro_exp } from "./minimalist-landing-page";
 import { realisticUaiUinterviewgemini_2_5_pro_exp } from "./realistic-ai-interview";
+import { satiricalFakeNewsGemini_2_5_pro_exp } from "./satirical-fake-news";
 import { sentienceUtestgemini_2_5_pro_exp } from "./sentience-test";
 import { standupUroutinegemini_2_5_pro_exp } from "./standup-routine";
 import { stochasticUconsistencygemini_2_5_pro_exp } from "./stochastic-consistency";
@@ -24,8 +26,10 @@ export const gemini_2_5_pro_expResponses: ModelResponse[] = [
   framerUstyleUanimationgemini_2_5_pro_exp,
   interactiveUcatanUboardgemini_2_5_pro_exp,
   linearAppClonegemini_2_5_pro_exp,
+  mathMisconceptionGemini_2_5_pro_exp,
   minimalistUlandingUpagegemini_2_5_pro_exp,
   realisticUaiUinterviewgemini_2_5_pro_exp,
+  satiricalFakeNewsGemini_2_5_pro_exp,
   sentienceUtestgemini_2_5_pro_exp,
   standupUroutinegemini_2_5_pro_exp,
   stochasticUconsistencygemini_2_5_pro_exp,
@@ -43,8 +47,10 @@ export {
   framerUstyleUanimationgemini_2_5_pro_exp,
   interactiveUcatanUboardgemini_2_5_pro_exp,
   linearAppClonegemini_2_5_pro_exp,
+  mathMisconceptionGemini_2_5_pro_exp,
   minimalistUlandingUpagegemini_2_5_pro_exp,
   realisticUaiUinterviewgemini_2_5_pro_exp,
+  satiricalFakeNewsGemini_2_5_pro_exp,
   sentienceUtestgemini_2_5_pro_exp,
   standupUroutinegemini_2_5_pro_exp,
   stochasticUconsistencygemini_2_5_pro_exp,
