@@ -59,8 +59,17 @@ export function Hero({ className }: HeroProps) {
               </motion.span> models
             </h1>
             
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: elementVisible ? 1 : 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="font-display text-xl md:text-2xl text-primary mb-4"
+            >
+              The best tests are vibe tests
+            </motion.p>
+            
             <p className="mx-auto max-w-[600px] text-muted-foreground text-lg mb-8">
-              Explore and compare the capabilities of today&apos;s most advanced AI models in an interactive showcase. See how they respond to the same prompts and discover their unique strengths.
+              Explore and compare the vibes of today&apos;s most advanced AI models in an interactive showcase. See how they respond to the same prompts and discover their unique personalities.
             </p>
           </motion.div>
           
@@ -107,7 +116,7 @@ export function Hero({ className }: HeroProps) {
               href="/compare"
               className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-8 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
-              Compare Models <ArrowRight className="ml-2 h-4 w-4" />
+              Compare Vibes <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </motion.div>
           

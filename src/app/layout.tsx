@@ -25,38 +25,39 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   metadataBase: new URL('https://rival.tips'),
   title: {
-    default: "Rival - AI Model Comparison Platform",
+    default: "Rival - AI Model Vibe Tests",
     template: "%s | Rival",
   },
-  description: "Compare cutting-edge AI models like GPT-4o, Claude 3.7, Grok-3, and more in a beautiful, interactive showcase. See how different models respond to the same prompts.",
+  description: "The best tests are vibe tests. Compare cutting-edge AI models like GPT-4o, Claude 3.7, Grok-3, and more in a beautiful, interactive showcase. See how different models respond to the same prompts.",
   keywords: [
     "AI", "Artificial Intelligence", "AI Models", "Machine Learning", 
     "RIVAL", "Comparison", "Grok-3", "Claude 3.7", "GPT-4o", "O1", "O3", 
-    "AI Benchmark", "Model Performance", "AI Showcase", "AI Visualization"
+    "AI Benchmark", "Model Performance", "AI Showcase", "AI Visualization",
+    "Vibe Tests", "AI Vibes"
   ],
   authors: [{ name: "Rival Team", url: "https://rival.tips" }],
   creator: "Rival",
   publisher: "Rival",
   applicationName: "Rival",
   category: "Technology",
-  classification: "AI Model Comparison",
+  classification: "AI Model Vibe Tests",
   
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://rival.tips",
     title: {
-      default: "Rival - AI Model Comparison Platform",
+      default: "Rival - AI Model Vibe Tests",
       template: "%s | Rival"
     },
-    description: "Compare cutting-edge AI models like GPT-4o, Claude 3.7, Grok-3, and more in a beautiful, interactive showcase. See how different models respond to the same prompts.",
+    description: "The best tests are vibe tests. Compare cutting-edge AI models like GPT-4o, Claude 3.7, Grok-3, and more in a beautiful, interactive showcase.",
     siteName: "Rival",
     images: [
       {
         url: "/opengraph.png",
         width: 1200,
         height: 630,
-        alt: "Rival - AI Model Comparison Platform"
+        alt: "Rival - AI Model Vibe Tests"
       }
     ]
   },
@@ -64,10 +65,10 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: {
-      default: "Rival - AI Model Comparison Platform",
+      default: "Rival - AI Model Vibe Tests",
       template: "%s | Rival"
     },
-    description: "Compare cutting-edge AI models like GPT-4o, Claude 3.7, Grok-3, and more in a beautiful, interactive showcase.",
+    description: "The best tests are vibe tests. Compare cutting-edge AI models in an interactive showcase.",
     creator: "@nuancedev",
     site: "@nuancedev",
     images: [
@@ -75,7 +76,7 @@ export const metadata: Metadata = {
         url: "/twitter-image.png",
         width: 1200,
         height: 630,
-        alt: "Rival - AI Model Comparison Platform"
+        alt: "Rival - AI Model Vibe Tests"
       }
     ]
   },
