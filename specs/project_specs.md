@@ -149,6 +149,10 @@
    - Utilizes category colors and information from local categories.ts file ✅
    - Properly handles models that appear in either position 1 or position 2 in duel records ✅
 
+13. **SEO Enhancements** 🆕
+    - Dynamic Metadata: Individual model response pages (`/models/[id]/responses/[responseId]`) generate unique and descriptive `<title>` and `<meta name="description">` tags using Next.js's `generateMetadata` function for improved search engine visibility. ✅
+    - Dynamic Sitemap: A `sitemap.xml` route (`/app/sitemap.xml/route.ts`) automatically generates an up-to-date sitemap including all individual model response pages, facilitating crawler discovery. ✅
+
 ## Project Structure
 ```
 versus/
@@ -161,10 +165,14 @@ versus/
 │   │   │   └── [id]/         # Model detail pages
 │   │   │       └── responses/# Model response pages
 │   │   │           └── [responseId]/ # Response detail pages
+│   │   │               ├── page.tsx # Response detail page component
+│   │   │               └── ModelResponseClient.tsx # Client component for response detail
 │   │   ├── comparisons/      # Comparison pages
 │   │   ├── compare/          # NEW: Interactive model comparison section
 │   │   ├── capabilities/     # Capability pages
 │   │   └── layout.tsx        # Root layout
+│   └── sitemap.xml/        # Dynamic sitemap generation
+│       └── route.ts        # Sitemap route handler
 ├── components/           # React components
 │   ├── ui/               # UI components
 │   ├── canvas/           # Canvas components
@@ -506,6 +514,11 @@ versus/
 9. Implement anonymous voter tracking with browser fingerprinting
 10. Add vote confirmation and success animations
 
+### Phase 12: SEO Enhancement 🆕
+1. Implement dynamic `generateMetadata` in response detail pages for unique titles/descriptions. ✅
+2. Create dynamic `sitemap.xml` route to list all response pages. ✅
+3. Configure `NEXT_PUBLIC_BASE_URL` environment variable for production sitemap URLs. 🟡
+
 ## Current Progress
 - ✅ Project setup and structure established
 - ✅ Core layout components implemented (Header, Footer, Hero)
@@ -572,6 +585,11 @@ versus/
 - 🔄 Implementing Supabase integration for AI Duels voting system
 - 🔄 Setting up database schema with model_duel_votes table and model_duel_stats view
 - 🔄 Developing interactive voting UI with retro-inspired design elements
+- 🔄 Implemented dynamic metadata generation for individual model response pages for SEO. ✅
+- 🔄 Created dynamic `sitemap.xml` route to improve discoverability of all response pages. ✅
+- 🔄 Added project spec entry for SEO Enhancements and updated project structure/plan. ✅
+- 🔄 Added project spec entry for Supabase Integration details. ✅
+- 🔄 Added project spec entry for AI Duels Feature Enhancement. ✅
 
 
 ## Animation Strategy
