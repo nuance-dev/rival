@@ -100,7 +100,7 @@ export const CardContent: React.FC<CardContentProps> = ({
           const isVeryShortText = wordCount < 30;
 
           return (
-            <div className="p-6 h-full w-full flex-1 min-h-[280px] overflow-hidden relative rounded-xl bg-card/80 flex flex-col">
+            <div className="p-6 h-full w-full flex-1 min-h-[280px] max-h-[800px] overflow-hidden relative rounded-xl bg-card/80 flex flex-col">
               <div className={`
                 ${isShortText ? 'flex h-full flex-grow' : 'line-clamp-[18]'}
                 text-sm text-card-foreground/90 font-light prose prose-sm dark:prose-invert max-w-none
